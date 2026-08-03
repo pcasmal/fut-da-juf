@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fut da JUF</title>
+<meta name="theme-color" content="#0F0D15">
+<meta name="description" content="Elenco, futs semanais, estatísticas e campeonato do Fut da JUF.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fut da JUF">
+<style>
+  @supports (padding: max(0px)) {
+    .app {
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(80px, env(safe-area-inset-bottom));
+    }
+  }
+</style>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0F0D15;
+    --surface: #1A1626;
+    --surface-2: #221C30;
+    --border: #342B47;
+    --text: #EDE9F5;
+    --muted: #9187A8;
+    --accent: #A78BFA;
+    --accent-solid: #8B5CF6;
+    --nativo: #3FB950;
+    --adaptado: #E0A93B;
+    --improvisado: #F85149;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  header { margin-bottom: 22px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    width: 46px; height: 46px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .brand-text { min-width: 0; }
+  .gear-btn {
+    margin-left: auto; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-size: 19px; cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .gear-btn:hover { color: var(--text); border-color: var(--accent); }
+  .gear-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(139,92,246,0.12); }
+
+  .brand-title { font-size: 23px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .brand-subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+  nav.tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  nav.tabs::-webkit-scrollbar { height: 0; width: 0; display: none; }
+  .tab {
+    background: none; border: none;
+    color: var(--muted);
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px; font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    font-family: inherit;
+    margin-bottom: -1px;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* View toggle (Elenco) */
+  .view-toggle { display: inline-flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+  .view-toggle button {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.12s;
+  }
+  .view-toggle button:hover { color: var(--text); }
+  .view-toggle button.active { background: var(--accent); color: #16121F; }
+
+  /* Lista view */
+  .roster-list { display: flex; flex-direction: column; gap: 6px; }
+  .roster-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; cursor: pointer; transition: border-color 0.12s;
+  }
+  .roster-row:hover { border-color: var(--accent); }
+  .roster-row.inactive { opacity: 0.45; }
+  .roster-row .avatar { width: 34px; height: 34px; font-size: 13px; }
+  .roster-row-main { min-width: 0; }
+  .roster-row-name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .roster-row-pos { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+  .roster-row-stats { display: flex; gap: 14px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .roster-row-stats b { color: var(--text); font-weight: 700; }
+  .roster-row-stats .g { color: var(--accent); }
+
+  /* Kanban por posição */
+  .kanban { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .kanban-col { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; min-width: 0; }
+  .kanban-col-head { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .kanban-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
+    padding: 8px 10px; margin-bottom: 6px; cursor: pointer; transition: border-color 0.12s;
+  }
+  .kanban-card:hover { border-color: var(--accent); }
+  .kanban-card.inactive { opacity: 0.45; }
+  .kanban-card.selectable.on { border-color: var(--accent); background: rgba(139,92,246,0.14); }
+  .kanban-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .kanban-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .kanban-empty { font-size: 12px; color: var(--muted); font-style: italic; padding: 4px 2px; }
+
+  /* Ocultar níveis (verde/amarelo/vermelho) */
+  .hide-levels .pos-badge .dot { display: none; }
+  .hide-levels .pos-badge { padding-left: 7px; }
+  .hide-levels .roster-legend { display: none; }
+
+  @media (max-width: 640px) {
+    .kanban { grid-template-columns: 1fr 1fr; }
+  }
+
+  .explain-box {
+    background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 14px 16px; margin: 12px 0; font-size: 13px; line-height: 1.6; color: var(--text);
+  }
+  .explain-box strong { color: var(--accent); }
+  .explain-box ol { margin: 8px 0 0 18px; }
+  .explain-box li { margin-bottom: 4px; }
+  .bench-card { border-top-color: var(--muted) !important; }
+  .bench-card .team-name { color: var(--muted); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .card-count { color: var(--muted); font-weight: 500; font-size: 13px; }
+
+  .form-row { display: grid; gap: 12px; margin-bottom: 14px; }
+  .form-row-2 { grid-template-columns: 1fr 1fr; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  input[type=text], input[type=number], input[type=date], select {
+    width: 100%;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  select { cursor: pointer; }
+  input[type=date] { color-scheme: dark; }
+
+  .position-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    background: var(--surface-2);
+  }
+  .position-block-title {
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-bottom: 10px;
+  }
+  .position-fields { display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px; }
+
+  button.primary {
+    background: var(--accent);
+    color: #16121F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: filter 0.15s;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button.primary:active { filter: brightness(0.95); }
+
+  button.secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  button.secondary:hover { background: var(--surface-2); }
+
+  button.ghost {
+    background: none; border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 8px;
+    font-family: inherit;
+    transition: color 0.15s;
+  }
+  button.ghost:hover { color: var(--improvisado); }
+  button.ghost.neutral:hover { color: var(--text); }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 32px 20px;
+    font-size: 14px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+  }
+
+  .pos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .pos-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .dot.nativo { background: var(--nativo); }
+  .dot.adaptado { background: var(--adaptado); }
+  .dot.improvisado { background: var(--improvisado); }
+
+  .legend {
+    display: flex; gap: 14px; margin-top: 12px; padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-size: 12px; color: var(--muted); flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* ===== Elenco: cartões de jogador ===== */
+  .roster-grid {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+  .player-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s;
+    position: relative;
+  }
+  .player-card:hover { border-color: var(--accent); }
+  .player-card:active { transform: scale(0.99); }
+  .player-card.inactive { opacity: 0.45; }
+  .player-card-top { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--accent-solid);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 17px;
+    flex-shrink: 0;
+    background-size: cover; background-position: center;
+  }
+  .player-card-name { font-weight: 700; font-size: 15px; }
+  .player-card-pos { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+  .player-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat-val.accent { color: var(--accent); }
+  .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .inactive-flag {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); background: var(--bg);
+    padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border);
+  }
+  .player-name-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .player-number {
+    font-size: 11px; font-weight: 700; color: var(--accent);
+    background: rgba(139,92,246,0.15); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; font-variant-numeric: tabular-nums;
+  }
+  .player-club { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+  .player-club::before { content: '♥'; color: var(--improvisado); font-size: 10px; }
+
+  .list-search { margin-bottom: 14px; }
+  .list-search input { max-width: 320px; }
+  .no-match { color: var(--muted); font-size: 13px; padding: 8px 2px; }
+
+  /* ===== Gols/assist do dia ===== */
+  .scoring-team {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-top: 3px solid var(--team-color, var(--accent));
+    border-radius: 10px; padding: 14px; margin-bottom: 12px;
+  }
+  .scoring-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .scoring-cols-head { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 6px 0 2px; }
+  .scoring-cols-head span:not(:first-child) { text-align: center; }
+  .scoring-row { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; align-items: center; padding: 5px 0; font-size: 13px; border-top: 1px solid var(--border); }
+  .scoring-row .stepper { justify-content: center; }
+  .wins-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+  .wins-row .team-name { display: flex; align-items: center; gap: 8px; }
+
+  /* ===== Duplas ===== */
+  .pair-row { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .pair-row:last-child { border-bottom: none; }
+  .pair-names { font-weight: 500; }
+  .pair-val { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .pair-sub { font-size: 11px; color: var(--muted); }
+
+  /* ===== Sessão semanal ===== */
+  .session-bar {
+    display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .session-bar .field { flex: 0 0 auto; }
+  .attendee-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    cursor: pointer;
+    font-size: 13px; font-weight: 500;
+    user-select: none;
+    transition: all 0.12s;
+  }
+  .chip:hover { border-color: var(--muted); }
+  .chip.on { background: rgba(139, 92, 246, 0.18); border-color: var(--accent); color: var(--text); }
+  .chip .chip-check { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; position: relative; }
+  .chip.on .chip-check { background: var(--accent); border-color: var(--accent); }
+  .chip.on .chip-check::after { content: ''; position: absolute; left: 4px; top: 1px; width: 3px; height: 7px; border: solid #16121F; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+  .team-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-top: 14px;
+  }
+  .team-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--team-color, var(--accent));
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .team-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .team-name { font-size: 14px; font-weight: 700; }
+  .team-count { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .team-players { display: grid; gap: 5px; min-height: 8px; }
+  .team-player {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 10px; background: var(--bg); border-radius: 5px;
+    font-size: 13px; gap: 8px; cursor: grab; user-select: none;
+  }
+  .team-player.dragging { opacity: 0.4; cursor: grabbing; }
+  .team-player .name { font-weight: 500; }
+  .team-card.drop-target { outline: 2px dashed var(--accent); outline-offset: -2px; }
+  .dnd-hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .team-count-input { width: 80px; }
+  .hint { margin-top: 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .hint.error { color: var(--improvisado); }
+
+  /* ===== Partidas ===== */
+  .match {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .match.played { border-color: rgba(63,185,80,0.4); }
+  .match-main {
+    display: grid;
+    grid-template-columns: 1fr 46px auto 46px 1fr auto;
+    gap: 8px; align-items: center;
+  }
+  .match-team-select { min-width: 0; }
+  .score-input {
+    width: 46px; text-align: center; padding: 7px 4px;
+    font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px;
+    background: var(--bg);
+  }
+  .match-vs { color: var(--muted); font-size: 11px; font-weight: 700; text-align: center; }
+  .match-goals-toggle {
+    margin-top: 10px; font-size: 12px; color: var(--accent);
+    background: none; border: none; cursor: pointer; font-family: inherit; padding: 2px 0;
+  }
+  .goals-panel {
+    margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .goals-col-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 8px; }
+  .goal-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; gap: 8px; }
+  .stepper { display: flex; align-items: center; gap: 8px; }
+  .stepper button {
+    width: 24px; height: 24px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    cursor: pointer; font-size: 15px; line-height: 1; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stepper button:hover { border-color: var(--accent); }
+  .stepper .val { min-width: 16px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ===== Resultados ===== */
+  .session-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .session-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; cursor: pointer; gap: 12px;
+  }
+  .session-head:hover { background: var(--surface-2); }
+  .session-date { font-weight: 700; font-size: 15px; }
+  .session-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .session-body { padding: 0 16px 16px; display: none; }
+  .session-item.open .session-body { display: block; }
+  .session-actions { display: flex; gap: 8px; align-items: center; }
+
+  .mini-result { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .mini-result:last-child { border-bottom: none; }
+  .mini-score { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ===== Estatísticas ===== */
+  .period-picker { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .period-btn {
+    padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--muted); cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600; transition: all 0.12s;
+  }
+  .period-btn:hover { color: var(--text); }
+  .period-btn.active { background: rgba(139,92,246,0.18); border-color: var(--accent); color: var(--accent); }
+
+  .rank-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .rank-table th, .rank-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+  .rank-table th:nth-child(2), .rank-table td:nth-child(2) { text-align: left; width: 100%; }
+  .rank-table th:first-child, .rank-table td:first-child { text-align: center; color: var(--muted); }
+  .rank-table th { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+  .rank-table tbody tr:last-child td { border-bottom: none; }
+  .rank-table .big { font-weight: 700; color: var(--accent); }
+  .rank-medal { font-size: 14px; }
+
+  /* ===== Campeonato ===== */
+  .format-picker { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: 14px; }
+  .format-option {
+    padding: 14px; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; cursor: pointer; text-align: left; color: var(--text);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .format-option:hover { border-color: var(--muted); }
+  .format-option.selected { border-color: var(--accent); background: rgba(139,92,246,0.1); }
+  .format-option-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .format-option-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  .round-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin: 18px 0 8px; }
+  .round-title:first-child { margin-top: 4px; }
+
+  .standings-wrap { overflow-x: auto; }
+  .standings { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; min-width: 480px; }
+  .standings th, .standings td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .standings th:nth-child(1), .standings td:nth-child(1), .standings th:nth-child(2), .standings td:nth-child(2) { text-align: left; }
+  .standings th { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .standings tbody tr:last-child td { border-bottom: none; }
+  .standings .pts { font-weight: 700; color: var(--accent); }
+  .standings tr.qualified td:first-child { box-shadow: inset 3px 0 0 var(--nativo); }
+  .standings .pos-num { color: var(--muted); }
+  .team-swatch { display: inline-block; width: 3px; height: 14px; vertical-align: middle; border-radius: 2px; margin-right: 8px; }
+
+  .bracket-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .bracket { display: flex; gap: 20px; min-width: fit-content; }
+  .bracket-round { display: flex; flex-direction: column; gap: 10px; min-width: 190px; justify-content: space-around; }
+  .bracket-round-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 4px; }
+  .bracket-match { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .bracket-team { display: grid; grid-template-columns: 1fr 40px; padding: 8px 10px; align-items: center; font-size: 13px; gap: 6px; }
+  .bracket-team + .bracket-team { border-top: 1px solid var(--border); }
+  .bracket-team.winner { font-weight: 700; background: rgba(63,185,80,0.08); }
+  .bracket-team.loser { color: var(--muted); }
+  .bracket-team.pending { color: var(--muted); font-style: italic; }
+  .bracket-team .score-input { width: 38px; padding: 4px 2px; font-size: 13px; }
+
+  /* ===== Capitães ===== */
+  .captain-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .captain-row:last-child { border-bottom: none; }
+  .captain-row select { width: auto; min-width: 180px; }
+  .cap { color: var(--adaptado); font-weight: 700; }
+
+  /* ===== Estimativa de tempo ===== */
+  .estimate-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+  .estimate-inputs input { text-align: center; }
+  .estimate-result { font-size: 14px; padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; }
+  .estimate-result strong { color: var(--accent); font-size: 16px; }
+
+  /* ===== Botão / Jogo ao vivo ===== */
+  .live-btn { color: var(--accent) !important; font-weight: 600; font-size: 12px; }
+  .match-with-live { display: flex; align-items: center; gap: 6px; }
+  .match-with-live .match { flex: 1; margin-bottom: 0; }
+  #live-card { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .live-scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin: 8px 0 16px; }
+  .live-side { text-align: center; }
+  .live-sname { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+  .live-score { font-size: 42px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .live-center { text-align: center; }
+  .live-clock { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .live-clock.over { color: var(--improvisado); }
+  .live-target { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .live-controls { display: flex; gap: 8px; justify-content: center; }
+  .live-controls button { padding: 7px 14px; }
+  .live-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .live-team { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); margin-bottom: 6px; }
+  .live-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .live-row:last-child { border-bottom: none; }
+  .live-name { font-size: 13px; }
+  .live-steps { display: flex; gap: 10px; }
+  .stepper.mini { gap: 4px; font-size: 12px; }
+  .stepper.mini button { width: 22px; height: 22px; font-size: 13px; }
+  .stepper.mini b { min-width: 20px; text-align: center; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 640px) {
+    .live-cols { grid-template-columns: 1fr; }
+    .estimate-inputs { grid-template-columns: 1fr; }
+    .live-score { font-size: 34px; }
+    .live-clock { font-size: 28px; }
+  }
+
+  /* ===== Modal ===== */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 50;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px; width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .modal-footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .toggle-line { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+  .check {
+    appearance: none; -webkit-appearance: none;
+    width: 22px; height: 22px; border: 1.5px solid var(--border);
+    border-radius: 5px; background: var(--bg); cursor: pointer;
+    position: relative; flex-shrink: 0; transition: all 0.15s;
+  }
+  .check:checked { background: var(--nativo); border-color: var(--nativo); }
+  .check:checked::after { content: ''; position: absolute; left: 6px; top: 2px; width: 6px; height: 12px; border: solid #16121F; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+  /* ===== Configurações ===== */
+  .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); gap: 14px; flex-wrap: wrap; }
+  .settings-row:last-of-type { border-bottom: none; }
+  .settings-label { font-weight: 600; font-size: 14px; }
+  .settings-desc { font-size: 12px; color: var(--muted); margin-top: 2px; max-width: 460px; }
+  .settings-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .status-pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .status-pill.on { background: rgba(63,185,80,0.15); color: var(--nativo); }
+  .status-pill.off { background: var(--surface-2); color: var(--muted); }
+  .status-pill.warn { background: rgba(224,169,59,0.18); color: var(--adaptado); }
+  .file-name { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; background: var(--surface-2); padding: 3px 8px; border-radius: 4px; word-break: break-all; border: 1px solid var(--border); }
+
+  @media (max-width: 640px) {
+    .form-row-2 { grid-template-columns: 1fr; }
+    .brand-title { font-size: 21px; }
+    .match-main { grid-template-columns: 1fr 40px auto 40px 1fr; gap: 6px; }
+    .match-main .match-remove { grid-column: 1 / -1; justify-self: end; }
+    .goals-panel { grid-template-columns: 1fr; }
+    .player-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <img class="brand-logo" src="logo.png" alt="Fut da JUF" width="46" height="46">
+      <div class="brand-text">
+        <div class="brand-title">Fut da JUF</div>
+        <div class="brand-subtitle">Elenco, futs semanais, estatísticas e campeonato</div>
+      </div>
+      <button class="gear-btn" id="btn-config" title="Configurações" aria-label="Configurações">⚙</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="elenco">Elenco</button>
+    <button class="tab" data-tab="semana">Fut da Semana</button>
+    <button class="tab" data-tab="resultados">Resultados</button>
+    <button class="tab" data-tab="stats">Estatísticas</button>
+    <button class="tab" data-tab="campeonato">Campeonato</button>
+  </nav>
+
+  <!-- ELENCO -->
+  <section class="panel active" id="panel-elenco">
+    <div class="card">
+      <div class="card-title">Adicionar jogador ao elenco</div>
+      <div class="form-row form-row-2">
+        <div>
+          <label for="player-name">Nome</label>
+          <input type="text" id="player-name" placeholder="Ex: Ricardinho" autocomplete="off">
+        </div>
+        <div class="form-row-2" style="display:grid; gap:12px;">
+          <div>
+            <label for="player-number">Número favorito</label>
+            <input type="number" id="player-number" placeholder="10" min="0" max="99" autocomplete="off">
+          </div>
+          <div>
+            <label for="player-club">Time do coração</label>
+            <input type="text" id="player-club" placeholder="Ex: Corinthians" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="position-block">
+          <div class="position-block-title">Posição principal</div>
+          <div class="position-fields">
+            <select id="primary-pos">
+              <option value="">Selecione</option>
+              <option value="goleiro">Goleiro</option>
+              <option value="fixo">Fixo</option>
+              <option value="ala">Ala</option>
+              <option value="pivo">Pivô</option>
+            </select>
+            <select id="primary-level">
+              <option value="nativo">Nativo</option>
+              <option value="adaptado">Adaptado</option>
+              <option value="improvisado">Improvisado</option>
+            </select>
+          </div>
+        </div>
+        <div class="position-block">
+          <div class="position-block-title">Segunda opção (opcional)</div>
+          <div class="position-fields">
+            <select id="secondary-pos">
+              <option value="">Nenhuma</option>
+              <option value="goleiro">Goleiro</option>
+              <option value="fixo">Fixo</option>
+              <option value="ala">Ala</option>
+              <option value="pivo">Pivô</option>
+            </select>
+            <select id="secondary-level">
+              <option value="nativo">Nativo</option>
+              <option value="adaptado">Adaptado</option>
+              <option value="improvisado">Improvisado</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="primary" id="add-player">Adicionar</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span>Elenco <span class="card-count" id="roster-count"></span></span>
+        <div class="view-toggle" id="roster-view-toggle">
+          <button data-view="cards" class="active" title="Cartões">▦ Cartões</button>
+          <button data-view="list" title="Lista">☰ Lista</button>
+          <button data-view="kanban" title="Por posição">▤ Posição</button>
+        </div>
+      </div>
+      <div class="list-search"><input type="text" id="roster-search" placeholder="Filtrar por nome, número ou time do coração…" autocomplete="off"></div>
+      <div id="roster-container"></div>
+      <div class="legend roster-legend">
+        <span class="legend-item"><span class="dot nativo"></span>Nativo</span>
+        <span class="legend-item"><span class="dot adaptado"></span>Adaptado</span>
+        <span class="legend-item"><span class="dot improvisado"></span>Improvisado</span>
+        <span class="legend-item">Números são de todos os futs registrados. Toque para editar.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUT DA SEMANA -->
+  <section class="panel" id="panel-semana">
+    <div class="card">
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span>Fut da Semana</span>
+        <div class="session-actions">
+          <select id="session-select" style="width:auto;"></select>
+          <button class="secondary" id="btn-new-session">Novo fut</button>
+        </div>
+      </div>
+      <div id="no-session" class="empty">Nenhum fut criado. Clique em <strong>Novo fut</strong> para começar.</div>
+      <div id="session-editor" style="display:none;">
+        <div class="session-bar">
+          <div class="field">
+            <label for="session-date">Data</label>
+            <input type="date" id="session-date">
+          </div>
+          <button class="ghost neutral" id="btn-repeat-last" title="Marcar os mesmos presentes do fut anterior">Repetir presentes do último</button>
+        </div>
+
+        <label style="margin-top:16px;">Presentes hoje <span id="attendee-count" class="card-count"></span></label>
+        <div class="list-search"><input type="text" id="attendee-search" placeholder="Filtrar jogadores por nome…" autocomplete="off"></div>
+        <div class="attendee-grid" id="attendee-grid"></div>
+      </div>
+    </div>
+
+    <div class="card" id="session-teams-card" style="display:none;">
+      <div class="card-title">Times do dia</div>
+      <div class="controls">
+        <div class="field">
+          <label for="team-count">Quantos times</label>
+          <input type="number" id="team-count" class="team-count-input" min="2" max="12" value="2">
+        </div>
+        <button class="primary" id="generate-teams">Gerar balanceado</button>
+        <button class="secondary" id="shuffle-teams">Sorteio aleatório</button>
+      </div>
+      <p class="hint" id="teams-hint">Só entram os jogadores marcados como presentes.</p>
+      <div class="team-grid" id="teams-container"></div>
+      <p class="dnd-hint" id="dnd-hint" style="display:none;">Dica: arraste um jogador de um time para outro para ajustar manualmente.</p>
+    </div>
+
+    <div class="card" id="session-scoring-card" style="display:none;">
+      <div class="card-title">Gols e assistências do dia</div>
+      <p class="hint">Marque quem fez gol e quem deu assistência no fut. Não precisa lançar jogo a jogo — isso fica só no Campeonato.</p>
+      <div id="scoring-container" style="margin-top:12px;"></div>
+      <div class="card-title" style="margin-top:20px;">Vitórias por time <span class="card-count">· opcional</span></div>
+      <p class="hint">Se quiserem, anotem quantos jogos cada time venceu no dia. Isso alimenta o ranking de vitórias e as duplas que mais ganham juntas.</p>
+      <div id="wins-container" style="margin-top:10px;"></div>
+    </div>
+
+    <div id="session-close-bar" style="display:none; margin-top:4px;">
+      <button class="primary" id="btn-save-close" style="width:100%; padding:13px;">Salvar e fechar o fut</button>
+    </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section class="panel" id="panel-resultados">
+    <div class="card">
+      <div class="card-title">Histórico de futs <span class="card-count" id="results-count"></span></div>
+      <div id="results-list"></div>
+    </div>
+  </section>
+
+  <!-- ESTATÍSTICAS -->
+  <section class="panel" id="panel-stats">
+    <div class="card">
+      <div class="card-title">Estatísticas gerais</div>
+      <div class="period-picker" id="period-picker">
+        <button class="period-btn" data-period="week">Esta semana</button>
+        <button class="period-btn active" data-period="month">Este mês</button>
+        <button class="period-btn" data-period="year">Este ano</button>
+        <button class="period-btn" data-period="all">Tudo</button>
+      </div>
+      <p class="hint" id="stats-summary"></p>
+    </div>
+    <div class="rank-grid" id="rank-grid"></div>
+  </section>
+
+  <!-- CAMPEONATO -->
+  <section class="panel" id="panel-campeonato">
+    <div class="card" id="champ-teams-card">
+      <div class="card-title">1. Times do campeonato</div>
+      <p class="hint">O campeonato tem times próprios, fixos durante toda a competição. Marque quem participa e balanceie.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;">
+        <button class="secondary" id="champ-select-all">Selecionar todos</button>
+        <button class="secondary" id="champ-clear-all">Limpar seleção</button>
+        <span class="card-count" id="champ-selected-count" style="align-self:center;"></span>
+      </div>
+      <div class="list-search"><input type="text" id="champ-search" placeholder="Filtrar jogadores por nome…" autocomplete="off"></div>
+      <div id="champ-picker"></div>
+      <div class="controls" style="margin-top:14px;">
+        <div class="field">
+          <label for="champ-team-count">Quantos times</label>
+          <input type="number" id="champ-team-count" class="team-count-input" min="2" max="16" value="6">
+        </div>
+        <button class="primary" id="champ-generate-teams">Gerar balanceado</button>
+        <button class="secondary" id="champ-shuffle-teams">Sorteio</button>
+        <button class="secondary" id="champ-reset-teams">Zerar (montar na mão)</button>
+        <button class="ghost neutral" id="champ-balance-info" title="Como o balanceamento funciona" aria-label="Como funciona">ⓘ Como equilibra?</button>
+      </div>
+      <div id="champ-balance-explain" class="explain-box" style="display:none;"></div>
+      <p class="hint" id="champ-teams-hint"></p>
+      <div id="champ-teams-container"></div>
+      <p class="dnd-hint" id="champ-dnd-hint" style="display:none;">Arraste jogadores entre os times (ou do banco) para ajustar.</p>
+    </div>
+
+    <div class="card" id="champ-format-card" style="display:none;">
+      <div class="card-title">2. Formato</div>
+      <div class="format-picker" id="format-picker">
+        <button class="format-option selected" data-format="hybrid">
+          <div class="format-option-title">Híbrido</div>
+          <div class="format-option-desc">Pontos corridos e depois mata-mata com os melhores classificados.</div>
+        </button>
+        <button class="format-option" data-format="round-robin">
+          <div class="format-option-title">Pontos corridos</div>
+          <div class="format-option-desc">Todos contra todos, campeão por pontos.</div>
+        </button>
+        <button class="format-option" data-format="knockout">
+          <div class="format-option-title">Mata-mata</div>
+          <div class="format-option-desc">Eliminatória direta do início ao fim.</div>
+        </button>
+      </div>
+      <div class="controls" id="hybrid-config">
+        <div class="field">
+          <label for="num-advance">Quantos avançam ao mata-mata</label>
+          <select id="num-advance" style="width:auto;"></select>
+        </div>
+      </div>
+      <button class="primary" id="btn-generate-tournament" style="margin-top:14px;">Gerar campeonato</button>
+      <p class="hint" id="tournament-setup-hint"></p>
+      <div class="card-title" style="margin-top:20px;">Tempo estimado</div>
+      <p class="hint">Para vocês se programarem. Ajuste os tempos e veja quanto o campeonato deve durar.</p>
+      <div id="estimate-setup" style="margin-top:10px;"></div>
+    </div>
+
+    <div id="tournament-active" style="display:none;">
+      <div class="card" id="live-card" style="display:none;"></div>
+      <div class="card">
+        <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span id="tournament-format-label"></span>
+          <button class="ghost" id="btn-reset-tournament">Reiniciar campeonato</button>
+        </div>
+        <div id="league-section"></div>
+        <div id="knockout-section"></div>
+      </div>
+      <div class="card" id="captains-card">
+        <div class="card-title">Capitães</div>
+        <div id="captains-container"></div>
+      </div>
+      <div class="card" id="standings-card">
+        <div class="card-title" id="standings-title">Classificação</div>
+        <div class="standings-wrap"><table class="standings" id="standings-table"></table></div>
+      </div>
+      <div class="card" id="champ-scorers-card" style="display:none;">
+        <div class="card-title">Artilharia do campeonato</div>
+        <div id="champ-scorers"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Tempo estimado</div>
+        <div id="estimate-active"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIGURAÇÕES -->
+  <section class="panel" id="panel-config">
+    <div class="card">
+      <div class="card-title">Aparência</div>
+      <div class="toggle-line">
+        <div>
+          <div class="settings-label">Ocultar cores de nível</div>
+          <div class="settings-desc">Esconde as bolinhas verde/amarelo/vermelho (nativo/adaptado/improvisado) em todo o app, deixando só as posições.</div>
+        </div>
+        <input type="checkbox" class="check" id="toggle-hide-levels">
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Backup automático (tudo)</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">
+            Salvar em arquivo
+            <span class="status-pill off" id="backup-pill" style="margin-left:6px;">Desconectado</span>
+          </div>
+          <div class="settings-desc" id="backup-status">Escolha um arquivo <code>.json</code> uma vez e o app grava tudo (elenco, futs, campeonato) automaticamente a cada alteração.</div>
+        </div>
+        <div class="settings-actions" id="backup-actions">
+          <button class="primary" id="btn-connect-backup">Conectar arquivo</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Backup manual completo (recomendado)</div>
+          <div class="settings-desc">Baixa ou restaura <strong>tudo</strong> num arquivo JSON. Este é o único formato que restaura o app inteiro (elenco, futs, gols, times e campeonato).</div>
+        </div>
+        <div class="settings-actions">
+          <button class="secondary" id="btn-download-json">Baixar JSON</button>
+          <button class="secondary" id="btn-import-json">Importar JSON</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Planilhas CSV (para análise)</div>
+          <div class="settings-desc">Baixa três CSVs: <code>elenco</code>, <code>futs</code> (formato longo: uma linha por jogador em cada fut, com gols/assistências/vitórias) e <code>campeonato</code>. Ótimos para abrir no Excel/Sheets. A importação por CSV cobre só o elenco.</div>
+        </div>
+        <div class="settings-actions">
+          <button class="secondary" id="btn-download-all-csv">Baixar CSVs</button>
+          <button class="secondary" id="btn-download-csv">Só elenco</button>
+          <button class="secondary" id="btn-import-csv">Importar elenco</button>
+        </div>
+      </div>
+      <p class="hint">Onde ficam os dados: tudo é salvo automaticamente <strong>neste navegador</strong> a cada alteração. Para não depender do navegador, conecte o arquivo de backup acima (JSON, Chrome/Edge) ou baixe o JSON de vez em quando. Os CSVs são cópias para leitura/análise, não para restaurar.</p>
+    </div>
+  </section>
+</div>
+
+<!-- Modal de edição de jogador -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-title">Editar jogador</div>
+    <div class="form-row">
+      <div>
+        <label for="edit-name">Nome</label>
+        <input type="text" id="edit-name" autocomplete="off">
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div>
+        <label for="edit-number">Número favorito</label>
+        <input type="number" id="edit-number" min="0" max="99" autocomplete="off">
+      </div>
+      <div>
+        <label for="edit-club">Time do coração</label>
+        <input type="text" id="edit-club" autocomplete="off">
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="position-block">
+        <div class="position-block-title">Posição principal</div>
+        <div class="position-fields">
+          <select id="edit-primary-pos">
+            <option value="goleiro">Goleiro</option>
+            <option value="fixo">Fixo</option>
+            <option value="ala">Ala</option>
+            <option value="pivo">Pivô</option>
+          </select>
+          <select id="edit-primary-level">
+            <option value="nativo">Nativo</option>
+            <option value="adaptado">Adaptado</option>
+            <option value="improvisado">Improvisado</option>
+          </select>
+        </div>
+      </div>
+      <div class="position-block">
+        <div class="position-block-title">Segunda opção (opcional)</div>
+        <div class="position-fields">
+          <select id="edit-secondary-pos">
+            <option value="">Nenhuma</option>
+            <option value="goleiro">Goleiro</option>
+            <option value="fixo">Fixo</option>
+            <option value="ala">Ala</option>
+            <option value="pivo">Pivô</option>
+          </select>
+          <select id="edit-secondary-level">
+            <option value="nativo">Nativo</option>
+            <option value="adaptado">Adaptado</option>
+            <option value="improvisado">Improvisado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="toggle-line">
+      <div>
+        <div class="settings-label">Ativo no elenco</div>
+        <div class="settings-desc">Jogadores inativos não aparecem na lista de presença.</div>
+      </div>
+      <input type="checkbox" class="check" id="edit-active">
+    </div>
+    <div class="modal-footer">
+      <button class="ghost" id="btn-modal-delete">Excluir jogador</button>
+      <div style="display:flex; gap:8px;">
+        <button class="secondary" id="btn-modal-cancel">Cancelar</button>
+        <button class="primary" id="btn-modal-save">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ============ State ============
+  const DEFAULT_STATE = { v: 4, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, hideLevels: false } };
+  let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+
+  try {
+    const saved = localStorage.getItem('futdajuf-state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = migrate(parsed);
+    } else {
+      // Migração do app antigo (campeonato-futsal)
+      const old = localStorage.getItem('futsal-state-v1');
+      if (old) state = migrateOld(JSON.parse(old));
+    }
+  } catch (e) { /* usa default */ }
+
+  function migrate(p) {
+    const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    s.players = (p.players || []).map(pl => ({
+      id: pl.id || uid(), name: pl.name,
+      primary: pl.primary, secondary: pl.secondary || null,
+      active: pl.active !== false, photo: pl.photo || null,
+      number: (pl.number === 0 || pl.number) ? String(pl.number) : '', club: pl.club || ''
+    }));
+    s.sessions = (p.sessions || []).map(migrateSession);
+    s.tournament = p.tournament || null;
+    s.ui = Object.assign({ activeSessionId: null, statsPeriod: 'month', hideLevels: false }, p.ui || {});
+    s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3 }, (p.ui && p.ui.estimate) || {});
+    return s;
+  }
+  // Converte o modelo antigo (jogo a jogo) para totais do dia
+  function migrateSession(sess) {
+    const out = {
+      id: sess.id || uid(), date: sess.date, attendees: sess.attendees || [],
+      teams: sess.teams || [], numTeams: sess.numTeams || 2,
+      goals: sess.goals || {}, assists: sess.assists || {}, wins: sess.wins || {}
+    };
+    if (sess.matches && sess.matches.length) {
+      sess.matches.forEach(m => {
+        const g = m.goals || {};
+        Object.keys(g).forEach(pid => { out.goals[pid] = (out.goals[pid] || 0) + (g[pid] || 0); });
+        if (m.score1 != null && m.score2 != null && m.team1 && m.team2) {
+          if (m.score1 > m.score2) out.wins[m.team1] = (out.wins[m.team1] || 0) + 1;
+          else if (m.score2 > m.score1) out.wins[m.team2] = (out.wins[m.team2] || 0) + 1;
+        }
+      });
+    }
+    return out;
+  }
+  function migrateOld(p) {
+    const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    s.players = (p.players || []).map(pl => ({
+      id: pl.id || uid(), name: pl.name,
+      primary: pl.primary, secondary: pl.secondary || null,
+      active: true, photo: null, number: '', club: ''
+    }));
+    return s;
+  }
+
+  function save() {
+    try { localStorage.setItem('futdajuf-state', JSON.stringify(state)); } catch (e) {}
+    scheduleBackup();
+  }
+
+  // ============ Constants & helpers ============
+  const POS_LABELS = { goleiro: 'Goleiro', fixo: 'Fixo', ala: 'Ala', pivo: 'Pivô' };
+  const LEVEL_LABELS = { nativo: 'Nativo', adaptado: 'Adaptado', improvisado: 'Improvisado' };
+  const LEVEL_RANK = { nativo: 0, adaptado: 1, improvisado: 2 };
+  const TEAM_COLORS = ['#A78BFA', '#22D3EE', '#34D399', '#FB7185', '#FBBF24', '#60A5FA', '#F472B6', '#A3E635'];
+  const TEAM_NAMES = ['Time A', 'Time B', 'Time C', 'Time D', 'Time E', 'Time F', 'Time G', 'Time H'];
+
+  function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3); }
+  function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function playerById(id) { return state.players.find(p => p.id === id) || null; }
+  function playerName(id) { const p = playerById(id); return p ? p.name : '(removido)'; }
+  function initials(name) { const parts = name.trim().split(/\s+/); return ((parts[0] || '')[0] || '') + (parts.length > 1 ? (parts[parts.length - 1][0] || '') : ''); }
+
+  function todayLocal() {
+    const d = new Date();
+    const t = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    return t.toISOString().slice(0, 10);
+  }
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}/${mm}/${d.getFullYear()} · ${dias[d.getDay()]}`;
+  }
+
+  // ============ Tabs ============
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.getElementById('btn-config').classList.remove('active');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      if (tab.dataset.tab === 'stats') renderStats();
+      if (tab.dataset.tab === 'resultados') renderResults();
+      if (tab.dataset.tab === 'elenco') renderRoster();
+      if (tab.dataset.tab === 'campeonato') renderChampTeamPicker();
+    });
+  });
+  document.getElementById('btn-config').addEventListener('click', () => {
+    const gear = document.getElementById('btn-config');
+    const on = gear.classList.toggle('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    if (on) { document.getElementById('panel-config').classList.add('active'); renderSettings(); }
+    else { document.querySelector('.tab[data-tab="elenco"]').classList.add('active'); document.getElementById('panel-elenco').classList.add('active'); renderRoster(); }
+  });
+
+  // ============ Balancing (pure) ============
+  function playerScore(p) {
+    let s = p.primary.level === 'nativo' ? 3 : p.primary.level === 'adaptado' ? 2 : 1;
+    if (p.secondary) s += p.secondary.level === 'nativo' ? 2 : p.secondary.level === 'adaptado' ? 1 : 0.5;
+    return s;
+  }
+  function goalieRankOf(p) {
+    if (p.primary.position === 'goleiro') return LEVEL_RANK[p.primary.level];
+    if (p.secondary && p.secondary.position === 'goleiro') return 3 + LEVEL_RANK[p.secondary.level];
+    return Infinity;
+  }
+  function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+  function balanceTeams(players, numTeams, balanced) {
+    const teams = Array.from({ length: numTeams }, (_, i) => ({
+      id: uid(), name: TEAM_NAMES[i] || ('Time ' + (i + 1)),
+      color: TEAM_COLORS[i % TEAM_COLORS.length], players: []
+    }));
+    const idToPlayer = {};
+    players.forEach(p => idToPlayer[p.id] = p);
+
+    if (!balanced) {
+      const sh = shuffle(players.slice());
+      sh.forEach((p, i) => teams[i % numTeams].players.push(p.id));
+      return teams;
+    }
+
+    const used = new Set();
+    // embaralha antes de ordenar: empates (mesmo nível/força) saem em ordem aleatória,
+    // então cada clique em "Gerar balanceado" produz uma combinação diferente e ainda equilibrada.
+    const goalies = shuffle(players.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
+    const teamOrder = shuffle(teams.slice());
+    for (let i = 0; i < numTeams; i++) {
+      const pick = goalies.find(g => !used.has(g.id) && goalieRankOf(g) <= 4);
+      if (pick) { teamOrder[i].players.push(pick.id); used.add(pick.id); }
+    }
+    const remaining = shuffle(players.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
+    const countPos = (team, pos) => team.players.filter(pid => idToPlayer[pid].primary.position === pos).length;
+    const totalScore = team => team.players.reduce((s, pid) => s + playerScore(idToPlayer[pid]), 0);
+    const pickTeam = pos => {
+      const minCount = Math.min(...teams.map(t => countPos(t, pos)));
+      let cands = teams.filter(t => countPos(t, pos) === minCount);
+      const minScore = Math.min(...cands.map(totalScore));
+      cands = cands.filter(t => totalScore(t) === minScore);
+      return cands[Math.floor(Math.random() * cands.length)];
+    };
+    const byPos = { fixo: [], ala: [], pivo: [], goleiro: [] };
+    remaining.forEach(p => { const pos = byPos[p.primary.position] ? p.primary.position : 'ala'; byPos[pos].push(p); });
+    ['fixo', 'pivo', 'ala', 'goleiro'].forEach(pos => byPos[pos].forEach(p => { pickTeam(p.primary.position).players.push(p.id); used.add(p.id); }));
+    return teams;
+  }
+
+  // ============ Statistics ============
+  function inPeriod(iso, period) {
+    if (period === 'all') return true;
+    const d = new Date(iso + 'T00:00:00'), now = new Date();
+    if (period === 'year') return d.getFullYear() === now.getFullYear();
+    if (period === 'month') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    if (period === 'week') {
+      const start = new Date(now);
+      start.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      start.setHours(0, 0, 0, 0);
+      return d >= start;
+    }
+    return true;
+  }
+  function computeStats(sessions) {
+    const s = {};
+    const get = pid => s[pid] || (s[pid] = { presencas: 0, gols: 0, assist: 0, vitorias: 0, estWins: 0, estGames: 0 });
+    sessions.forEach(sess => {
+      (sess.attendees || []).forEach(pid => get(pid).presencas++);
+      const goals = sess.goals || {}, assists = sess.assists || {}, wins = sess.wins || {};
+      Object.keys(goals).forEach(pid => { get(pid).gols += goals[pid] || 0; });
+      Object.keys(assists).forEach(pid => { get(pid).assist += assists[pid] || 0; });
+      const teams = sess.teams || [];
+      const dayTotalWins = teams.reduce((sum, t) => sum + (wins[t.id] || 0), 0);
+      const K = teams.length;
+      // jogos estimados por time no dia ≈ 2 × (total de vitórias do dia) ÷ (nº de times).
+      // Para 2 times isso é exato (winsA/(winsA+winsB)); para mais times é uma boa estimativa.
+      const estGamesPerTeam = (K >= 2 && dayTotalWins > 0) ? (2 * dayTotalWins / K) : 0;
+      teams.forEach(t => {
+        const w = wins[t.id] || 0;
+        if (w) t.players.forEach(pid => { get(pid).vitorias += w; });
+        if (estGamesPerTeam > 0) t.players.forEach(pid => { const st = get(pid); st.estWins += w; st.estGames += estGamesPerTeam; });
+      });
+    });
+    return s;
+  }
+  function winPct(st) { return st && st.estGames > 0 ? Math.round(100 * Math.min(1, st.estWins / st.estGames)) : null; }
+  // Duplas: quantas vezes jogaram juntos (mesmo time) e vitórias juntos
+  function computePairs(sessions) {
+    const pairs = {};
+    const key = (a, b) => a < b ? a + '|' + b : b + '|' + a;
+    sessions.forEach(sess => {
+      const wins = sess.wins || {};
+      (sess.teams || []).forEach(t => {
+        const w = wins[t.id] || 0;
+        const ps = t.players.slice();
+        for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
+          const k = key(ps[i], ps[j]);
+          const e = pairs[k] || (pairs[k] = { a: ps[i], b: ps[j], juntos: 0, vitorias: 0 });
+          e.juntos++; e.vitorias += w;
+        }
+      });
+    });
+    return Object.values(pairs);
+  }
+
+  // ============ ELENCO ============
+  let rosterFilter = '';
+  let rosterView = 'cards';
+  const nameInput = document.getElementById('player-name');
+  document.getElementById('add-player').addEventListener('click', addPlayer);
+  nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPlayer(); });
+  document.getElementById('roster-search').addEventListener('input', e => { rosterFilter = e.target.value.trim().toLowerCase(); renderRoster(); });
+  document.querySelectorAll('#roster-view-toggle button').forEach(b => b.addEventListener('click', () => {
+    rosterView = b.dataset.view;
+    document.querySelectorAll('#roster-view-toggle button').forEach(x => x.classList.toggle('active', x === b));
+    renderRoster();
+  }));
+
+  function addPlayer() {
+    const name = nameInput.value.trim();
+    const pPos = document.getElementById('primary-pos').value;
+    if (!name) { alert('Digite o nome.'); nameInput.focus(); return; }
+    if (!pPos) { alert('Escolha a posição principal.'); return; }
+    const sPos = document.getElementById('secondary-pos').value;
+    state.players.push({
+      id: uid(), name,
+      primary: { position: pPos, level: document.getElementById('primary-level').value },
+      secondary: sPos ? { position: sPos, level: document.getElementById('secondary-level').value } : null,
+      active: true, photo: null,
+      number: document.getElementById('player-number').value.trim(),
+      club: document.getElementById('player-club').value.trim()
+    });
+    save();
+    renderRoster();
+    nameInput.value = '';
+    document.getElementById('primary-pos').value = '';
+    document.getElementById('secondary-pos').value = '';
+    document.getElementById('player-number').value = '';
+    document.getElementById('player-club').value = '';
+    nameInput.focus();
+  }
+
+  function posBadge(pl) { return `<span class="pos-badge"><span class="dot ${pl.level}"></span>${POS_LABELS[pl.position]}</span>`; }
+  function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}" ${p.photo ? `style="background-image:url('${escapeHtml(p.photo)}')"` : ''}>${p.photo ? '' : escapeHtml(initials(p.name).toUpperCase())}</div>`; }
+
+  function renderRoster() {
+    const cont = document.getElementById('roster-container');
+    const count = document.getElementById('roster-count');
+    const stats = computeStats(state.sessions);
+    const activeN = state.players.filter(p => p.active).length;
+    count.textContent = state.players.length ? `· ${activeN} ativos de ${state.players.length}` : '';
+
+    if (state.players.length === 0) { cont.innerHTML = '<div class="empty">Nenhum jogador no elenco ainda.</div>'; return; }
+
+    let list = state.players.slice().sort((a, b) => (b.active - a.active) || a.name.localeCompare(b.name));
+    if (rosterFilter) list = list.filter(p => (p.name + ' ' + (p.number || '') + ' ' + (p.club || '')).toLowerCase().includes(rosterFilter));
+    if (!list.length) { cont.innerHTML = '<div class="no-match">Nenhum jogador encontrado para “' + escapeHtml(rosterFilter) + '”.</div>'; return; }
+
+    if (rosterView === 'cards') cont.innerHTML = rosterCardsHtml(list, stats);
+    else if (rosterView === 'list') cont.innerHTML = rosterListHtml(list, stats);
+    else cont.innerHTML = rosterKanbanHtml(list, stats);
+
+    cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerModal(el.dataset.edit)));
+  }
+
+  function rosterCardsHtml(list, stats) {
+    return '<div class="roster-grid">' + list.map(p => {
+      const st = stats[p.id] || {}; const wp = winPct(st);
+      return `
+      <div class="player-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
+        ${p.active ? '' : '<span class="inactive-flag">Inativo</span>'}
+        <div class="player-card-top">
+          ${avatarHtml(p)}
+          <div style="min-width:0;">
+            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
+            <div class="player-card-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
+            ${p.club ? `<div class="player-club">${escapeHtml(p.club)}</div>` : ''}
+          </div>
+        </div>
+        <div class="player-stats">
+          <div class="stat"><div class="stat-val">${st.presencas || 0}</div><div class="stat-label">Presenças</div></div>
+          <div class="stat"><div class="stat-val accent">${st.gols || 0}</div><div class="stat-label">Gols</div></div>
+          <div class="stat"><div class="stat-val">${st.assist || 0}</div><div class="stat-label">Assist.</div></div>
+          <div class="stat"><div class="stat-val">${wp == null ? '—' : wp + '%'}</div><div class="stat-label">% Vit.</div></div>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  function rosterListHtml(list, stats) {
+    return '<div class="roster-list">' + list.map(p => {
+      const st = stats[p.id] || {}; const wp = winPct(st);
+      return `
+      <div class="roster-row ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
+        ${avatarHtml(p)}
+        <div class="roster-row-main">
+          <div class="roster-row-name">${escapeHtml(p.name)}${p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${p.club ? `<span class="pos-badge" style="border:none;background:none;color:var(--muted);padding-left:0;">${escapeHtml(p.club)}</span>` : ''}</div>
+        </div>
+        <div class="roster-row-stats">
+          <span>P <b>${st.presencas || 0}</b></span>
+          <span class="g">G <b>${st.gols || 0}</b></span>
+          <span>A <b>${st.assist || 0}</b></span>
+          <span>%V <b>${wp == null ? '—' : wp}</b></span>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  function rosterKanbanHtml(list, stats) {
+    const cols = ['goleiro', 'fixo', 'ala', 'pivo'];
+    return '<div class="kanban">' + cols.map(pos => {
+      const inCol = list.filter(p => p.primary.position === pos);
+      return `<div class="kanban-col">
+        <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
+        ${inCol.length ? inCol.map(p => { const st = stats[p.id] || {}; return `
+          <div class="kanban-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)}${p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
+            <div class="kanban-sub">${st.gols || 0}⚽ · ${st.assist || 0}🅰 · ${st.presencas || 0}P</div>
+          </div>`; }).join('') : '<div class="kanban-empty">—</div>'}
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // ---- Modal ----
+  let editingPlayerId = null;
+  const modal = document.getElementById('modal-backdrop');
+  function openPlayerModal(id) {
+    const p = playerById(id); if (!p) return;
+    editingPlayerId = id;
+    document.getElementById('edit-name').value = p.name;
+    document.getElementById('edit-number').value = p.number || '';
+    document.getElementById('edit-club').value = p.club || '';
+    document.getElementById('edit-primary-pos').value = p.primary.position;
+    document.getElementById('edit-primary-level').value = p.primary.level;
+    document.getElementById('edit-secondary-pos').value = p.secondary ? p.secondary.position : '';
+    document.getElementById('edit-secondary-level').value = p.secondary ? p.secondary.level : 'nativo';
+    document.getElementById('edit-active').checked = p.active;
+    modal.classList.add('show');
+    setTimeout(() => document.getElementById('edit-name').focus(), 50);
+  }
+  function closePlayerModal() { modal.classList.remove('show'); editingPlayerId = null; }
+  function savePlayerModal() {
+    const p = playerById(editingPlayerId); if (!p) { closePlayerModal(); return; }
+    const name = document.getElementById('edit-name').value.trim();
+    if (!name) { alert('Nome não pode ficar vazio.'); return; }
+    p.name = name;
+    p.number = document.getElementById('edit-number').value.trim();
+    p.club = document.getElementById('edit-club').value.trim();
+    p.primary = { position: document.getElementById('edit-primary-pos').value, level: document.getElementById('edit-primary-level').value };
+    const sPos = document.getElementById('edit-secondary-pos').value;
+    p.secondary = sPos ? { position: sPos, level: document.getElementById('edit-secondary-level').value } : null;
+    p.active = document.getElementById('edit-active').checked;
+    save(); renderRoster(); renderSessionEditor(); closePlayerModal();
+  }
+  function deletePlayerFromModal() {
+    const p = playerById(editingPlayerId); if (!p) return;
+    if (!confirm(`Excluir ${p.name} do elenco? O histórico de jogos dele nas estatísticas será perdido.`)) return;
+    state.players = state.players.filter(x => x.id !== editingPlayerId);
+    save(); renderRoster(); renderSessionEditor(); closePlayerModal();
+  }
+  document.getElementById('btn-modal-save').addEventListener('click', savePlayerModal);
+  document.getElementById('btn-modal-cancel').addEventListener('click', closePlayerModal);
+  document.getElementById('btn-modal-delete').addEventListener('click', deletePlayerFromModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closePlayerModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('show')) closePlayerModal(); });
+
+  // ============ FUT DA SEMANA ============
+  function activeSession() { return state.sessions.find(s => s.id === state.ui.activeSessionId) || null; }
+
+  let attendeeFilter = '';
+  document.getElementById('attendee-search').addEventListener('input', e => { attendeeFilter = e.target.value.trim().toLowerCase(); renderAttendees(); });
+
+  document.getElementById('btn-new-session').addEventListener('click', () => {
+    const sess = { id: uid(), date: todayLocal(), attendees: [], teams: [], numTeams: 2, goals: {}, assists: {}, wins: {} };
+    state.sessions.push(sess);
+    state.ui.activeSessionId = sess.id;
+    save(); renderSessionSelect(); renderSessionEditor();
+  });
+
+  document.getElementById('btn-repeat-last').addEventListener('click', () => {
+    const sess = activeSession(); if (!sess) return;
+    const others = state.sessions.filter(s => s.id !== sess.id).sort((a, b) => b.date.localeCompare(a.date));
+    if (!others.length) { alert('Não há fut anterior para copiar.'); return; }
+    sess.attendees = others[0].attendees.filter(pid => { const p = playerById(pid); return p && p.active; });
+    save(); renderSessionEditor();
+  });
+
+  document.getElementById('session-date').addEventListener('change', e => {
+    const sess = activeSession(); if (!sess) return;
+    sess.date = e.target.value; save(); renderSessionSelect();
+  });
+
+  document.getElementById('session-select').addEventListener('change', e => {
+    state.ui.activeSessionId = e.target.value; save(); renderSessionEditor();
+  });
+
+  function renderSessionSelect() {
+    const sel = document.getElementById('session-select');
+    const sorted = state.sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+    sel.innerHTML = sorted.map(s => `<option value="${s.id}">${formatDate(s.date)}</option>`).join('');
+    if (activeSession()) sel.value = state.ui.activeSessionId;
+    sel.style.display = state.sessions.length ? '' : 'none';
+  }
+
+  function renderSessionEditor() {
+    const sess = activeSession();
+    document.getElementById('no-session').style.display = sess ? 'none' : '';
+    document.getElementById('session-editor').style.display = sess ? '' : 'none';
+    document.getElementById('session-teams-card').style.display = sess ? '' : 'none';
+    document.getElementById('session-scoring-card').style.display = (sess && sess.teams.length) ? '' : 'none';
+    document.getElementById('session-close-bar').style.display = sess ? '' : 'none';
+    if (!sess) return;
+
+    document.getElementById('session-date').value = sess.date;
+    renderAttendees();
+    document.getElementById('team-count').value = sess.numTeams || 2;
+    renderSessionTeams();
+    renderScoring();
+  }
+  document.getElementById('btn-save-close').addEventListener('click', () => {
+    save(); // já salvo continuamente, mas garante
+    state.ui.activeSessionId = null;
+    renderSessionSelect();
+    renderSessionEditor();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function renderAttendees() {
+    const sess = activeSession(); if (!sess) return;
+    const active = state.players.filter(p => p.active);
+    const grid = document.getElementById('attendee-grid');
+    document.getElementById('attendee-count').textContent = `· ${sess.attendees.length} presentes`;
+    if (!active.length) { grid.innerHTML = '<div class="empty" style="width:100%;">Sem jogadores ativos. Adicione no Elenco.</div>'; return; }
+    let list = active.sort((a, b) => a.name.localeCompare(b.name));
+    if (attendeeFilter) list = list.filter(p => p.name.toLowerCase().includes(attendeeFilter));
+    if (!list.length) { grid.innerHTML = '<div class="no-match">Nenhum jogador encontrado.</div>'; return; }
+    grid.innerHTML = list.map(p => {
+      const on = sess.attendees.includes(p.id);
+      return `<div class="chip ${on ? 'on' : ''}" data-att="${p.id}"><span class="chip-check"></span>${escapeHtml(p.name)}${p.number ? ` <span style="color:var(--muted);">#${escapeHtml(p.number)}</span>` : ''}</div>`;
+    }).join('');
+    grid.querySelectorAll('[data-att]').forEach(chip => chip.addEventListener('click', () => {
+      const pid = chip.dataset.att;
+      const i = sess.attendees.indexOf(pid);
+      if (i === -1) sess.attendees.push(pid); else sess.attendees.splice(i, 1);
+      save(); renderAttendees(); renderScoring();
+    }));
+  }
+
+  document.getElementById('generate-teams').addEventListener('click', () => genSessionTeams(true));
+  document.getElementById('shuffle-teams').addEventListener('click', () => genSessionTeams(false));
+
+  function genSessionTeams(balanced) {
+    const sess = activeSession(); if (!sess) return;
+    const numTeams = parseInt(document.getElementById('team-count').value, 10);
+    const hint = document.getElementById('teams-hint');
+    const present = sess.attendees.map(playerById).filter(Boolean);
+    if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
+    if (present.length < numTeams) { hint.textContent = `Marque pelo menos ${numTeams} presentes. Marcados: ${present.length}.`; hint.classList.add('error'); return; }
+    hint.classList.remove('error');
+    sess.numTeams = numTeams;
+    sess.teams = balanceTeams(present, numTeams, balanced);
+    sess.wins = {}; // ids dos times mudaram
+    hint.innerHTML = balanced
+      ? 'Times balanceados: goleiros primeiro, depois cada jogador vai ao time com menos gente da posição dele.'
+      : 'Times sorteados aleatoriamente.';
+    save(); renderSessionEditor();
+  }
+
+  function renderSessionTeams() {
+    const sess = activeSession();
+    const container = document.getElementById('teams-container');
+    const dndHint = document.getElementById('dnd-hint');
+    if (!sess || !sess.teams.length) { container.innerHTML = ''; dndHint.style.display = 'none'; return; }
+    dndHint.style.display = '';
+    container.innerHTML = teamCardsHtml(sess.teams);
+    wireTeamDnd(container, sess.teams, () => { save(); renderSessionEditor(); });
+  }
+
+  function teamCardsHtml(teams) {
+    return teams.map(t => `
+      <div class="team-card" style="--team-color:${t.color};" data-team="${t.id}">
+        <div class="team-header"><div class="team-name">${escapeHtml(t.name)}</div><div class="team-count">${t.players.length} jog.</div></div>
+        <div class="team-players">
+          ${t.players.map(pid => { const p = playerById(pid); if (!p) return ''; return `
+            <div class="team-player" draggable="true" data-player="${pid}" data-from="${t.id}">
+              <span class="name">${escapeHtml(p.name)}</span>
+              <span class="pos-badge"><span class="dot ${p.primary.level}"></span>${POS_LABELS[p.primary.position]}</span>
+            </div>`; }).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  function wireTeamDnd(container, teams, onChange) {
+    container.querySelectorAll('.team-player').forEach(el => {
+      el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', JSON.stringify({ playerId: el.dataset.player, from: el.dataset.from })); e.dataTransfer.effectAllowed = 'move'; el.classList.add('dragging'); });
+      el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    });
+    container.querySelectorAll('.team-card').forEach(card => {
+      card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drop-target'); });
+      card.addEventListener('dragleave', e => { if (!card.contains(e.relatedTarget)) card.classList.remove('drop-target'); });
+      card.addEventListener('drop', e => {
+        e.preventDefault(); card.classList.remove('drop-target');
+        let data; try { data = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (err) { return; }
+        if (data.from === card.dataset.team) return;
+        const from = teams.find(t => t.id === data.from), to = teams.find(t => t.id === card.dataset.team);
+        if (!from || !to) return;
+        const i = from.players.indexOf(data.playerId);
+        if (i === -1) return;
+        from.players.splice(i, 1); to.players.push(data.playerId);
+        onChange();
+      });
+    });
+  }
+
+  // ---- Gols, assistências e vitórias do dia ----
+  function renderScoring() {
+    const sess = activeSession(); if (!sess) return;
+    const cont = document.getElementById('scoring-container');
+    const winsCont = document.getElementById('wins-container');
+    if (!sess.teams.length) { cont.innerHTML = ''; winsCont.innerHTML = ''; return; }
+
+    cont.innerHTML = sess.teams.map(t => `
+      <div class="scoring-team" style="--team-color:${t.color};">
+        <div class="scoring-head"><div class="team-name">${escapeHtml(t.name)}</div></div>
+        <div class="scoring-cols-head"><span>Jogador</span><span>⚽ Gols</span><span>🅰 Assist.</span></div>
+        ${t.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (sess.goals && sess.goals[pid]) || 0, a = (sess.assists && sess.assists[pid]) || 0; return `
+          <div class="scoring-row">
+            <span>${escapeHtml(p.name)}</span>
+            <div class="stepper"><button data-dec="gols" data-p="${pid}">−</button><span class="val">${g}</span><button data-inc="gols" data-p="${pid}">+</button></div>
+            <div class="stepper"><button data-dec="assist" data-p="${pid}">−</button><span class="val">${a}</span><button data-inc="assist" data-p="${pid}">+</button></div>
+          </div>`; }).join('')}
+      </div>`).join('');
+
+    winsCont.innerHTML = sess.teams.map(t => { const w = (sess.wins && sess.wins[t.id]) || 0; return `
+      <div class="wins-row">
+        <div class="team-name"><span class="team-swatch" style="background:${t.color};"></span>${escapeHtml(t.name)}</div>
+        <div class="stepper"><button data-wdec="${t.id}">−</button><span class="val">${w}</span><button data-winc="${t.id}">+</button></div>
+      </div>`; }).join('');
+
+    cont.querySelectorAll('[data-inc], [data-dec]').forEach(b => b.addEventListener('click', () => {
+      const inc = b.hasAttribute('data-inc');
+      const field = inc ? b.dataset.inc : b.dataset.dec; // 'gols' | 'assist'
+      const pid = b.dataset.p;
+      const bag = field === 'gols' ? (sess.goals = sess.goals || {}) : (sess.assists = sess.assists || {});
+      bag[pid] = Math.max(0, (bag[pid] || 0) + (inc ? 1 : -1));
+      if (bag[pid] === 0) delete bag[pid];
+      save(); renderScoring();
+    }));
+    winsCont.querySelectorAll('[data-winc], [data-wdec]').forEach(b => b.addEventListener('click', () => {
+      const inc = b.hasAttribute('data-winc');
+      const tid = inc ? b.dataset.winc : b.dataset.wdec;
+      sess.wins = sess.wins || {};
+      sess.wins[tid] = Math.max(0, (sess.wins[tid] || 0) + (inc ? 1 : -1));
+      if (sess.wins[tid] === 0) delete sess.wins[tid];
+      save(); renderScoring();
+    }));
+  }
+
+  // ============ RESULTADOS ============
+  function renderResults() {
+    const list = document.getElementById('results-list');
+    const count = document.getElementById('results-count');
+    count.textContent = state.sessions.length ? `· ${state.sessions.length}` : '';
+    if (!state.sessions.length) { list.innerHTML = '<div class="empty">Nenhum fut registrado ainda.</div>'; return; }
+    const sorted = state.sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+    list.innerHTML = sorted.map(s => {
+      const st = computeStats([s]);
+      const totalGols = Object.values(s.goals || {}).reduce((a, b) => a + b, 0);
+      let topScorer = null, topG = 0;
+      Object.keys(st).forEach(pid => { if (st[pid].gols > topG) { topG = st[pid].gols; topScorer = pid; } });
+      // campeão do dia = time com mais vitórias registradas
+      let champ = null, champW = 0;
+      (s.teams || []).forEach(t => { const w = (s.wins || {})[t.id] || 0; if (w > champW) { champW = w; champ = t; } });
+      const scorers = Object.keys(st).filter(pid => st[pid].gols || st[pid].assist)
+        .sort((a, b) => (st[b].gols - st[a].gols) || (st[b].assist - st[a].assist));
+      return `
+      <div class="session-item" data-session="${s.id}">
+        <div class="session-head" data-toggle-session="${s.id}">
+          <div>
+            <div class="session-date">${formatDate(s.date)}</div>
+            <div class="session-meta">${s.attendees.length} presentes · ${s.teams.length} times · ${totalGols} gol${totalGols === 1 ? '' : 's'}${topScorer ? ` · artilheiro: ${escapeHtml(playerName(topScorer))} (${topG})` : ''}${champ ? ` · campeão do dia: ${escapeHtml(champ.name)}` : ''}</div>
+          </div>
+          <div class="session-actions">
+            <button class="ghost neutral" data-edit-session="${s.id}">Editar</button>
+            <button class="ghost" data-delete-session="${s.id}">Excluir</button>
+          </div>
+        </div>
+        <div class="session-body">
+          ${s.teams.length ? `<div class="round-title">Times${champW ? ' · vitórias' : ''}</div>${teamCardsHtmlStatic(s.teams, s.wins || {})}` : ''}
+          ${scorers.length ? `<div class="round-title">Gols e assistências</div>${scorers.map(pid => `<div class="mini-result"><span>${escapeHtml(playerName(pid))}</span><span class="mini-score">${st[pid].gols ? st[pid].gols + '⚽' : ''} ${st[pid].assist ? st[pid].assist + '🅰' : ''}</span></div>`).join('')}` : '<p class="hint">Nenhum gol ou assistência lançados.</p>'}
+        </div>
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-toggle-session]').forEach(h => h.addEventListener('click', e => {
+      if (e.target.closest('[data-edit-session]') || e.target.closest('[data-delete-session]')) return;
+      h.closest('.session-item').classList.toggle('open');
+    }));
+    list.querySelectorAll('[data-edit-session]').forEach(b => b.addEventListener('click', () => {
+      state.ui.activeSessionId = b.dataset.editSession; save();
+      renderSessionSelect(); renderSessionEditor();
+      document.querySelector('.tab[data-tab="semana"]').click();
+    }));
+    list.querySelectorAll('[data-delete-session]').forEach(b => b.addEventListener('click', () => {
+      const s = state.sessions.find(x => x.id === b.dataset.deleteSession);
+      if (!s) return;
+      if (!confirm(`Excluir o fut de ${formatDate(s.date)}?`)) return;
+      state.sessions = state.sessions.filter(x => x.id !== b.dataset.deleteSession);
+      if (state.ui.activeSessionId === b.dataset.deleteSession) state.ui.activeSessionId = null;
+      save(); renderResults(); renderSessionSelect(); renderSessionEditor();
+    }));
+  }
+
+  function teamCardsHtmlStatic(teams, wins) {
+    wins = wins || {};
+    return `<div class="team-grid">${teams.map(t => `
+      <div class="team-card" style="--team-color:${t.color};">
+        <div class="team-header"><div class="team-name">${escapeHtml(t.name)}</div><div class="team-count">${wins[t.id] ? wins[t.id] + ' vit.' : t.players.length + ' jog.'}</div></div>
+        <div class="team-players">${t.players.map(pid => { const p = playerById(pid); return p ? `<div class="team-player" style="cursor:default;"><span class="name">${escapeHtml(p.name)}</span><span class="pos-badge"><span class="dot ${p.primary.level}"></span>${POS_LABELS[p.primary.position]}</span></div>` : ''; }).join('')}</div>
+      </div>`).join('')}</div>`;
+  }
+
+  // ============ ESTATÍSTICAS ============
+  document.querySelectorAll('#period-picker .period-btn').forEach(btn => btn.addEventListener('click', () => {
+    state.ui.statsPeriod = btn.dataset.period; save(); renderStats();
+  }));
+
+  function renderStats() {
+    const period = state.ui.statsPeriod || 'month';
+    document.querySelectorAll('#period-picker .period-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+    const sessions = state.sessions.filter(s => inPeriod(s.date, period));
+    const summary = document.getElementById('stats-summary');
+    const grid = document.getElementById('rank-grid');
+    if (!sessions.length) { summary.textContent = 'Nenhum fut nesse período.'; grid.innerHTML = ''; return; }
+    summary.textContent = `${sessions.length} fut${sessions.length === 1 ? '' : 's'} no período.`;
+
+    const stats = computeStats(sessions);
+    const rows = Object.keys(stats).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
+
+    const medal = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+    function table(title, sorter, cols, valFn) {
+      const sorted = rows.filter(r => valFn(r) > 0).sort(sorter).slice(0, 10);
+      if (!sorted.length) return `<div class="card"><div class="card-title">${title}</div><div class="empty">Sem dados.</div></div>`;
+      return `<div class="card"><div class="card-title">${title}</div>
+        <table class="rank-table"><thead><tr><th></th><th>Jogador</th>${cols.map(c => `<th>${c.h}</th>`).join('')}</tr></thead>
+        <tbody>${sorted.map((r, i) => `<tr><td class="rank-medal">${medal(i)}</td><td>${escapeHtml(r.name)}</td>${cols.map(c => `<td class="${c.big ? 'big' : ''}">${c.f(r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    }
+
+    // Duplas que mais venceram / jogaram juntas
+    const pairs = computePairs(sessions);
+    const pairsByWins = pairs.filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos).slice(0, 8);
+    const pairsByTogether = pairs.filter(p => p.juntos > 1).sort((a, b) => b.juntos - a.juntos).slice(0, 8);
+    function pairCard(title, arr, valLabel, valFn, subFn) {
+      if (!arr.length) return `<div class="card"><div class="card-title">${title}</div><div class="empty">Sem dados suficientes.</div></div>`;
+      return `<div class="card"><div class="card-title">${title}</div>${arr.map((p, i) => `
+        <div class="pair-row"><span class="rank-medal">${medal(i)}</span>
+          <span class="pair-names">${escapeHtml(playerName(p.a))} + ${escapeHtml(playerName(p.b))}<div class="pair-sub">${subFn(p)}</div></span>
+          <span class="pair-val">${valFn(p)}</span></div>`).join('')}</div>`;
+    }
+
+    grid.innerHTML =
+      table('Artilharia', (a, b) => b.gols - a.gols || b.assist - a.assist, [{ h: 'Gols', big: true, f: r => r.gols }], r => r.gols) +
+      table('Assistências', (a, b) => b.assist - a.assist || b.gols - a.gols, [{ h: 'Assist.', big: true, f: r => r.assist }], r => r.assist) +
+      table('Presenças', (a, b) => b.presencas - a.presencas, [{ h: 'Presenças', big: true, f: r => r.presencas }], r => r.presencas) +
+      table('Vitórias', (a, b) => b.vitorias - a.vitorias, [{ h: 'Vit.', big: true, f: r => r.vitorias }], r => r.vitorias) +
+      pairCard('Duplas que mais venceram juntas', pairsByWins, 'vit', p => p.vitorias + ' vit', p => `jogaram juntos ${p.juntos}×`) +
+      pairCard('Duplas que mais jogaram juntas', pairsByTogether, 'jogos', p => p.juntos + '×', p => `${p.vitorias} vitórias juntos`);
+  }
+
+  // ============ CAMPEONATO ============
+  let champSelected = new Set();
+  let champFilter = '';
+  let selectedFormat = state.tournament ? state.tournament.format : 'hybrid';
+  document.getElementById('champ-search').addEventListener('input', e => { champFilter = e.target.value.trim().toLowerCase(); renderChampPicker(); });
+  document.getElementById('champ-select-all').addEventListener('click', () => { state.players.filter(p => p.active).forEach(p => champSelected.add(p.id)); renderChampPicker(); updateChampCount(); });
+  document.getElementById('champ-clear-all').addEventListener('click', () => { champSelected = new Set(); renderChampPicker(); updateChampCount(); });
+  document.getElementById('champ-balance-info').addEventListener('click', () => {
+    const box = document.getElementById('champ-balance-explain');
+    const showing = box.style.display !== 'none';
+    if (showing) { box.style.display = 'none'; return; }
+    box.style.display = '';
+    box.innerHTML = `<strong>Como o balanceamento funciona</strong>
+      <ol>
+        <li>Primeiro os <strong>goleiros</strong> são distribuídos — um por time, começando pelos melhores (nativo &gt; adaptado &gt; improvisado).</li>
+        <li>Depois cada jogador entra no time que tem <strong>menos gente da posição principal dele</strong>, para não concentrar alas ou pivôs num time só.</li>
+        <li>Em caso de empate, vai para o time com <strong>menor força somada</strong> (nativo vale mais que adaptado, que vale mais que improvisado; a 2ª posição soma um pouco).</li>
+        <li>Empates ainda restantes são sorteados — por isso, clicar de novo em <strong>Gerar balanceado</strong> dá combinações diferentes e igualmente equilibradas.</li>
+      </ol>
+      Quer montar do seu jeito? Use <strong>Zerar (montar na mão)</strong> e arraste os jogadores do banco para os times.`;
+  });
+
+  function renderChampTeamPicker() {
+    if (state.tournament) { renderTournament(); return; }
+    document.getElementById('champ-teams-card').style.display = '';
+    document.getElementById('champ-format-card').style.display = state.__champTeams && state.__champTeams.length ? '' : 'none';
+    document.getElementById('tournament-active').style.display = 'none';
+    renderChampPicker();
+    updateChampCount();
+    renderChampTeams();
+  }
+
+  function updateChampCount() {
+    document.getElementById('champ-selected-count').textContent = champSelected.size ? `${champSelected.size} selecionados` : 'ninguém selecionado';
+  }
+
+  function renderChampPicker() {
+    const host = document.getElementById('champ-picker');
+    let active = state.players.filter(p => p.active);
+    if (!active.length) { host.innerHTML = '<div class="empty">Sem jogadores ativos. Cadastre no Elenco.</div>'; return; }
+    if (champFilter) active = active.filter(p => p.name.toLowerCase().includes(champFilter));
+    const cols = ['goleiro', 'fixo', 'ala', 'pivo'];
+    host.innerHTML = '<div class="kanban">' + cols.map(pos => {
+      const inCol = active.filter(p => p.primary.position === pos).sort((a, b) => a.name.localeCompare(b.name));
+      return `<div class="kanban-col">
+        <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
+        ${inCol.length ? inCol.map(p => `
+          <div class="kanban-card selectable ${champSelected.has(p.id) ? 'on' : ''}" data-champ-att="${p.id}">
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)}${p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
+          </div>`).join('') : '<div class="kanban-empty">—</div>'}
+      </div>`;
+    }).join('') + '</div>';
+    host.querySelectorAll('[data-champ-att]').forEach(card => card.addEventListener('click', () => {
+      const pid = card.dataset.champAtt;
+      if (champSelected.has(pid)) champSelected.delete(pid); else champSelected.add(pid);
+      card.classList.toggle('on');
+      updateChampCount();
+    }));
+  }
+
+  document.getElementById('champ-generate-teams').addEventListener('click', () => genChampTeams(true));
+  document.getElementById('champ-shuffle-teams').addEventListener('click', () => genChampTeams(false));
+  document.getElementById('champ-reset-teams').addEventListener('click', champResetTeams);
+
+  function genChampTeams(balanced) {
+    const numTeams = parseInt(document.getElementById('champ-team-count').value, 10);
+    const hint = document.getElementById('champ-teams-hint');
+    const players = [...champSelected].map(playerById).filter(Boolean);
+    if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
+    if (players.length < numTeams) { hint.textContent = `Selecione pelo menos ${numTeams} jogadores. Selecionados: ${players.length}.`; hint.classList.add('error'); return; }
+    hint.classList.remove('error');
+    hint.textContent = (selectedFormat === 'hybrid' && numTeams < 6) ? 'Dica: o híbrido fica melhor com 6+ times, mas segue funcionando.' : '';
+    state.__champTeams = balanceTeams(players, numTeams, balanced);
+    state.__champBench = [];
+    save(); renderChampTeamPicker(); refreshAdvanceOptions();
+  }
+
+  function champResetTeams() {
+    const numTeams = parseInt(document.getElementById('champ-team-count').value, 10);
+    const players = [...champSelected].map(playerById).filter(Boolean);
+    const hint = document.getElementById('champ-teams-hint');
+    if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
+    if (!players.length) { hint.textContent = 'Selecione os jogadores primeiro.'; hint.classList.add('error'); return; }
+    hint.classList.remove('error');
+    hint.textContent = 'Times vazios — arraste os jogadores do banco para montá-los na mão.';
+    state.__champTeams = Array.from({ length: numTeams }, (_, i) => ({ id: uid(), name: TEAM_NAMES[i] || ('Time ' + (i + 1)), color: TEAM_COLORS[i % TEAM_COLORS.length], players: [] }));
+    state.__champBench = players.map(p => p.id);
+    save(); renderChampTeamPicker(); refreshAdvanceOptions();
+  }
+
+  function renderChampTeams() {
+    const container = document.getElementById('champ-teams-container');
+    const dnd = document.getElementById('champ-dnd-hint');
+    const teams = state.__champTeams;
+    if (!teams || !teams.length) { container.innerHTML = ''; dnd.style.display = 'none'; return; }
+    dnd.style.display = '';
+    if (!state.__champBench) state.__champBench = [];
+    const bench = { id: '__bench__', name: 'Banco (sem time)', color: '#6B6580', players: state.__champBench };
+    const showBench = bench.players.length > 0;
+    const all = showBench ? teams.concat([bench]) : teams;
+    container.innerHTML = '<div class="team-grid">' + teamCardsHtml(all) + '</div>';
+    wireTeamDnd(container, all, () => { state.__champBench = bench.players; save(); renderChampTeams(); });
+    document.getElementById('champ-format-card').style.display = '';
+    refreshAdvanceOptions();
+    renderEstimateSetup();
+  }
+
+  // Format picker
+  document.querySelectorAll('#format-picker .format-option').forEach(btn => btn.addEventListener('click', () => {
+    selectedFormat = btn.dataset.format;
+    document.querySelectorAll('#format-picker .format-option').forEach(o => o.classList.toggle('selected', o.dataset.format === selectedFormat));
+    document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
+    renderEstimateSetup();
+  }));
+
+  function refreshAdvanceOptions() {
+    const sel = document.getElementById('num-advance');
+    const n = (state.__champTeams || []).length;
+    const opts = [];
+    for (let k = 2; k <= n; k++) { if (k === 2 || k === 4 || k === 6 || k === 8 || k === n) opts.push(k); }
+    const uniq = [...new Set(opts)].filter(k => k <= n && k >= 2);
+    sel.innerHTML = uniq.map(k => {
+      const label = k === 2 ? '2 (final)' : k === 4 ? '4 (semis)' : k === 8 ? '8 (quartas)' : `${k}`;
+      return `<option value="${k}">${label}</option>`;
+    }).join('');
+    if (uniq.includes(4)) sel.value = 4;
+    sel.onchange = renderEstimateSetup;
+  }
+
+  document.getElementById('btn-generate-tournament').addEventListener('click', generateTournament);
+  document.getElementById('btn-reset-tournament').addEventListener('click', () => {
+    if (!confirm('Reiniciar campeonato? Placares e times serão apagados.')) return;
+    stopTimer(); live = { matchId: null, running: false, elapsed: 0, startedAt: 0 };
+    state.tournament = null; state.__champTeams = null; state.__champBench = []; champSelected = new Set();
+    save(); renderChampTeamPicker();
+  });
+
+  const FORMAT_LABELS = { hybrid: 'Híbrido (liga + mata-mata)', 'round-robin': 'Pontos corridos', knockout: 'Mata-mata' };
+
+  function roundRobin(teamIds) {
+    const ids = teamIds.slice();
+    if (ids.length % 2) ids.push(null);
+    const total = ids.length, rounds = [];
+    for (let r = 0; r < total - 1; r++) {
+      const round = [];
+      for (let i = 0; i < total / 2; i++) {
+        const a = ids[i], b = ids[total - 1 - i];
+        if (a !== null && b !== null) round.push(r % 2 === 0 ? [a, b] : [b, a]);
+      }
+      rounds.push(round);
+      ids.splice(1, 0, ids.pop());
+    }
+    return rounds;
+  }
+
+  function seedOrder(n) {
+    let arr = [1, 2];
+    while (arr.length < n) {
+      const size = arr.length * 2, next = [];
+      for (const s of arr) { next.push(s); next.push(size + 1 - s); }
+      arr = next;
+    }
+    return arr;
+  }
+
+  function buildKnockout(seededTeamIds) {
+    // seededTeamIds: array ordered by seed (1..N). Returns array of rounds of matches.
+    const N = seededTeamIds.length;
+    let size = 1; while (size < N) size *= 2;
+    const order = seedOrder(size);
+    const slots = order.map(seed => seed <= N ? seededTeamIds[seed - 1] : null);
+    const rounds = [];
+    const first = [];
+    for (let i = 0; i < slots.length / 2; i++) first.push({ id: `k0m${i}`, team1: slots[i * 2], team2: slots[i * 2 + 1], score1: null, score2: null });
+    rounds.push(first);
+    let count = first.length, rIdx = 1;
+    while (count > 1) {
+      count = Math.floor(count / 2);
+      const r = [];
+      for (let i = 0; i < count; i++) r.push({ id: `k${rIdx}m${i}`, team1: null, team2: null, score1: null, score2: null });
+      rounds.push(r); rIdx++;
+    }
+    return rounds;
+  }
+
+  function matchWinner(m) {
+    if (m.team1 && !m.team2) return m.team1;
+    if (!m.team1 && m.team2) return m.team2;
+    if (!m.team1 || !m.team2) return null;
+    if (m.score1 == null || m.score2 == null) return null;
+    if (m.score1 > m.score2) return m.team1;
+    if (m.score2 > m.score1) return m.team2;
+    return null;
+  }
+
+  function propagateKnockout(rounds) {
+    for (let r = 0; r < rounds.length - 1; r++) {
+      rounds[r].forEach((m, i) => {
+        const next = rounds[r + 1][Math.floor(i / 2)];
+        if (!next) return;
+        const w = matchWinner(m);
+        if (i % 2 === 0) next.team1 = w; else next.team2 = w;
+      });
+    }
+  }
+
+  function generateTournament() {
+    const teams = state.__champTeams;
+    if (!teams || teams.length < 2) { alert('Forme pelo menos 2 times.'); return; }
+    const empty = teams.filter(t => !t.players.length).length;
+    if (empty) { if (!confirm(`Há ${empty} time(s) sem jogadores${(state.__champBench || []).length ? ' e ainda tem gente no banco' : ''}. Gerar mesmo assim?`)) return; }
+    const teamIds = teams.map(t => t.id);
+    const t = { format: selectedFormat, teams: JSON.parse(JSON.stringify(teams)), league: null, knockout: null, numAdvance: null, phase: null, captains: {} };
+
+    if (selectedFormat === 'round-robin') {
+      t.league = [];
+      roundRobin(teamIds).forEach((round, ri) => round.forEach((pair, pi) => t.league.push({ id: `r${ri}m${pi}`, round: ri + 1, team1: pair[0], team2: pair[1], score1: null, score2: null })));
+      t.phase = 'league';
+    } else if (selectedFormat === 'knockout') {
+      t.knockout = buildKnockout(teamIds);
+      propagateKnockout(t.knockout);
+      t.phase = 'knockout';
+    } else { // hybrid
+      const numAdvance = parseInt(document.getElementById('num-advance').value, 10) || Math.min(4, teamIds.length);
+      t.numAdvance = numAdvance;
+      t.league = [];
+      roundRobin(teamIds).forEach((round, ri) => round.forEach((pair, pi) => t.league.push({ id: `r${ri}m${pi}`, round: ri + 1, team1: pair[0], team2: pair[1], score1: null, score2: null })));
+      t.knockout = null;
+      t.phase = 'league';
+    }
+    state.tournament = t;
+    save(); renderTournament();
+  }
+
+  function tName(id) { const t = state.tournament.teams.find(x => x.id === id); return t ? t.name : '—'; }
+  function tColor(id) { const t = state.tournament.teams.find(x => x.id === id); return t ? t.color : 'var(--muted)'; }
+
+  function leagueStandings(matches, teams) {
+    const table = {};
+    teams.forEach(t => table[t.id] = { team: t, P: 0, V: 0, E: 0, D: 0, GP: 0, GC: 0 });
+    matches.forEach(m => {
+      if (m.score1 == null || m.score2 == null) return;
+      const a = table[m.team1], b = table[m.team2]; if (!a || !b) return;
+      a.P++; b.P++; a.GP += m.score1; a.GC += m.score2; b.GP += m.score2; b.GC += m.score1;
+      if (m.score1 > m.score2) { a.V++; b.D++; } else if (m.score2 > m.score1) { b.V++; a.D++; } else { a.E++; b.E++; }
+    });
+    return Object.values(table).map(r => ({ ...r, SG: r.GP - r.GC, Pts: r.V * 3 + r.E }))
+      .sort((a, b) => b.Pts - a.Pts || b.V - a.V || b.SG - a.SG || b.GP - a.GP || a.team.name.localeCompare(b.team.name));
+  }
+
+  function leagueComplete(matches) { return matches.every(m => m.score1 != null && m.score2 != null); }
+
+  function updateTournamentScore(matchId, side, value) {
+    const t = state.tournament; if (!t) return;
+    const v = value === '' ? null : parseInt(value, 10);
+    const clean = (v == null || isNaN(v) || v < 0) ? null : v;
+    let found = null;
+    if (t.league) found = t.league.find(m => m.id === matchId);
+    if (!found && t.knockout) { for (const r of t.knockout) { const m = r.find(x => x.id === matchId); if (m) { found = m; break; } } }
+    if (!found) return;
+    found['score' + side] = clean;
+    if (t.knockout) propagateKnockout(t.knockout);
+    save(); renderTournament();
+  }
+
+  function startKnockout() {
+    const t = state.tournament;
+    const standings = leagueStandings(t.league, t.teams);
+    const advancing = standings.slice(0, t.numAdvance).map(r => r.team.id);
+    t.knockout = buildKnockout(advancing);
+    propagateKnockout(t.knockout);
+    t.phase = 'knockout';
+    save(); renderTournament();
+  }
+
+  function renderTournament() {
+    const setupTeams = document.getElementById('champ-teams-card');
+    const setupFormat = document.getElementById('champ-format-card');
+    const active = document.getElementById('tournament-active');
+    if (!state.tournament) { active.style.display = 'none'; return; }
+    setupTeams.style.display = 'none';
+    setupFormat.style.display = 'none';
+    active.style.display = '';
+
+    const t = state.tournament;
+    document.getElementById('tournament-format-label').textContent = FORMAT_LABELS[t.format] || 'Campeonato';
+    const leagueSec = document.getElementById('league-section');
+    const koSec = document.getElementById('knockout-section');
+    const standingsCard = document.getElementById('standings-card');
+
+    // League
+    if (t.league) {
+      const byRound = {};
+      t.league.forEach(m => (byRound[m.round] = byRound[m.round] || []).push(m));
+      leagueSec.innerHTML = `<div class="round-title" style="margin-top:0;">Fase de pontos corridos</div>` +
+        Object.keys(byRound).sort((a, b) => a - b).map(r => `<div class="round-title">Rodada ${r}</div>${byRound[r].map(m => leagueMatchHtml(m)).join('')}`).join('');
+      standingsCard.style.display = '';
+      renderStandings();
+    } else { leagueSec.innerHTML = ''; standingsCard.style.display = t.format === 'knockout' ? 'none' : ''; }
+
+    // Hybrid: botão para iniciar mata-mata
+    if (t.format === 'hybrid' && t.phase === 'league') {
+      const done = leagueComplete(t.league);
+      leagueSec.innerHTML += `<div style="margin-top:16px;">
+        <button class="primary" id="btn-start-ko" ${done ? '' : 'disabled style="opacity:.5;cursor:not-allowed;"'}>Iniciar mata-mata (top ${t.numAdvance})</button>
+        ${done ? '' : '<p class="hint">Lance todos os placares da fase de pontos corridos para liberar o mata-mata.</p>'}
+      </div>`;
+    }
+
+    // Knockout
+    if (t.knockout) {
+      const total = t.knockout.length;
+      const label = (idx) => { const fe = total - idx; return fe === 1 ? 'Final' : fe === 2 ? 'Semifinal' : fe === 3 ? 'Quartas de final' : fe === 4 ? 'Oitavas de final' : `Fase ${idx + 1}`; };
+      koSec.innerHTML = `<div class="round-title">Mata-mata</div><div class="bracket-wrap"><div class="bracket">${t.knockout.map((round, ri) => `
+        <div class="bracket-round"><div class="bracket-round-title">${label(ri)}</div>${round.map(m => bracketMatchHtml(m)).join('')}</div>`).join('')}</div></div>`;
+    } else koSec.innerHTML = '';
+
+    wireTournamentInputs();
+    const startBtn = document.getElementById('btn-start-ko');
+    if (startBtn) startBtn.addEventListener('click', startKnockout);
+    renderCaptains();
+    renderChampScorers();
+    renderEstimateActive();
+    renderLiveCard();
+  }
+
+  function leagueMatchHtml(m) {
+    const played = m.score1 != null && m.score2 != null;
+    return `<div class="match-with-live"><div class="match ${played ? 'played' : ''}"><div class="match-main" style="grid-template-columns:1fr 46px auto 46px 1fr;">
+      <div class="team-name" style="text-align:left;"><span class="team-swatch" style="background:${tColor(m.team1)};"></span>${escapeHtml(tName(m.team1))}</div>
+      <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="1" value="${m.score1 == null ? '' : m.score1}">
+      <div class="match-vs">×</div>
+      <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="2" value="${m.score2 == null ? '' : m.score2}">
+      <div class="team-name" style="text-align:right;">${escapeHtml(tName(m.team2))}<span class="team-swatch" style="background:${tColor(m.team2)}; margin-left:8px; margin-right:0;"></span></div>
+    </div></div><button class="ghost live-btn" data-live="${m.id}" title="Cronometrar e marcar gols ao vivo">▶</button></div>`;
+  }
+
+  function bracketMatchHtml(m) {
+    const w = matchWinner(m);
+    const dis = (!m.team1 || !m.team2) ? 'disabled' : '';
+    const cls = (id) => id && w ? (w === id ? 'winner' : 'loser') : (id ? '' : 'pending');
+    const row = (id, side) => `<div class="bracket-team ${cls(id)}">
+      <span>${id ? escapeHtml(tName(id)) : 'A definir'}</span>
+      <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="${side}" value="${m['score' + side] == null ? '' : m['score' + side]}" ${dis}></div>`;
+    return `<div class="bracket-match">${row(m.team1, 1)}${row(m.team2, 2)}${(m.team1 && m.team2) ? `<button class="ghost live-btn" data-live="${m.id}" style="width:100%; border-top:1px solid var(--border); padding:6px;">▶ ao vivo</button>` : ''}</div>`;
+  }
+
+  function wireTournamentInputs() {
+    document.querySelectorAll('#tournament-active input[data-tmatch]').forEach(inp => inp.addEventListener('change', () => updateTournamentScore(inp.dataset.tmatch, inp.dataset.side, inp.value)));
+    document.querySelectorAll('#tournament-active [data-live]').forEach(b => b.addEventListener('click', () => setLive(b.dataset.live)));
+  }
+
+  function renderStandings() {
+    const t = state.tournament;
+    const rows = leagueStandings(t.league, t.teams);
+    const adv = t.format === 'hybrid' ? t.numAdvance : 0;
+    document.getElementById('standings-title').textContent = adv ? `Classificação (top ${adv} avançam)` : 'Classificação';
+    document.getElementById('standings-table').innerHTML = `
+      <thead><tr><th></th><th>Time</th><th>P</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th></tr></thead>
+      <tbody>${rows.map((r, i) => `<tr class="${adv && i < adv ? 'qualified' : ''}">
+        <td class="pos-num">${i + 1}</td>
+        <td><span class="team-swatch" style="background:${r.team.color};"></span>${escapeHtml(r.team.name)}</td>
+        <td>${r.P}</td><td>${r.V}</td><td>${r.E}</td><td>${r.D}</td><td>${r.GP}</td><td>${r.GC}</td><td>${r.SG > 0 ? '+' + r.SG : r.SG}</td><td class="pts">${r.Pts}</td>
+      </tr>`).join('')}</tbody>`;
+  }
+
+  // ---- Estimativa de tempo ----
+  function fmtDuration(min) { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? `${h} h ${m} min` : `${m} min`; }
+  function countGames(leagueGames, koTeams) {
+    const ko = koTeams > 1 ? koTeams - 1 : 0;
+    return { league: leagueGames, ko, total: leagueGames + ko };
+  }
+  function renderEstimate(el, leagueGames, koTeams) {
+    if (!el) return;
+    const e = state.ui.estimate;
+    const g = countGames(leagueGames, koTeams);
+    const total = g.total * e.gameMin + Math.max(0, g.total - 1) * e.betweenMin + g.ko * e.penaltyMin;
+    el.innerHTML = `
+      <div class="estimate-inputs">
+        <div><label>Min por jogo</label><input type="number" min="1" data-est="gameMin" value="${e.gameMin}"></div>
+        <div><label>Min entre jogos</label><input type="number" min="0" data-est="betweenMin" value="${e.betweenMin}"></div>
+        <div><label>Pênaltis (min/jogo elim.)</label><input type="number" min="0" data-est="penaltyMin" value="${e.penaltyMin}"></div>
+      </div>
+      <div class="estimate-result">≈ <strong>${fmtDuration(total)}</strong> &nbsp;·&nbsp; ${g.total} jogos${g.ko ? ` (${g.league} na liga + ${g.ko} no mata-mata)` : ''}</div>`;
+    el.querySelectorAll('[data-est]').forEach(inp => inp.addEventListener('input', () => {
+      const v = parseInt(inp.value, 10);
+      state.ui.estimate[inp.dataset.est] = (isNaN(v) || v < 0) ? 0 : v;
+      save(); renderEstimate(el, leagueGames, koTeams);
+    }));
+  }
+  function renderEstimateSetup() {
+    const el = document.getElementById('estimate-setup');
+    const n = (state.__champTeams || []).length;
+    if (!n) { el.innerHTML = '<p class="hint">Forme os times acima para ver a estimativa.</p>'; return; }
+    const leagueGames = (selectedFormat === 'knockout') ? 0 : n * (n - 1) / 2;
+    let koTeams = 0;
+    if (selectedFormat === 'knockout') koTeams = n;
+    else if (selectedFormat === 'hybrid') koTeams = parseInt(document.getElementById('num-advance').value, 10) || Math.min(4, n);
+    renderEstimate(el, leagueGames, koTeams);
+  }
+  function renderEstimateActive() {
+    const t = state.tournament; if (!t) return;
+    const leagueGames = t.league ? t.league.length : 0;
+    const koTeams = t.format === 'hybrid' ? t.numAdvance : (t.format === 'knockout' ? t.teams.length : 0);
+    renderEstimate(document.getElementById('estimate-active'), leagueGames, koTeams);
+  }
+
+  // ---- Capitães ----
+  function renderCaptains() {
+    const t = state.tournament; if (!t) return;
+    t.captains = t.captains || {};
+    document.getElementById('captains-container').innerHTML = t.teams.map(tm => `
+      <div class="captain-row">
+        <div class="team-name"><span class="team-swatch" style="background:${tm.color};"></span>${escapeHtml(tm.name)}</div>
+        <select data-captain="${tm.id}">
+          <option value="">— sem capitão —</option>
+          ${tm.players.map(pid => { const p = playerById(pid); return p ? `<option value="${pid}" ${t.captains[tm.id] === pid ? 'selected' : ''}>${escapeHtml(p.name)}${p.number ? ' #' + escapeHtml(p.number) : ''}</option>` : ''; }).join('')}
+        </select>
+      </div>`).join('');
+    document.querySelectorAll('#captains-container [data-captain]').forEach(sel => sel.addEventListener('change', () => {
+      if (sel.value) t.captains[sel.dataset.captain] = sel.value; else delete t.captains[sel.dataset.captain];
+      save(); renderLiveCard();
+    }));
+  }
+  function captainOf(teamId) { const t = state.tournament; return t && t.captains ? t.captains[teamId] : null; }
+
+  // ---- Artilharia do campeonato ----
+  function champScorers() {
+    const t = state.tournament; const g = {}, a = {};
+    const acc = m => {
+      Object.keys(m.goals || {}).forEach(pid => g[pid] = (g[pid] || 0) + m.goals[pid]);
+      Object.keys(m.assists || {}).forEach(pid => a[pid] = (a[pid] || 0) + m.assists[pid]);
+    };
+    (t.league || []).forEach(acc); (t.knockout || []).forEach(r => r.forEach(acc));
+    const ids = new Set([...Object.keys(g), ...Object.keys(a)]);
+    return [...ids].map(pid => ({ pid, gols: g[pid] || 0, assist: a[pid] || 0 })).sort((x, y) => y.gols - x.gols || y.assist - x.assist);
+  }
+  function renderChampScorers() {
+    const card = document.getElementById('champ-scorers-card');
+    const rows = champScorers().filter(r => r.gols || r.assist).slice(0, 10);
+    if (!rows.length) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    document.getElementById('champ-scorers').innerHTML = `<table class="rank-table"><thead><tr><th></th><th>Jogador</th><th>Gols</th><th>Assist.</th></tr></thead>
+      <tbody>${rows.map((r, i) => `<tr><td class="rank-medal">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${escapeHtml(playerName(r.pid))}</td><td class="big">${r.gols}</td><td>${r.assist}</td></tr>`).join('')}</tbody></table>`;
+  }
+
+  // ---- Jogo ao vivo (cronômetro + gols/assist em tempo real) ----
+  let live = { matchId: null, running: false, elapsed: 0, startedAt: 0 };
+  let liveInterval = null;
+  function findTMatch(id) {
+    const t = state.tournament; if (!t) return null;
+    let m = (t.league || []).find(x => x.id === id); if (m) return m;
+    if (t.knockout) for (const r of t.knockout) { const mm = r.find(x => x.id === id); if (mm) return mm; }
+    return null;
+  }
+  function liveElapsed() { return live.elapsed + (live.running ? (Date.now() - live.startedAt) : 0); }
+  function fmtClock(ms) { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+  function stopTimer() { live.running = false; if (liveInterval) { clearInterval(liveInterval); liveInterval = null; } }
+  function startTimer() { if (live.running) return; live.running = true; live.startedAt = Date.now(); liveInterval = setInterval(tickTimer, 250); tickTimer(); }
+  function pauseTimer() { if (!live.running) return; live.elapsed = liveElapsed(); live.running = false; live.startedAt = 0; stopTimer(); }
+  function resetTimer() { stopTimer(); live.elapsed = 0; live.startedAt = 0; updateClockEl(); syncTimerButton(); }
+  function tickTimer() { updateClockEl(); }
+  function updateClockEl() {
+    const el = document.getElementById('live-clock'); if (!el) { stopTimer(); return; }
+    const ms = liveElapsed(); el.textContent = fmtClock(ms);
+    const target = (state.ui.estimate.gameMin || 0) * 60000;
+    el.classList.toggle('over', target > 0 && ms >= target);
+  }
+  function syncTimerButton() { const b = document.getElementById('btn-timer-toggle'); if (b) b.textContent = live.running ? 'Pausar' : 'Iniciar'; }
+  function setLive(id) {
+    stopTimer(); live = { matchId: id, running: false, elapsed: 0, startedAt: 0 };
+    renderTournament();
+    const c = document.getElementById('live-card'); if (c && c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function teamGoalSum(m, side) {
+    const t = state.tournament, teamId = side === 1 ? m.team1 : m.team2;
+    const tm = (t.teams || []).find(x => x.id === teamId); if (!tm) return 0;
+    const g = m.goals || {}; return tm.players.reduce((s, pid) => s + (g[pid] || 0), 0);
+  }
+  function liveScore(m, side, pid, field, delta) {
+    m.goals = m.goals || {}; m.assists = m.assists || {};
+    if (field === 'gols') {
+      m.goals[pid] = Math.max(0, (m.goals[pid] || 0) + delta);
+      if (m.goals[pid] === 0) delete m.goals[pid];
+      m.score1 = teamGoalSum(m, 1); m.score2 = teamGoalSum(m, 2);
+      if (state.tournament.knockout) propagateKnockout(state.tournament.knockout);
+    } else {
+      m.assists[pid] = Math.max(0, (m.assists[pid] || 0) + delta);
+      if (m.assists[pid] === 0) delete m.assists[pid];
+    }
+    save(); renderTournament();
+  }
+  function renderLiveCard() {
+    const card = document.getElementById('live-card'); if (!card) return;
+    const t = state.tournament;
+    const m = live.matchId ? findTMatch(live.matchId) : null;
+    if (!t || !m || !m.team1 || !m.team2) { card.style.display = 'none'; if (!m) live.matchId = null; return; }
+    card.style.display = '';
+    const t1 = t.teams.find(x => x.id === m.team1), t2 = t.teams.find(x => x.id === m.team2);
+    const col = (tm, side) => `<div class="live-col">
+      <div class="live-team"><span class="team-swatch" style="background:${tm.color};"></span>${escapeHtml(tm.name)}</div>
+      ${tm.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (m.goals || {})[pid] || 0, a = (m.assists || {})[pid] || 0; const cap = captainOf(tm.id) === pid; return `
+        <div class="live-row">
+          <span class="live-name">${escapeHtml(p.name)}${cap ? ' <span class="cap">©</span>' : ''}</span>
+          <span class="live-steps">
+            <span class="stepper mini"><button data-lg="gols" data-d="-1" data-side="${side}" data-p="${pid}">−</button>⚽<b>${g}</b><button data-lg="gols" data-d="1" data-side="${side}" data-p="${pid}">+</button></span>
+            <span class="stepper mini"><button data-lg="assist" data-d="-1" data-side="${side}" data-p="${pid}">−</button>🅰<b>${a}</b><button data-lg="assist" data-d="1" data-side="${side}" data-p="${pid}">+</button></span>
+          </span>
+        </div>`; }).join('')}
+    </div>`;
+    card.innerHTML = `
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">Jogo ao vivo <button class="ghost neutral" id="btn-live-close">Fechar</button></div>
+      <div class="live-scoreboard">
+        <div class="live-side"><div class="live-sname">${escapeHtml(t1.name)}</div><div class="live-score">${m.score1 || 0}</div></div>
+        <div class="live-center">
+          <div class="live-clock" id="live-clock">${fmtClock(liveElapsed())}</div>
+          <div class="live-target">meta: ${state.ui.estimate.gameMin} min</div>
+          <div class="live-controls"><button class="primary" id="btn-timer-toggle">${live.running ? 'Pausar' : 'Iniciar'}</button><button class="secondary" id="btn-timer-reset">Zerar</button></div>
+        </div>
+        <div class="live-side"><div class="live-sname">${escapeHtml(t2.name)}</div><div class="live-score">${m.score2 || 0}</div></div>
+      </div>
+      <div class="live-cols">${col(t1, 1)}${col(t2, 2)}</div>
+      <p class="hint">O placar acompanha os gols marcados aqui. Ao terminar, é só fechar — o resultado já fica salvo.</p>`;
+    document.getElementById('btn-live-close').addEventListener('click', () => { stopTimer(); live.matchId = null; renderTournament(); });
+    document.getElementById('btn-timer-toggle').addEventListener('click', () => { live.running ? pauseTimer() : startTimer(); syncTimerButton(); });
+    document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
+    card.querySelectorAll('[data-lg]').forEach(b => b.addEventListener('click', () => liveScore(m, parseInt(b.dataset.side, 10), b.dataset.p, b.dataset.lg, parseInt(b.dataset.d, 10))));
+    if (live.running && !liveInterval) liveInterval = setInterval(tickTimer, 250);
+  }
+
+  // ============ CONFIGURAÇÕES / Backup ============
+  const csvEsc = s => { const v = String(s == null ? '' : s); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
+
+  function exportCsv() {
+    const header = 'nome,numero,time_do_coracao,posicao_principal,nivel_principal,posicao_secundaria,nivel_secundaria,ativo';
+    const rows = state.players.map(p => [csvEsc(p.name), csvEsc(p.number || ''), csvEsc(p.club || ''), p.primary.position, p.primary.level, p.secondary ? p.secondary.position : '', p.secondary ? p.secondary.level : '', p.active ? 'true' : 'false'].join(','));
+    return [header, ...rows].join('\n');
+  }
+
+  // Formato longo: uma linha por jogador presente em cada fut
+  function exportFutsCsv() {
+    const header = 'data,jogador,numero,time,gols,assistencias,vitorias_do_time';
+    const rows = [];
+    state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date)).forEach(s => {
+      const teamOf = {}; (s.teams || []).forEach(t => t.players.forEach(pid => teamOf[pid] = t));
+      (s.attendees || []).forEach(pid => {
+        const p = playerById(pid); const t = teamOf[pid];
+        rows.push([s.date, csvEsc(p ? p.name : pid), csvEsc(p ? (p.number || '') : ''), t ? csvEsc(t.name) : '', (s.goals || {})[pid] || 0, (s.assists || {})[pid] || 0, t ? ((s.wins || {})[t.id] || 0) : 0].join(','));
+      });
+    });
+    return [header, ...rows].join('\n');
+  }
+
+  function exportCampeonatoCsv() {
+    const t = state.tournament;
+    const header = 'fase,rodada,time1,placar1,placar2,time2';
+    if (!t) return header;
+    const nm = id => { const x = (t.teams || []).find(y => y.id === id); return x ? x.name : ''; };
+    const rows = [];
+    (t.league || []).forEach(m => rows.push(['pontos_corridos', m.round || '', csvEsc(nm(m.team1)), m.score1 == null ? '' : m.score1, m.score2 == null ? '' : m.score2, csvEsc(nm(m.team2))].join(',')));
+    (t.knockout || []).forEach((round, ri) => round.forEach(m => rows.push(['mata_mata', 'fase ' + (ri + 1), csvEsc(nm(m.team1)), m.score1 == null ? '' : m.score1, m.score2 == null ? '' : m.score2, csvEsc(nm(m.team2))].join(','))));
+    return [header, ...rows].join('\n');
+  }
+
+  function parseCsv(text) {
+    const lines = text.replace(/\r\n/g, '\n').split('\n').filter(l => l.trim());
+    if (lines.length < 2) return [];
+    const parseLine = line => { const out = []; let cur = '', q = false; for (let i = 0; i < line.length; i++) { const c = line[i]; if (q) { if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; } else { if (c === '"') q = true; else if (c === ',') { out.push(cur); cur = ''; } else cur += c; } } out.push(cur); return out; };
+    const header = parseLine(lines[0]).map(h => h.trim().toLowerCase());
+    const vP = ['goleiro', 'fixo', 'ala', 'pivo'], vL = ['nativo', 'adaptado', 'improvisado'], players = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = parseLine(lines[i]), row = {};
+      header.forEach((h, idx) => row[h] = (cols[idx] || '').trim());
+      const name = row.nome || row.name, pPos = row.posicao_principal;
+      if (!name || !vP.includes(pPos)) continue;
+      const sPos = row.posicao_secundaria;
+      const ativo = (row.ativo || row.confirmado || '').toLowerCase();
+      players.push({
+        id: uid(), name,
+        primary: { position: pPos, level: vL.includes(row.nivel_principal) ? row.nivel_principal : 'nativo' },
+        secondary: vP.includes(sPos) ? { position: sPos, level: vL.includes(row.nivel_secundaria) ? row.nivel_secundaria : 'nativo' } : null,
+        active: !(ativo === 'false' || ativo === 'nao' || ativo === 'não' || ativo === '0'), photo: null,
+        number: row.numero || '', club: row.time_do_coracao || row.time || ''
+      });
+    }
+    return players;
+  }
+  function downloadBlob(content, filename, type) {
+    const blob = new Blob([content], { type }), url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  }
+  function pickFile(accept, cb) {
+    const input = document.createElement('input'); input.type = 'file'; input.accept = accept;
+    input.addEventListener('change', async () => { const f = input.files && input.files[0]; if (!f) return; try { cb(await f.text()); } catch (e) { alert('Erro ao ler: ' + e.message); } });
+    input.click();
+  }
+
+  function downloadAllCsvs() {
+    downloadBlob(exportCsv(), 'fut-da-juf-elenco.csv', 'text/csv;charset=utf-8');
+    setTimeout(() => downloadBlob(exportFutsCsv(), 'fut-da-juf-futs.csv', 'text/csv;charset=utf-8'), 400);
+    setTimeout(() => downloadBlob(exportCampeonatoCsv(), 'fut-da-juf-campeonato.csv', 'text/csv;charset=utf-8'), 800);
+  }
+  document.getElementById('btn-download-all-csv').addEventListener('click', downloadAllCsvs);
+  document.getElementById('btn-download-csv').addEventListener('click', () => downloadBlob(exportCsv(), 'fut-da-juf-elenco.csv', 'text/csv;charset=utf-8'));
+  document.getElementById('btn-import-csv').addEventListener('click', () => pickFile('.csv,text/csv', text => {
+    const imported = parseCsv(text);
+    if (!imported.length) { alert('Nenhum jogador válido no CSV.'); return; }
+    if (confirm(`Importar ${imported.length} jogador(es)? Isso substitui o elenco atual (o histórico de futs é mantido).`)) { state.players = imported; save(); renderRoster(); }
+  }));
+  document.getElementById('btn-download-json').addEventListener('click', () => downloadBlob(JSON.stringify(state, null, 2), 'fut-da-juf-backup.json', 'application/json'));
+  document.getElementById('btn-import-json').addEventListener('click', () => pickFile('.json,application/json', text => {
+    let parsed; try { parsed = JSON.parse(text); } catch (e) { alert('JSON inválido.'); return; }
+    if (!parsed.players) { alert('Arquivo não parece um backup do Fut da JUF.'); return; }
+    if (confirm('Restaurar tudo a partir deste arquivo? O conteúdo atual será substituído.')) {
+      state = migrate(parsed); save(); renderAll();
+    }
+  }));
+
+  // ---- File System Access ----
+  const HAS_FS = 'showSaveFilePicker' in window;
+  let backupHandle = null, backupTimer = null;
+  function idbOpen() { return new Promise((res, rej) => { const r = indexedDB.open('futdajuf-db', 1); r.onupgradeneeded = () => r.result.createObjectStore('h'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+  async function idbPut(k, v) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('h', 'readwrite'); tx.objectStore('h').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+  async function idbGet(k) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('h', 'readonly'); const rq = tx.objectStore('h').get(k); rq.onsuccess = () => res(rq.result || null); rq.onerror = () => rej(rq.error); }); }
+  async function idbDel(k) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('h', 'readwrite'); tx.objectStore('h').delete(k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+  async function verifyPerm(h, req) { const o = { mode: 'readwrite' }; if ((await h.queryPermission(o)) === 'granted') return true; if (req && (await h.requestPermission(o)) === 'granted') return true; return false; }
+  async function writeBackup() { if (!backupHandle) return; if (!(await verifyPerm(backupHandle, false))) { renderSettings(); return; } try { const w = await backupHandle.createWritable(); await w.write(JSON.stringify(state, null, 2)); await w.close(); } catch (e) { console.warn(e); } }
+  function scheduleBackup() { if (!backupHandle) return; clearTimeout(backupTimer); backupTimer = setTimeout(writeBackup, 500); }
+  async function connectBackup() {
+    if (!HAS_FS) { alert('Seu navegador não suporta backup automático em arquivo. Use os botões de baixar/importar.'); return; }
+    try { const h = await window.showSaveFilePicker({ suggestedName: 'fut-da-juf-backup.json', types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] }); backupHandle = h; await idbPut('backup', h); await writeBackup(); renderSettings(); }
+    catch (e) { if (e.name !== 'AbortError') alert('Erro: ' + e.message); }
+  }
+  async function disconnectBackup() { backupHandle = null; await idbDel('backup'); renderSettings(); }
+  async function reconnectBackup() { if (!backupHandle) return; if (await verifyPerm(backupHandle, true)) await writeBackup(); renderSettings(); }
+  async function tryRestoreHandle() { if (!HAS_FS) return; try { const h = await idbGet('backup'); if (h) backupHandle = h; } catch (e) {} }
+
+  async function renderSettings() {
+    const pill = document.getElementById('backup-pill'), status = document.getElementById('backup-status'), actions = document.getElementById('backup-actions');
+    if (!pill) return;
+    if (!HAS_FS) { pill.className = 'status-pill off'; pill.textContent = 'Indisponível'; status.innerHTML = 'Navegador sem suporte. Use baixar/importar.'; actions.innerHTML = ''; return; }
+    if (!backupHandle) { pill.className = 'status-pill off'; pill.textContent = 'Desconectado'; status.innerHTML = 'Escolha um arquivo <code>.json</code> uma vez e o app grava tudo automaticamente.'; actions.innerHTML = '<button class="primary" id="btn-connect-backup">Conectar arquivo</button>'; document.getElementById('btn-connect-backup').addEventListener('click', connectBackup); return; }
+    const granted = await verifyPerm(backupHandle, false);
+    if (granted) { pill.className = 'status-pill on'; pill.textContent = 'Ativo'; status.innerHTML = `Gravando em <span class="file-name">${escapeHtml(backupHandle.name)}</span> a cada alteração.`; actions.innerHTML = '<button class="secondary" id="btn-change-backup">Trocar</button><button class="ghost" id="btn-disc-backup">Desconectar</button>'; document.getElementById('btn-change-backup').addEventListener('click', connectBackup); document.getElementById('btn-disc-backup').addEventListener('click', disconnectBackup); }
+    else { pill.className = 'status-pill warn'; pill.textContent = 'Permissão pendente'; status.innerHTML = `Arquivo <span class="file-name">${escapeHtml(backupHandle.name)}</span> lembrado — reconecte para liberar.`; actions.innerHTML = '<button class="primary" id="btn-recon-backup">Reconectar</button><button class="ghost" id="btn-disc-backup">Esquecer</button>'; document.getElementById('btn-recon-backup').addEventListener('click', reconnectBackup); document.getElementById('btn-disc-backup').addEventListener('click', disconnectBackup); }
+  }
+  document.getElementById('btn-connect-backup').addEventListener('click', connectBackup);
+
+  // ---- Ocultar níveis ----
+  function applyHideLevels() {
+    document.body.classList.toggle('hide-levels', !!state.ui.hideLevels);
+    const cb = document.getElementById('toggle-hide-levels');
+    if (cb) cb.checked = !!state.ui.hideLevels;
+  }
+  document.getElementById('toggle-hide-levels').addEventListener('change', e => {
+    state.ui.hideLevels = e.target.checked; save(); applyHideLevels();
+  });
+
+  // ============ Init ============
+  function renderAll() {
+    renderRoster();
+    renderSessionSelect();
+    renderSessionEditor();
+    renderResults();
+    renderStats();
+    champSelected = new Set([...((state.__champTeams || []).flatMap(t => t.players)), ...(state.__champBench || [])]);
+    renderChampTeamPicker();
+    if (state.tournament) renderTournament();
+  }
+
+  applyHideLevels();
+  renderAll();
+  document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
+  tryRestoreHandle().then(renderSettings);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
