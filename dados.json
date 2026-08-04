@@ -1,0 +1,508 @@
+{
+  "v": 4,
+  "players": [
+    {
+      "id": "c04e4jsc",
+      "name": "Paulinho",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "13",
+      "club": ""
+    },
+    {
+      "id": "3a6qrb5o",
+      "name": "Leandro",
+      "primary": {
+        "position": "fixo",
+        "level": "nativo"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "3bk2x1ya",
+      "name": "Brizza",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": {
+        "position": "fixo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "na3m57u1",
+      "name": "Dudu",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "fing6501",
+      "name": "Bruninho",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "da3pkntb",
+      "name": "Renato",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "ihjjs7ny",
+      "name": "Gui",
+      "primary": {
+        "position": "fixo",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "och72djy",
+      "name": "Patrão",
+      "primary": {
+        "position": "fixo",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "6le274n0",
+      "name": "Felipe",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "vlj130hf",
+      "name": "Will",
+      "primary": {
+        "position": "pivo",
+        "level": "nativo"
+      },
+      "secondary": {
+        "position": "fixo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "v440nyj5",
+      "name": "Júlio",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "improvisado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "lc7kjr1l",
+      "name": "Juninho",
+      "primary": {
+        "position": "fixo",
+        "level": "adaptado"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "4loro9d7",
+      "name": "Leiz",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "4i5e5dnx",
+      "name": "Cris",
+      "primary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "goexclc7",
+      "name": "Sagu",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "g392acow",
+      "name": "Danilinho",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "xc6kxlk5",
+      "name": "Maia",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "1lo9d7ot",
+      "name": "Fábio",
+      "primary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "q0i74yd7",
+      "name": "Daniel B.",
+      "primary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "vk6nnhld",
+      "name": "Medina",
+      "primary": {
+        "position": "ala",
+        "level": "improvisado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "improvisado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "eqklwjq4",
+      "name": "Rafinha",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "5x29v8hn",
+      "name": "Waldir",
+      "primary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "improvisado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "pem3iz20",
+      "name": "Murilo",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "dltd4nxp",
+      "name": "Tiago",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "q62q1pxy",
+      "name": "Thiaguinho",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "au7rynh9",
+      "name": "Teves",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "splc2r7u2ea",
+      "name": "Emerson",
+      "primary": {
+        "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "jyw3v5fz8gv",
+      "name": "Coutinho",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": null,
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    },
+    {
+      "id": "w7umlxkw4c7",
+      "name": "Massuela",
+      "primary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "secondary": {
+        "position": "pivo",
+        "level": "adaptado"
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": ""
+    }
+  ],
+  "sessions": [
+    {
+      "id": "4q4mvxzjous",
+      "date": "2026-08-02",
+      "attendees": [
+        "3bk2x1ya",
+        "fing6501",
+        "4i5e5dnx",
+        "1lo9d7ot",
+        "v440nyj5",
+        "lc7kjr1l",
+        "3a6qrb5o",
+        "4loro9d7",
+        "och72djy",
+        "c04e4jsc",
+        "da3pkntb",
+        "goexclc7",
+        "vlj130hf",
+        "pem3iz20",
+        "au7rynh9"
+      ],
+      "teams": [
+        {
+          "id": "l2e8wx9ykbg",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "au7rynh9",
+            "c04e4jsc",
+            "lc7kjr1l",
+            "3a6qrb5o",
+            "fing6501"
+          ]
+        },
+        {
+          "id": "e6v54tglkbg",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "4loro9d7",
+            "4i5e5dnx",
+            "3bk2x1ya",
+            "goexclc7",
+            "pem3iz20"
+          ]
+        },
+        {
+          "id": "g05qioakkbg",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "da3pkntb",
+            "vlj130hf",
+            "v440nyj5",
+            "och72djy",
+            "1lo9d7ot"
+          ]
+        }
+      ],
+      "numTeams": 3,
+      "goals": {
+        "c04e4jsc": 2,
+        "lc7kjr1l": 1,
+        "3a6qrb5o": 2,
+        "fing6501": 3
+      },
+      "assists": {
+        "c04e4jsc": 1,
+        "3a6qrb5o": 3
+      },
+      "wins": {}
+    }
+  ],
+  "tournament": null,
+  "ui": {
+    "activeSessionId": "4q4mvxzjous",
+    "statsPeriod": "month",
+    "estimate": {
+      "gameMin": 5,
+      "betweenMin": 2,
+      "penaltyMin": 3
+    }
+  },
+  "updatedAt": "2026-08-04T00:24:28.853196Z"
+}

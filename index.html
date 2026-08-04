@@ -69,6 +69,18 @@
   }
   .gear-btn:hover { color: var(--text); border-color: var(--accent); }
   .gear-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(139,92,246,0.12); }
+  .gear-btn.has-dot { position: relative; }
+  .gear-btn.has-dot::after { content: ''; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--adaptado); border: 1.5px solid var(--surface); }
+
+  #publish-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: rgba(224,169,59,0.12); border: 1px solid rgba(224,169,59,0.4);
+    color: var(--adaptado); border-radius: 8px; padding: 9px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 600;
+  }
+  #publish-banner button {
+    background: var(--adaptado); color: #16121F; border: none; border-radius: 6px;
+    padding: 6px 14px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 13px; white-space: nowrap;
+  }
 
   .brand-title { font-size: 23px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
   .brand-subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
@@ -655,6 +667,11 @@
     </div>
   </header>
 
+  <div id="publish-banner" style="display:none;">
+    <span>● Alterações não publicadas.</span>
+    <button id="banner-publish-btn">Publicar</button>
+  </div>
+
   <nav class="tabs">
     <button class="tab active" data-tab="elenco">Elenco</button>
     <button class="tab" data-tab="semana">Fut da Semana</button>
@@ -909,6 +926,16 @@
   <!-- CONFIGURAÇÕES -->
   <section class="panel" id="panel-config">
     <div class="card">
+      <div class="card-title">Publicar no GitHub (todos veem)</div>
+      <p id="publish-status" class="settings-desc" style="margin-bottom:12px;"></p>
+      <p class="settings-desc" style="margin-bottom:12px;">Quem abre o link vê sempre a versão publicada mais recente. Para publicar suas alterações: baixe o <code>dados.json</code>, suba no seu repositório (sobrescrevendo o antigo) e troque a versão do cache no <code>sw.js</code>.</p>
+      <div class="settings-actions">
+        <button class="primary" id="btn-publish-download">Baixar dados.json para publicar</button>
+        <button class="secondary" id="btn-use-git">Usar versão publicada (descartar alterações locais)</button>
+      </div>
+      <p class="hint" style="margin-top:10px;">Passo a passo no GitHub: <strong>Add file → Upload files</strong> → arraste o <code>dados.json</code> → edite o <code>sw.js</code> subindo o número da versão → <strong>Commit</strong>. Em ~1–2 min todos que abrirem (ou reabrirem) o link já pegam a versão nova.</p>
+    </div>
+    <div class="card">
       <div class="card-title">Aparência</div>
       <div class="toggle-line">
         <div>
@@ -1035,23 +1062,28 @@
   'use strict';
 
   // ============ State ============
-  const DEFAULT_STATE = { v: 4, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, hideLevels: false } };
+  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, hideLevels: false } };
   let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  let hadLocalData = false;
 
   try {
     const saved = localStorage.getItem('futdajuf-state');
     if (saved) {
       const parsed = JSON.parse(saved);
       state = migrate(parsed);
+      hadLocalData = true;
     } else {
       // Migração do app antigo (campeonato-futsal)
       const old = localStorage.getItem('futsal-state-v1');
-      if (old) state = migrateOld(JSON.parse(old));
+      if (old) { state = migrateOld(JSON.parse(old)); hadLocalData = true; }
     }
   } catch (e) { /* usa default */ }
+  const localUpdatedAt = state.updatedAt || '';
+  let gitPublishedAt = null; // data da versão publicada no GitHub (preenchida no boot)
 
   function migrate(p) {
     const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    s.updatedAt = p.updatedAt || null;
     s.players = (p.players || []).map(pl => ({
       id: pl.id || uid(), name: pl.name,
       primary: pl.primary, secondary: pl.secondary || null,
@@ -1093,9 +1125,11 @@
     return s;
   }
 
-  function save() {
+  function save(opts) {
+    if (!opts || opts.bump !== false) state.updatedAt = new Date().toISOString();
     try { localStorage.setItem('futdajuf-state', JSON.stringify(state)); } catch (e) {}
     scheduleBackup();
+    updatePublishStatus();
   }
 
   // ============ Constants & helpers ============
@@ -2324,6 +2358,14 @@
     setTimeout(() => downloadBlob(exportCampeonatoCsv(), 'fut-da-juf-campeonato.csv', 'text/csv;charset=utf-8'), 800);
   }
   document.getElementById('btn-download-all-csv').addEventListener('click', downloadAllCsvs);
+  document.getElementById('btn-publish-download').addEventListener('click', () => {
+    if (!state.updatedAt) state.updatedAt = new Date().toISOString();
+    downloadBlob(JSON.stringify(state, null, 2), 'dados.json', 'application/json');
+  });
+  document.getElementById('btn-use-git').addEventListener('click', () => {
+    if (confirm('Descartar as alterações locais deste aparelho e usar a versão publicada no GitHub?')) useGitVersion();
+  });
+  document.getElementById('banner-publish-btn').addEventListener('click', () => document.getElementById('btn-config').click());
   document.getElementById('btn-download-csv').addEventListener('click', () => downloadBlob(exportCsv(), 'fut-da-juf-elenco.csv', 'text/csv;charset=utf-8'));
   document.getElementById('btn-import-csv').addEventListener('click', () => pickFile('.csv,text/csv', text => {
     const imported = parseCsv(text);
@@ -2391,10 +2433,72 @@
     if (state.tournament) renderTournament();
   }
 
-  applyHideLevels();
-  renderAll();
-  document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
-  tryRestoreHandle().then(renderSettings);
+  function boot() {
+    applyHideLevels();
+    renderAll();
+    document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
+    updatePublishStatus();
+    tryRestoreHandle().then(renderSettings);
+  }
+
+  function adoptGitData(git) {
+    state = migrate(git);
+    state.updatedAt = git.updatedAt || state.updatedAt;
+    selectedFormat = state.tournament ? state.tournament.format : 'hybrid';
+    champSelected = new Set();
+    save({ bump: false }); // preserva a data publicada -> fica "em sincronia"
+  }
+
+  // Toda abertura busca a versão publicada no GitHub (dados.json). Se ela for
+  // MAIS NOVA que a do aparelho, adota — assim quem tem o link sempre vê a
+  // versão mais atual. Nunca sobrescreve alterações locais mais recentes (essas
+  // aparecem como "não publicadas" para você publicar).
+  function handleGit(git) {
+    if (git && git.players) {
+      gitPublishedAt = git.updatedAt || '';
+      const gitT = git.updatedAt || '';
+      if (!hadLocalData || (gitT && gitT > localUpdatedAt)) adoptGitData(git);
+    }
+    boot();
+  }
+  if (typeof fetch !== 'function') {
+    boot();
+  } else {
+    let done = false;
+    const go = fn => { if (!done) { done = true; fn(); } };
+    try {
+      fetch('dados.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .then(git => go(() => handleGit(git)))
+        .catch(() => go(boot));
+    } catch (e) { go(boot); }
+  }
+
+  // Força usar a versão publicada, descartando alterações locais (para quem só vê)
+  function useGitVersion() {
+    if (typeof fetch !== 'function') { alert('Sem conexão para buscar a versão publicada.'); return; }
+    fetch('dados.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(git => {
+      if (!git || !git.players) { alert('Não encontrei dados publicados (dados.json) no servidor.'); return; }
+      adoptGitData(git);
+      applyHideLevels(); renderAll(); updatePublishStatus();
+      alert('Pronto — agora você está vendo a versão publicada no GitHub.');
+    }).catch(() => alert('Não consegui buscar a versão publicada.'));
+  }
+
+  function fmtStamp(iso) { if (!iso) return '—'; const d = new Date(iso); return isNaN(d) ? '—' : d.toLocaleString('pt-BR'); }
+  function isUnpublished() { return !!(state.updatedAt && (!gitPublishedAt || state.updatedAt > gitPublishedAt)); }
+  function updatePublishStatus() {
+    const banner = document.getElementById('publish-banner');
+    const st = document.getElementById('publish-status');
+    const unp = isUnpublished();
+    if (banner) banner.style.display = unp ? '' : 'none';
+    const gear = document.getElementById('btn-config'); if (gear) gear.classList.toggle('has-dot', unp);
+    if (st) {
+      if (unp) st.innerHTML = `<span class="status-pill warn">Não publicado</span> Você tem alterações locais desde <strong>${fmtStamp(state.updatedAt)}</strong> que ainda não estão no GitHub. Publicada: ${fmtStamp(gitPublishedAt)}.`;
+      else if (gitPublishedAt) st.innerHTML = `<span class="status-pill on">Em sincronia</span> Tudo igual ao GitHub. Publicada em <strong>${fmtStamp(gitPublishedAt)}</strong>.`;
+      else st.innerHTML = `<span class="status-pill off">Sem versão publicada</span> Ainda não há um <code>dados.json</code> no servidor. Baixe abaixo e suba no GitHub para publicar a primeira vez.`;
+    }
+  }
 })();
 </script>
 <script>
