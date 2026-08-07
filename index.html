@@ -153,18 +153,19 @@
   .kanban-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .kanban-empty { font-size: 12px; color: var(--muted); font-style: italic; padding: 4px 2px; }
 
-  /* Ocultar níveis (verde/amarelo/vermelho) */
   /* Notas em estrelas (escondidas até ativar em Config) */
-  .stars-view { display: none; color: var(--adaptado); font-size: 11px; letter-spacing: 1px; white-space: nowrap; }
+  .stars-view { display: none; white-space: nowrap; font-size: 12px; letter-spacing: 1px; }
+  .stars-view i { font-style: normal; color: #FBBF24; }
+  .stars-view i.e { color: #6E6685; }
   .ratings-on .stars-view { display: inline; }
   .rating-field { display: none; }
   .ratings-on .rating-field { display: block; }
   .ratings-hint { display: none; }
   .ratings-on .ratings-hint { display: inline; }
 
-  .star-input { display: inline-flex; gap: 2px; cursor: pointer; user-select: none; font-size: 20px; line-height: 1; color: var(--adaptado); }
-  .star-input span { transition: transform 0.05s; }
-  .star-input span.empty { color: var(--border); }
+  .star-input { display: inline-flex; gap: 3px; cursor: pointer; user-select: none; font-size: 22px; line-height: 1; }
+  .star-input span { color: #FBBF24; transition: transform 0.05s; }
+  .star-input span.empty { color: #6E6685; }
   .star-input span:active { transform: scale(0.85); }
 
   /* De onde veio */
@@ -330,7 +331,7 @@
   .player-card {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 14px;
     cursor: pointer;
     transition: border-color 0.15s, transform 0.1s;
@@ -338,19 +339,21 @@
   }
   .player-card:hover { border-color: var(--accent); }
   .player-card:active { transform: scale(0.99); }
-  .player-card.inactive { opacity: 0.45; }
+  .player-card.inactive { opacity: 0.5; }
   .player-card-top { display: flex; align-items: center; gap: 12px; }
   .avatar {
-    width: 46px; height: 46px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: var(--accent-solid);
     color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 17px;
+    font-weight: 700; font-size: 16px;
     flex-shrink: 0;
     background-size: cover; background-position: center;
   }
-  .player-card-name { font-weight: 700; font-size: 15px; }
-  .player-card-pos { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+  .player-card-name { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .player-card-pos { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+  .pc-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .pc-meta:empty { display: none; }
   .player-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -360,9 +363,9 @@
     border-top: 1px solid var(--border);
   }
   .stat { text-align: center; }
-  .stat-val { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat-val { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .stat-val.accent { color: var(--accent); }
-  .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
   .inactive-flag {
     position: absolute; top: 10px; right: 10px;
     font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em;
@@ -375,8 +378,10 @@
     background: rgba(139,92,246,0.15); border: 1px solid var(--border);
     border-radius: 4px; padding: 1px 6px; font-variant-numeric: tabular-nums;
   }
-  .player-club { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+  .player-club { font-size: 11px; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
   .player-club::before { content: '♥'; color: var(--improvisado); font-size: 10px; }
+  /* Notas em estrelas ao lado da posição, discretas */
+  .pos-badge .stars-view { margin-left: 4px; font-size: 11px; }
 
   .list-search { margin-bottom: 14px; }
   .list-search input { max-width: 320px; }
@@ -637,6 +642,7 @@
     max-height: 90vh; overflow-y: auto;
   }
   .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .modal-section { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--muted); margin: 18px 0 10px; padding-top: 14px; border-top: 1px solid var(--border); }
   .modal-footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
   .toggle-line { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
   .check {
@@ -982,6 +988,26 @@
       </div>
     </div>
     <div class="card">
+      <div class="card-title">Informações nos cards</div>
+      <div class="settings-desc" style="margin-bottom:8px;">Por padrão, os cards mostram só nome, posição e estatísticas. Ative aqui o que quiser exibir também.</div>
+      <div class="toggle-line">
+        <div><div class="settings-label">Número favorito</div></div>
+        <input type="checkbox" class="check cf-toggle" data-cf="number">
+      </div>
+      <div class="toggle-line">
+        <div><div class="settings-label">Time do coração</div></div>
+        <input type="checkbox" class="check cf-toggle" data-cf="club">
+      </div>
+      <div class="toggle-line">
+        <div><div class="settings-label">Confiança p/ campeonato</div></div>
+        <input type="checkbox" class="check cf-toggle" data-cf="conf">
+      </div>
+      <div class="toggle-line">
+        <div><div class="settings-label">Origem (de onde veio)</div></div>
+        <input type="checkbox" class="check cf-toggle" data-cf="origin">
+      </div>
+    </div>
+    <div class="card">
       <div class="card-title">Backup automático (tudo)</div>
       <div class="settings-row">
         <div>
@@ -1032,35 +1058,6 @@
       </div>
     </div>
     <div class="form-row form-row-2">
-      <div>
-        <label for="edit-number">Número favorito</label>
-        <input type="number" id="edit-number" min="0" max="99" autocomplete="off">
-      </div>
-      <div>
-        <label for="edit-club">Time do coração</label>
-        <input type="text" id="edit-club" autocomplete="off">
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div>
-        <label for="edit-origin">De onde veio</label>
-        <select id="edit-origin">
-          <option value="">— não definido —</option>
-          <option value="domingo">Fut domingo</option>
-          <option value="quinta">Fut quinta</option>
-          <option value="conhecidas">Conhecidas</option>
-        </select>
-      </div>
-      <div>
-        <label for="edit-conf">Confiança p/ campeonato</label>
-        <select id="edit-conf">
-          <option value="alta">Alta — deve ir</option>
-          <option value="media">Média — talvez</option>
-          <option value="baixa">Baixa — difícil</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row form-row-2">
       <div class="position-block">
         <div class="position-block-title">Posição principal</div>
         <div class="position-fields">
@@ -1094,6 +1091,36 @@
       </div>
       <input type="checkbox" class="check" id="edit-active">
     </div>
+    <div class="modal-section">Outras informações</div>
+    <div class="form-row form-row-2">
+      <div>
+        <label for="edit-number">Número favorito</label>
+        <input type="number" id="edit-number" min="0" max="99" autocomplete="off">
+      </div>
+      <div>
+        <label for="edit-club">Time do coração</label>
+        <input type="text" id="edit-club" autocomplete="off">
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div>
+        <label for="edit-origin">De onde veio</label>
+        <select id="edit-origin">
+          <option value="">— não definido —</option>
+          <option value="domingo">Fut domingo</option>
+          <option value="quinta">Fut quinta</option>
+          <option value="conhecidas">Conhecidas</option>
+        </select>
+      </div>
+      <div>
+        <label for="edit-conf">Confiança p/ campeonato</label>
+        <select id="edit-conf">
+          <option value="alta">Alta — deve ir</option>
+          <option value="media">Média — talvez</option>
+          <option value="baixa">Baixa — difícil</option>
+        </select>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="ghost" id="btn-modal-delete">Excluir jogador</button>
       <div style="display:flex; gap:8px;">
@@ -1109,7 +1136,7 @@
   'use strict';
 
   // ============ State ============
-  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, showRatings: false } };
+  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, showRatings: false, cardFields: { number: false, club: false, conf: false, origin: false } } };
   let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
   let hadLocalData = false;
 
@@ -1149,6 +1176,7 @@
     s.tournament = p.tournament || null;
     s.ui = Object.assign({ activeSessionId: null, statsPeriod: 'month', showRatings: false }, p.ui || {});
     s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3 }, (p.ui && p.ui.estimate) || {});
+    s.ui.cardFields = Object.assign({ number: false, club: false, conf: false, origin: false }, (p.ui && p.ui.cardFields) || {});
     delete s.ui.hideLevels;
     return s;
   }
@@ -1198,7 +1226,7 @@
   const TEAM_NAMES = ['Time A', 'Time B', 'Time C', 'Time D', 'Time E', 'Time F', 'Time G', 'Time H'];
 
   function clampStars(n) { n = Math.round(+n || 0); return Math.max(0, Math.min(5, n)); }
-  function starsHtml(n) { n = clampStars(n); return `<span class="stars-view">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</span>`; }
+  function starsHtml(n) { n = clampStars(n); return `<span class="stars-view">${'<i>★</i>'.repeat(n)}${'<i class="e">★</i>'.repeat(5 - n)}</span>`; }
   function confBadge(conf) { const c = CONF[conf] || CONF.media; return `<span class="conf-badge conf-${conf || 'media'}"><span class="cdot"></span>${c.label}</span>`; }
   function originTag(o) { return o && ORIGIN_LABELS[o] ? `<span class="origin-tag">${ORIGIN_SHORT[o]}</span>` : ''; }
 
@@ -1211,7 +1239,7 @@
   // Star input widget (clicável)
   function paintStars(box) {
     const v = clampStars(box.dataset.stars);
-    box.innerHTML = [1, 2, 3, 4, 5].map(i => `<span data-s="${i}" class="${i <= v ? '' : 'empty'}">${i <= v ? '★' : '☆'}</span>`).join('');
+    box.innerHTML = [1, 2, 3, 4, 5].map(i => `<span data-s="${i}" class="${i <= v ? '' : 'empty'}">★</span>`).join('');
   }
   function setStars(id, v) { const el = document.getElementById(id); if (el) { el.dataset.stars = clampStars(v); paintStars(el); } }
   function getStars(id) { const el = document.getElementById(id); return el ? clampStars(el.dataset.stars) : 3; }
@@ -1437,7 +1465,17 @@
     cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerModal(el.dataset.edit)));
   }
 
+  function cf() { return state.ui.cardFields || { number: false, club: false, conf: false, origin: false }; }
+  function metaHtml(p) {
+    const c = cf(); const parts = [];
+    if (c.conf) parts.push(confBadge(p.champConf));
+    if (c.origin && p.origin) parts.push(originTag(p.origin));
+    if (c.club && p.club) parts.push(`<span class="player-club">${escapeHtml(p.club)}</span>`);
+    return parts.length ? `<div class="pc-meta">${parts.join('')}</div>` : '';
+  }
+
   function rosterCardsHtml(list, stats) {
+    const c = cf();
     return '<div class="roster-grid">' + list.map(p => {
       const st = stats[p.id] || {}; const wp = winPct(st);
       return `
@@ -1446,12 +1484,11 @@
         <div class="player-card-top">
           ${avatarHtml(p)}
           <div style="min-width:0;">
-            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
+            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${c.number && p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
             <div class="player-card-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
-            <div style="display:flex; gap:6px; align-items:center; margin-top:5px; flex-wrap:wrap;">${confBadge(p.champConf)}${originTag(p.origin)}</div>
-            ${p.club ? `<div class="player-club">${escapeHtml(p.club)}</div>` : ''}
           </div>
         </div>
+        ${metaHtml(p)}
         <div class="player-stats">
           <div class="stat"><div class="stat-val">${st.presencas || 0}</div><div class="stat-label">Presenças</div></div>
           <div class="stat"><div class="stat-val accent">${st.gols || 0}</div><div class="stat-label">Gols</div></div>
@@ -1463,14 +1500,19 @@
   }
 
   function rosterListHtml(list, stats) {
+    const c = cf();
     return '<div class="roster-list">' + list.map(p => {
       const st = stats[p.id] || {}; const wp = winPct(st);
+      const extras = [];
+      if (c.conf) extras.push(confBadge(p.champConf));
+      if (c.origin && p.origin) extras.push(originTag(p.origin));
+      if (c.club && p.club) extras.push(`<span class="player-club">${escapeHtml(p.club)}</span>`);
       return `
       <div class="roster-row ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
         ${avatarHtml(p)}
         <div class="roster-row-main">
-          <div class="roster-row-name">${escapeHtml(p.name)}${p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
-          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${confBadge(p.champConf)}${originTag(p.origin)}${p.club ? `<span class="pos-badge" style="border:none;background:none;color:var(--muted);padding-left:0;">${escapeHtml(p.club)}</span>` : ''}</div>
+          <div class="roster-row-name">${escapeHtml(p.name)}${c.number && p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${extras.join('')}</div>
         </div>
         <div class="roster-row-stats">
           <span>P <b>${st.presencas || 0}</b></span>
@@ -1483,6 +1525,7 @@
   }
 
   function rosterKanbanHtml(list, stats) {
+    const c = cf();
     const cols = ['goleiro', 'fixo', 'ala', 'pivo'];
     return '<div class="kanban">' + cols.map(pos => {
       const inCol = list.filter(p => p.primary.position === pos);
@@ -1490,8 +1533,8 @@
         <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
         ${inCol.length ? inCol.map(p => { const st = stats[p.id] || {}; return `
           <div class="kanban-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
-            <div class="kanban-name">${escapeHtml(p.name)}${p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''} ${starsHtml(p.primary.stars)}</div>
-            <div class="kanban-sub">${confBadge(p.champConf)} · ${st.gols || 0}⚽ · ${st.presencas || 0}P</div>
+            <div class="kanban-name">${escapeHtml(p.name)}${c.number && p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''} ${starsHtml(p.primary.stars)}</div>
+            <div class="kanban-sub">${c.conf ? confBadge(p.champConf) + ' · ' : ''}${st.gols || 0}⚽ · ${st.presencas || 0}P</div>
           </div>`; }).join('') : '<div class="kanban-empty">—</div>'}
       </div>`;
     }).join('') + '</div>';
@@ -2531,6 +2574,17 @@
     save(); applyShowRatings();
   });
 
+  // ---- Informações nos cards ----
+  function applyCardFields() {
+    const c = state.ui.cardFields || {};
+    document.querySelectorAll('.cf-toggle').forEach(cb => { cb.checked = !!c[cb.dataset.cf]; });
+  }
+  document.querySelectorAll('.cf-toggle').forEach(cb => cb.addEventListener('change', e => {
+    state.ui.cardFields = state.ui.cardFields || { number: false, club: false, conf: false, origin: false };
+    state.ui.cardFields[cb.dataset.cf] = e.target.checked;
+    save(); renderRoster();
+  }));
+
   // ============ Init ============
   function renderAll() {
     renderRoster();
@@ -2545,6 +2599,7 @@
 
   function boot() {
     applyShowRatings();
+    applyCardFields();
     renderAll();
     document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
     updatePublishStatus();
