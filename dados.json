@@ -1,424 +1,519 @@
 {
   "v": 4,
+  "updatedAt": "2026-08-07T19:30:48.158Z",
   "players": [
     {
       "id": "c04e4jsc",
       "name": "Paulinho",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "13",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "3a6qrb5o",
       "name": "Leandro",
       "primary": {
         "position": "fixo",
-        "level": "nativo"
+        "stars": 5
       },
       "secondary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "3bk2x1ya",
       "name": "Brizza",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": {
         "position": "fixo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "na3m57u1",
       "name": "Dudu",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 2
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "fing6501",
       "name": "Bruninho",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 3
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "da3pkntb",
       "name": "Renato",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "ihjjs7ny",
       "name": "Gui",
       "primary": {
         "position": "fixo",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "och72djy",
       "name": "Patrão",
       "primary": {
         "position": "fixo",
-        "level": "nativo"
+        "stars": 5
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "6le274n0",
       "name": "Felipe",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 2
       },
       "secondary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 2
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "vlj130hf",
       "name": "Will",
       "primary": {
         "position": "pivo",
-        "level": "nativo"
+        "stars": 5
       },
       "secondary": {
         "position": "fixo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "v440nyj5",
       "name": "Júlio",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": {
         "position": "pivo",
-        "level": "improvisado"
+        "stars": 2
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "lc7kjr1l",
       "name": "Juninho",
       "primary": {
         "position": "fixo",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "4loro9d7",
       "name": "Leiz",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 2
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "4i5e5dnx",
       "name": "Cris",
       "primary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "goexclc7",
       "name": "Sagu",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 5
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "g392acow",
       "name": "Danilinho",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 2
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "xc6kxlk5",
       "name": "Maia",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "1lo9d7ot",
       "name": "Fábio",
       "primary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 4
       },
       "secondary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "q0i74yd7",
       "name": "Daniel B.",
       "primary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 2
       },
       "secondary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 2
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "vk6nnhld",
       "name": "Medina",
       "primary": {
         "position": "ala",
-        "level": "improvisado"
+        "stars": 1
       },
       "secondary": {
         "position": "pivo",
-        "level": "improvisado"
+        "stars": 1
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "eqklwjq4",
       "name": "Rafinha",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "5x29v8hn",
       "name": "Waldir",
       "primary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 2
       },
       "secondary": {
         "position": "ala",
-        "level": "improvisado"
+        "stars": 1
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "pem3iz20",
       "name": "Murilo",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "dltd4nxp",
       "name": "Tiago",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 5
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "q62q1pxy",
       "name": "Thiaguinho",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "au7rynh9",
       "name": "Teves",
       "primary": {
         "position": "goleiro",
-        "level": "nativo"
+        "stars": 3
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "splc2r7u2ea",
       "name": "Emerson",
       "primary": {
         "position": "ala",
-        "level": "nativo"
+        "stars": 4
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "jyw3v5fz8gv",
       "name": "Coutinho",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 3
       },
       "secondary": null,
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     },
     {
       "id": "w7umlxkw4c7",
       "name": "Massuela",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "stars": 4
       },
       "secondary": {
         "position": "pivo",
-        "level": "adaptado"
+        "stars": 3
       },
       "active": true,
       "photo": null,
       "number": "",
-      "club": ""
+      "club": "",
+      "origin": "",
+      "champConf": "media"
+    },
+    {
+      "id": "yhzlnt5394m",
+      "name": "Praxedes",
+      "primary": {
+        "position": "fixo",
+        "stars": 4
+      },
+      "secondary": {
+        "position": "ala",
+        "stars": 4
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": "",
+      "origin": "",
+      "champConf": "media"
+    },
+    {
+      "id": "yz06djbra28",
+      "name": "Wandu",
+      "primary": {
+        "position": "ala",
+        "stars": 2
+      },
+      "secondary": {
+        "position": "pivo",
+        "stars": 2
+      },
+      "active": true,
+      "photo": null,
+      "number": "",
+      "club": "",
+      "origin": "",
+      "champConf": "media"
     }
   ],
   "sessions": [
@@ -492,17 +587,80 @@
         "3a6qrb5o": 3
       },
       "wins": {}
+    },
+    {
+      "id": "9lsuf20eyzd",
+      "date": "2026-08-09",
+      "attendees": [
+        "4i5e5dnx",
+        "3bk2x1ya",
+        "och72djy",
+        "c04e4jsc",
+        "yhzlnt5394m",
+        "eqklwjq4",
+        "pem3iz20",
+        "yz06djbra28",
+        "lc7kjr1l",
+        "v440nyj5",
+        "vk6nnhld",
+        "q0i74yd7"
+      ],
+      "teams": [
+        {
+          "id": "un8j800g70z",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "yhzlnt5394m",
+            "3bk2x1ya",
+            "eqklwjq4",
+            "vk6nnhld"
+          ]
+        },
+        {
+          "id": "xrxciw5070z",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "och72djy",
+            "q0i74yd7",
+            "pem3iz20",
+            "c04e4jsc"
+          ]
+        },
+        {
+          "id": "tn7vm0z570z",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "lc7kjr1l",
+            "4i5e5dnx",
+            "v440nyj5",
+            "yz06djbra28"
+          ]
+        }
+      ],
+      "numTeams": 3,
+      "goals": {},
+      "assists": {},
+      "wins": {}
     }
   ],
   "tournament": null,
   "ui": {
-    "activeSessionId": "4q4mvxzjous",
+    "activeSessionId": "9lsuf20eyzd",
     "statsPeriod": "month",
+    "showRatings": false,
     "estimate": {
       "gameMin": 5,
       "betweenMin": 2,
       "penaltyMin": 3
+    },
+    "cardFields": {
+      "number": false,
+      "club": false,
+      "conf": false,
+      "origin": false
     }
-  },
-  "updatedAt": "2026-08-04T00:24:28.853196Z"
+  }
 }
