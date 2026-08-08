@@ -2,7 +2,7 @@
 // Estratégia: network-first com fallback para cache. Assim o app funciona
 // offline (útil na quadra) mas sempre pega a versão mais nova quando há internet.
 // Ao publicar uma atualização, troque o número da versão abaixo (ex.: v2, v3...).
-const CACHE = 'futdajuf-v8';
+const CACHE = 'futdajuf-v9';
 const ASSETS = [
   './',
   './index.html',

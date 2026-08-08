@@ -706,68 +706,51 @@
   <section class="panel active" id="panel-elenco">
     <div class="card">
       <div class="card-title">Adicionar jogador ao elenco</div>
-      <div class="form-row form-row-2">
+      <div class="form-row">
         <div>
           <label for="player-name">Nome</label>
           <input type="text" id="player-name" placeholder="Ex: Ricardinho" autocomplete="off">
-        </div>
-        <div class="form-row-2" style="display:grid; gap:12px;">
-          <div>
-            <label for="player-number">Número favorito</label>
-            <input type="number" id="player-number" placeholder="10" min="0" max="99" autocomplete="off">
-          </div>
-          <div>
-            <label for="player-club">Time do coração</label>
-            <input type="text" id="player-club" placeholder="Ex: Corinthians" autocomplete="off">
-          </div>
-        </div>
-      </div>
-      <div class="form-row form-row-2">
-        <div>
-          <label for="player-origin">De onde veio</label>
-          <select id="player-origin">
-            <option value="">— não definido —</option>
-            <option value="domingo">Fut domingo</option>
-            <option value="quinta">Fut quinta</option>
-            <option value="conhecidas">Conhecidas</option>
-          </select>
-        </div>
-        <div>
-          <label for="player-conf">Confiança p/ campeonato</label>
-          <select id="player-conf">
-            <option value="alta">Alta — deve ir</option>
-            <option value="media" selected>Média — talvez</option>
-            <option value="baixa">Baixa — difícil</option>
-          </select>
         </div>
       </div>
       <div class="form-row form-row-2">
         <div class="position-block">
           <div class="position-block-title">Posição principal</div>
           <div class="position-fields">
-            <select id="primary-pos">
+            <div><label>Função</label><select id="primary-pos">
               <option value="">Selecione</option>
               <option value="goleiro">Goleiro</option>
               <option value="fixo">Fixo</option>
               <option value="ala">Ala</option>
               <option value="pivo">Pivô</option>
-            </select>
-            <div class="rating-field"><label style="margin:0 0 4px;">Nota</label><span class="star-input" id="primary-stars" data-stars="3"></span></div>
+            </select></div>
+            <div><label>Nível</label><select id="primary-level">
+              <option value="nativo">Nativo</option>
+              <option value="adaptado">Adaptado</option>
+              <option value="improvisado">Improvisado</option>
+            </select></div>
           </div>
         </div>
         <div class="position-block">
           <div class="position-block-title">Segunda opção (opcional)</div>
           <div class="position-fields">
-            <select id="secondary-pos">
+            <div><label>Função</label><select id="secondary-pos">
               <option value="">Nenhuma</option>
               <option value="goleiro">Goleiro</option>
               <option value="fixo">Fixo</option>
               <option value="ala">Ala</option>
               <option value="pivo">Pivô</option>
-            </select>
-            <div class="rating-field"><label style="margin:0 0 4px;">Nota</label><span class="star-input" id="secondary-stars" data-stars="3"></span></div>
+            </select></div>
+            <div><label>Nível</label><select id="secondary-level">
+              <option value="nativo">Nativo</option>
+              <option value="adaptado">Adaptado</option>
+              <option value="improvisado">Improvisado</option>
+            </select></div>
           </div>
         </div>
+      </div>
+      <div class="rating-field" style="margin-bottom:14px;">
+        <label>Nota geral</label>
+        <span class="star-input" id="player-stars" data-stars="3"></span>
       </div>
       <button class="primary" id="add-player">Adicionar</button>
     </div>
@@ -781,21 +764,13 @@
           <button data-view="kanban" title="Por posição">▤ Posição</button>
         </div>
       </div>
-      <div class="list-search" style="display:flex; gap:8px; flex-wrap:wrap;">
-        <input type="text" id="roster-search" placeholder="Filtrar por nome, número ou time…" autocomplete="off" style="flex:1; min-width:180px;">
-        <select id="roster-origin-filter" style="width:auto;">
-          <option value="">Todas as origens</option>
-          <option value="domingo">Fut domingo</option>
-          <option value="quinta">Fut quinta</option>
-          <option value="conhecidas">Conhecidas</option>
-        </select>
-      </div>
+      <div class="list-search"><input type="text" id="roster-search" placeholder="Filtrar por nome…" autocomplete="off"></div>
       <div id="roster-container"></div>
       <div class="legend roster-legend">
-        <span class="legend-item"><span class="cdot" style="width:7px;height:7px;border-radius:50%;background:var(--nativo);display:inline-block;"></span>Vai</span>
-        <span class="legend-item"><span class="cdot" style="width:7px;height:7px;border-radius:50%;background:var(--adaptado);display:inline-block;"></span>Talvez</span>
-        <span class="legend-item"><span class="cdot" style="width:7px;height:7px;border-radius:50%;background:var(--improvisado);display:inline-block;"></span>Difícil (confiança p/ campeonato)</span>
-        <span class="legend-item ratings-hint">★ = nota do jogador (0 a 5).</span>
+        <span class="legend-item"><span class="dot nativo"></span>Nativo</span>
+        <span class="legend-item"><span class="dot adaptado"></span>Adaptado</span>
+        <span class="legend-item"><span class="dot improvisado"></span>Improvisado</span>
+        <span class="legend-item ratings-hint">★ = nota geral (0 a 5).</span>
         <span class="legend-item">Toque para editar.</span>
       </div>
     </div>
@@ -988,26 +963,6 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Informações nos cards</div>
-      <div class="settings-desc" style="margin-bottom:8px;">Por padrão, os cards mostram só nome, posição e estatísticas. Ative aqui o que quiser exibir também.</div>
-      <div class="toggle-line">
-        <div><div class="settings-label">Número favorito</div></div>
-        <input type="checkbox" class="check cf-toggle" data-cf="number">
-      </div>
-      <div class="toggle-line">
-        <div><div class="settings-label">Time do coração</div></div>
-        <input type="checkbox" class="check cf-toggle" data-cf="club">
-      </div>
-      <div class="toggle-line">
-        <div><div class="settings-label">Confiança p/ campeonato</div></div>
-        <input type="checkbox" class="check cf-toggle" data-cf="conf">
-      </div>
-      <div class="toggle-line">
-        <div><div class="settings-label">Origem (de onde veio)</div></div>
-        <input type="checkbox" class="check cf-toggle" data-cf="origin">
-      </div>
-    </div>
-    <div class="card">
       <div class="card-title">Backup automático (tudo)</div>
       <div class="settings-row">
         <div>
@@ -1061,28 +1016,40 @@
       <div class="position-block">
         <div class="position-block-title">Posição principal</div>
         <div class="position-fields">
-          <select id="edit-primary-pos">
+          <div><label>Função</label><select id="edit-primary-pos">
             <option value="goleiro">Goleiro</option>
             <option value="fixo">Fixo</option>
             <option value="ala">Ala</option>
             <option value="pivo">Pivô</option>
-          </select>
-          <div class="rating-field"><label style="margin:0 0 4px;">Nota</label><span class="star-input" id="edit-primary-stars" data-stars="3"></span></div>
+          </select></div>
+          <div><label>Nível</label><select id="edit-primary-level">
+            <option value="nativo">Nativo</option>
+            <option value="adaptado">Adaptado</option>
+            <option value="improvisado">Improvisado</option>
+          </select></div>
         </div>
       </div>
       <div class="position-block">
         <div class="position-block-title">Segunda opção (opcional)</div>
         <div class="position-fields">
-          <select id="edit-secondary-pos">
+          <div><label>Função</label><select id="edit-secondary-pos">
             <option value="">Nenhuma</option>
             <option value="goleiro">Goleiro</option>
             <option value="fixo">Fixo</option>
             <option value="ala">Ala</option>
             <option value="pivo">Pivô</option>
-          </select>
-          <div class="rating-field"><label style="margin:0 0 4px;">Nota</label><span class="star-input" id="edit-secondary-stars" data-stars="3"></span></div>
+          </select></div>
+          <div><label>Nível</label><select id="edit-secondary-level">
+            <option value="nativo">Nativo</option>
+            <option value="adaptado">Adaptado</option>
+            <option value="improvisado">Improvisado</option>
+          </select></div>
         </div>
       </div>
+    </div>
+    <div class="rating-field" style="margin-bottom:14px;">
+      <label>Nota geral</label>
+      <span class="star-input" id="edit-stars" data-stars="3"></span>
     </div>
     <div class="toggle-line">
       <div>
@@ -1090,36 +1057,6 @@
         <div class="settings-desc">Jogadores inativos não aparecem na lista de presença.</div>
       </div>
       <input type="checkbox" class="check" id="edit-active">
-    </div>
-    <div class="modal-section">Outras informações</div>
-    <div class="form-row form-row-2">
-      <div>
-        <label for="edit-number">Número favorito</label>
-        <input type="number" id="edit-number" min="0" max="99" autocomplete="off">
-      </div>
-      <div>
-        <label for="edit-club">Time do coração</label>
-        <input type="text" id="edit-club" autocomplete="off">
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div>
-        <label for="edit-origin">De onde veio</label>
-        <select id="edit-origin">
-          <option value="">— não definido —</option>
-          <option value="domingo">Fut domingo</option>
-          <option value="quinta">Fut quinta</option>
-          <option value="conhecidas">Conhecidas</option>
-        </select>
-      </div>
-      <div>
-        <label for="edit-conf">Confiança p/ campeonato</label>
-        <select id="edit-conf">
-          <option value="alta">Alta — deve ir</option>
-          <option value="media">Média — talvez</option>
-          <option value="baixa">Baixa — difícil</option>
-        </select>
-      </div>
     </div>
     <div class="modal-footer">
       <button class="ghost" id="btn-modal-delete">Excluir jogador</button>
@@ -1136,7 +1073,7 @@
   'use strict';
 
   // ============ State ============
-  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, showRatings: false, cardFields: { number: false, club: false, conf: false, origin: false } } };
+  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, showRatings: false } };
   let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
   let hadLocalData = false;
 
@@ -1156,28 +1093,33 @@
   let gitPublishedAt = null; // data da versão publicada no GitHub (preenchida no boot)
 
   function starsFromLevel(lv) { return lv === 'nativo' ? 5 : lv === 'adaptado' ? 3 : lv === 'improvisado' ? 1 : 3; }
+  function levelFromStars(s) { s = +s; return s >= 4 ? 'nativo' : s >= 2 ? 'adaptado' : 'improvisado'; }
   function migPos(pos) {
-    if (!pos) return null;
-    let stars = (pos.stars === 0 || pos.stars) ? Math.max(0, Math.min(5, +pos.stars)) : starsFromLevel(pos.level);
-    return { position: pos.position, stars };
+    if (!pos || !pos.position) return null;
+    const level = pos.level ? pos.level : levelFromStars(pos.stars); // aceita formato antigo (level) e o intermediário (stars)
+    return { position: pos.position, level };
+  }
+  function globalStarsOf(pl) {
+    if (pl.stars === 0 || pl.stars) return clampStars(pl.stars);
+    if (pl.primary && (pl.primary.stars === 0 || pl.primary.stars)) return clampStars(pl.primary.stars);
+    if (pl.primary && pl.primary.level) return starsFromLevel(pl.primary.level);
+    return 3;
   }
   function migrate(p) {
     const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
     s.updatedAt = p.updatedAt || null;
     s.players = (p.players || []).map(pl => ({
       id: pl.id || uid(), name: pl.name,
-      primary: migPos(pl.primary) || { position: 'ala', stars: 3 },
+      primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
       active: pl.active !== false, photo: pl.photo || null,
-      number: (pl.number === 0 || pl.number) ? String(pl.number) : '', club: pl.club || '',
-      origin: pl.origin || '', champConf: pl.champConf || 'media'
+      stars: globalStarsOf(pl)
     }));
     s.sessions = (p.sessions || []).map(migrateSession);
     s.tournament = p.tournament || null;
     s.ui = Object.assign({ activeSessionId: null, statsPeriod: 'month', showRatings: false }, p.ui || {});
     s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3 }, (p.ui && p.ui.estimate) || {});
-    s.ui.cardFields = Object.assign({ number: false, club: false, conf: false, origin: false }, (p.ui && p.ui.cardFields) || {});
-    delete s.ui.hideLevels;
+    delete s.ui.hideLevels; delete s.ui.cardFields;
     return s;
   }
   // Converte o modelo antigo (jogo a jogo) para totais do dia
@@ -1203,9 +1145,9 @@
     const s = JSON.parse(JSON.stringify(DEFAULT_STATE));
     s.players = (p.players || []).map(pl => ({
       id: pl.id || uid(), name: pl.name,
-      primary: migPos(pl.primary) || { position: 'ala', stars: 3 },
+      primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
-      active: true, photo: null, number: '', club: '', origin: '', champConf: 'media'
+      active: true, photo: null, stars: globalStarsOf(pl)
     }));
     return s;
   }
@@ -1219,16 +1161,14 @@
 
   // ============ Constants & helpers ============
   const POS_LABELS = { goleiro: 'Goleiro', fixo: 'Fixo', ala: 'Ala', pivo: 'Pivô' };
-  const ORIGIN_LABELS = { domingo: 'Fut domingo', quinta: 'Fut quinta', conhecidas: 'Conhecidas' };
-  const ORIGIN_SHORT = { domingo: 'Domingo', quinta: 'Quinta', conhecidas: 'Conhecidas' };
-  const CONF = { alta: { label: 'Vai', full: 'Alta' }, media: { label: 'Talvez', full: 'Média' }, baixa: { label: 'Difícil', full: 'Baixa' } };
+  const LEVEL_LABELS = { nativo: 'Nativo', adaptado: 'Adaptado', improvisado: 'Improvisado' };
+  const LEVEL_RANK = { nativo: 0, adaptado: 1, improvisado: 2 };
+  const LEVEL_VAL = { nativo: 3, adaptado: 2, improvisado: 1 };
   const TEAM_COLORS = ['#A78BFA', '#22D3EE', '#34D399', '#FB7185', '#FBBF24', '#60A5FA', '#F472B6', '#A3E635'];
   const TEAM_NAMES = ['Time A', 'Time B', 'Time C', 'Time D', 'Time E', 'Time F', 'Time G', 'Time H'];
 
   function clampStars(n) { n = Math.round(+n || 0); return Math.max(0, Math.min(5, n)); }
   function starsHtml(n) { n = clampStars(n); return `<span class="stars-view">${'<i>★</i>'.repeat(n)}${'<i class="e">★</i>'.repeat(5 - n)}</span>`; }
-  function confBadge(conf) { const c = CONF[conf] || CONF.media; return `<span class="conf-badge conf-${conf || 'media'}"><span class="cdot"></span>${c.label}</span>`; }
-  function originTag(o) { return o && ORIGIN_LABELS[o] ? `<span class="origin-tag">${ORIGIN_SHORT[o]}</span>` : ''; }
 
   function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3); }
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -1236,7 +1176,7 @@
   function playerName(id) { const p = playerById(id); return p ? p.name : '(removido)'; }
   function initials(name) { const parts = name.trim().split(/\s+/); return ((parts[0] || '')[0] || '') + (parts.length > 1 ? (parts[parts.length - 1][0] || '') : ''); }
 
-  // Star input widget (clicável)
+  // Star input widget (clicável) — nota geral
   function paintStars(box) {
     const v = clampStars(box.dataset.stars);
     box.innerHTML = [1, 2, 3, 4, 5].map(i => `<span data-s="${i}" class="${i <= v ? '' : 'empty'}">★</span>`).join('');
@@ -1246,7 +1186,7 @@
   document.addEventListener('click', e => {
     const s = e.target.closest && e.target.closest('.star-input span[data-s]'); if (!s) return;
     const box = s.closest('.star-input'); const clicked = +s.dataset.s; const cur = clampStars(box.dataset.stars);
-    box.dataset.stars = (clicked === 1 && cur === 1) ? 0 : clicked; // clique na 1ª estrela quando já é 1 => 0
+    box.dataset.stars = (clicked === 1 && cur === 1) ? 0 : clicked;
     paintStars(box);
   });
 
@@ -1289,14 +1229,16 @@
 
   // ============ Balancing (pure) ============
   function playerScore(p) {
-    let s = p.primary.stars || 0;
-    if (p.secondary) s += (p.secondary.stars || 0) * 0.4;
+    // combina nível por função + nota geral em estrelas
+    let s = (LEVEL_VAL[p.primary.level] || 2) * 1.5;
+    if (p.secondary) s += (LEVEL_VAL[p.secondary.level] || 2) * 0.5;
+    s += (p.stars || 0);
     return s;
   }
   function goalieRankOf(p) {
-    // menor = melhor goleiro. Estrelas: 5 = melhor.
-    if (p.primary.position === 'goleiro') return 5 - (p.primary.stars || 0);
-    if (p.secondary && p.secondary.position === 'goleiro') return 11 - (p.secondary.stars || 0);
+    // menor = melhor goleiro; por função (nível), com a nota geral como desempate
+    if (p.primary.position === 'goleiro') return LEVEL_RANK[p.primary.level] - (p.stars || 0) * 0.1;
+    if (p.secondary && p.secondary.position === 'goleiro') return 3 + LEVEL_RANK[p.secondary.level] - (p.stars || 0) * 0.1;
     return Infinity;
   }
   function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
@@ -1320,7 +1262,7 @@
     const goalies = shuffle(players.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
     const teamOrder = shuffle(teams.slice());
     for (let i = 0; i < numTeams; i++) {
-      const pick = goalies.find(g => !used.has(g.id) && goalieRankOf(g) <= 5);
+      const pick = goalies.find(g => !used.has(g.id) && goalieRankOf(g) <= 4);
       if (pick) { teamOrder[i].players.push(pick.id); used.add(pick.id); }
     }
     const remaining = shuffle(players.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
@@ -1397,20 +1339,17 @@
 
   // ============ ELENCO ============
   let rosterFilter = '';
-  let rosterOrigin = '';
   let rosterView = 'cards';
   const nameInput = document.getElementById('player-name');
   document.getElementById('add-player').addEventListener('click', addPlayer);
   nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPlayer(); });
   document.getElementById('roster-search').addEventListener('input', e => { rosterFilter = e.target.value.trim().toLowerCase(); renderRoster(); });
-  document.getElementById('roster-origin-filter').addEventListener('change', e => { rosterOrigin = e.target.value; renderRoster(); });
   document.querySelectorAll('#roster-view-toggle button').forEach(b => b.addEventListener('click', () => {
     rosterView = b.dataset.view;
     document.querySelectorAll('#roster-view-toggle button').forEach(x => x.classList.toggle('active', x === b));
     renderRoster();
   }));
-  // pinta os star inputs iniciais
-  ['primary-stars', 'secondary-stars', 'edit-primary-stars', 'edit-secondary-stars'].forEach(id => { const el = document.getElementById(id); if (el) paintStars(el); });
+  ['player-stars', 'edit-stars'].forEach(id => { const el = document.getElementById(id); if (el) paintStars(el); });
 
   function addPlayer() {
     const name = nameInput.value.trim();
@@ -1420,29 +1359,25 @@
     const sPos = document.getElementById('secondary-pos').value;
     state.players.push({
       id: uid(), name,
-      primary: { position: pPos, stars: getStars('primary-stars') },
-      secondary: sPos ? { position: sPos, stars: getStars('secondary-stars') } : null,
+      primary: { position: pPos, level: document.getElementById('primary-level').value },
+      secondary: sPos ? { position: sPos, level: document.getElementById('secondary-level').value } : null,
       active: true, photo: null,
-      number: document.getElementById('player-number').value.trim(),
-      club: document.getElementById('player-club').value.trim(),
-      origin: document.getElementById('player-origin').value,
-      champConf: document.getElementById('player-conf').value
+      stars: getStars('player-stars')
     });
     save();
     renderRoster();
     nameInput.value = '';
     document.getElementById('primary-pos').value = '';
     document.getElementById('secondary-pos').value = '';
-    document.getElementById('player-number').value = '';
-    document.getElementById('player-club').value = '';
-    document.getElementById('player-origin').value = '';
-    document.getElementById('player-conf').value = 'media';
-    setStars('primary-stars', 3); setStars('secondary-stars', 3);
+    document.getElementById('primary-level').value = 'nativo';
+    document.getElementById('secondary-level').value = 'nativo';
+    setStars('player-stars', 3);
     nameInput.focus();
   }
 
-  function posBadge(pl) { return `<span class="pos-badge">${POS_LABELS[pl.position]} ${starsHtml(pl.stars)}</span>`; }
+  function posBadge(pl) { return `<span class="pos-badge"><span class="dot ${pl.level}"></span>${POS_LABELS[pl.position]}</span>`; }
   function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}" ${p.photo ? `style="background-image:url('${escapeHtml(p.photo)}')"` : ''}>${p.photo ? '' : escapeHtml(initials(p.name).toUpperCase())}</div>`; }
+  function globalStarsLine(p) { return `<div class="pc-meta">${starsHtml(p.stars)}</div>`; }
 
   function renderRoster() {
     const cont = document.getElementById('roster-container');
@@ -1454,8 +1389,7 @@
     if (state.players.length === 0) { cont.innerHTML = '<div class="empty">Nenhum jogador no elenco ainda.</div>'; return; }
 
     let list = state.players.slice().sort((a, b) => (b.active - a.active) || a.name.localeCompare(b.name));
-    if (rosterOrigin) list = list.filter(p => (p.origin || '') === rosterOrigin);
-    if (rosterFilter) list = list.filter(p => (p.name + ' ' + (p.number || '') + ' ' + (p.club || '')).toLowerCase().includes(rosterFilter));
+    if (rosterFilter) list = list.filter(p => p.name.toLowerCase().includes(rosterFilter));
     if (!list.length) { cont.innerHTML = '<div class="no-match">Nenhum jogador encontrado.</div>'; return; }
 
     if (rosterView === 'cards') cont.innerHTML = rosterCardsHtml(list, stats);
@@ -1465,17 +1399,7 @@
     cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerModal(el.dataset.edit)));
   }
 
-  function cf() { return state.ui.cardFields || { number: false, club: false, conf: false, origin: false }; }
-  function metaHtml(p) {
-    const c = cf(); const parts = [];
-    if (c.conf) parts.push(confBadge(p.champConf));
-    if (c.origin && p.origin) parts.push(originTag(p.origin));
-    if (c.club && p.club) parts.push(`<span class="player-club">${escapeHtml(p.club)}</span>`);
-    return parts.length ? `<div class="pc-meta">${parts.join('')}</div>` : '';
-  }
-
   function rosterCardsHtml(list, stats) {
-    const c = cf();
     return '<div class="roster-grid">' + list.map(p => {
       const st = stats[p.id] || {}; const wp = winPct(st);
       return `
@@ -1484,11 +1408,10 @@
         <div class="player-card-top">
           ${avatarHtml(p)}
           <div style="min-width:0;">
-            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${c.number && p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}</div>
+            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${starsHtml(p.stars)}</div>
             <div class="player-card-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
           </div>
         </div>
-        ${metaHtml(p)}
         <div class="player-stats">
           <div class="stat"><div class="stat-val">${st.presencas || 0}</div><div class="stat-label">Presenças</div></div>
           <div class="stat"><div class="stat-val accent">${st.gols || 0}</div><div class="stat-label">Gols</div></div>
@@ -1500,19 +1423,14 @@
   }
 
   function rosterListHtml(list, stats) {
-    const c = cf();
     return '<div class="roster-list">' + list.map(p => {
       const st = stats[p.id] || {}; const wp = winPct(st);
-      const extras = [];
-      if (c.conf) extras.push(confBadge(p.champConf));
-      if (c.origin && p.origin) extras.push(originTag(p.origin));
-      if (c.club && p.club) extras.push(`<span class="player-club">${escapeHtml(p.club)}</span>`);
       return `
       <div class="roster-row ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
         ${avatarHtml(p)}
         <div class="roster-row-main">
-          <div class="roster-row-name">${escapeHtml(p.name)}${c.number && p.number ? `<span class="player-number">#${escapeHtml(p.number)}</span>` : ''}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
-          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${extras.join('')}</div>
+          <div class="roster-row-name">${escapeHtml(p.name)} ${starsHtml(p.stars)}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
         </div>
         <div class="roster-row-stats">
           <span>P <b>${st.presencas || 0}</b></span>
@@ -1525,7 +1443,6 @@
   }
 
   function rosterKanbanHtml(list, stats) {
-    const c = cf();
     const cols = ['goleiro', 'fixo', 'ala', 'pivo'];
     return '<div class="kanban">' + cols.map(pos => {
       const inCol = list.filter(p => p.primary.position === pos);
@@ -1533,8 +1450,8 @@
         <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
         ${inCol.length ? inCol.map(p => { const st = stats[p.id] || {}; return `
           <div class="kanban-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
-            <div class="kanban-name">${escapeHtml(p.name)}${c.number && p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''} ${starsHtml(p.primary.stars)}</div>
-            <div class="kanban-sub">${c.conf ? confBadge(p.champConf) + ' · ' : ''}${st.gols || 0}⚽ · ${st.presencas || 0}P</div>
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)} ${starsHtml(p.stars)}</div>
+            <div class="kanban-sub">${st.gols || 0}⚽ · ${st.assist || 0}🅰 · ${st.presencas || 0}P</div>
           </div>`; }).join('') : '<div class="kanban-empty">—</div>'}
       </div>`;
     }).join('') + '</div>';
@@ -1547,14 +1464,11 @@
     const p = playerById(id); if (!p) return;
     editingPlayerId = id;
     document.getElementById('edit-name').value = p.name;
-    document.getElementById('edit-number').value = p.number || '';
-    document.getElementById('edit-club').value = p.club || '';
-    document.getElementById('edit-origin').value = p.origin || '';
-    document.getElementById('edit-conf').value = p.champConf || 'media';
     document.getElementById('edit-primary-pos').value = p.primary.position;
-    setStars('edit-primary-stars', p.primary.stars);
+    document.getElementById('edit-primary-level').value = p.primary.level;
     document.getElementById('edit-secondary-pos').value = p.secondary ? p.secondary.position : '';
-    setStars('edit-secondary-stars', p.secondary ? p.secondary.stars : 3);
+    document.getElementById('edit-secondary-level').value = p.secondary ? p.secondary.level : 'nativo';
+    setStars('edit-stars', p.stars);
     document.getElementById('edit-active').checked = p.active;
     modal.classList.add('show');
     setTimeout(() => document.getElementById('edit-name').focus(), 50);
@@ -1565,13 +1479,10 @@
     const name = document.getElementById('edit-name').value.trim();
     if (!name) { alert('Nome não pode ficar vazio.'); return; }
     p.name = name;
-    p.number = document.getElementById('edit-number').value.trim();
-    p.club = document.getElementById('edit-club').value.trim();
-    p.origin = document.getElementById('edit-origin').value;
-    p.champConf = document.getElementById('edit-conf').value;
-    p.primary = { position: document.getElementById('edit-primary-pos').value, stars: getStars('edit-primary-stars') };
+    p.primary = { position: document.getElementById('edit-primary-pos').value, level: document.getElementById('edit-primary-level').value };
     const sPos = document.getElementById('edit-secondary-pos').value;
-    p.secondary = sPos ? { position: sPos, stars: getStars('edit-secondary-stars') } : null;
+    p.secondary = sPos ? { position: sPos, level: document.getElementById('edit-secondary-level').value } : null;
+    p.stars = getStars('edit-stars');
     p.active = document.getElementById('edit-active').checked;
     save(); renderRoster(); renderSessionEditor(); closePlayerModal();
   }
@@ -1659,7 +1570,7 @@
     if (!list.length) { grid.innerHTML = '<div class="no-match">Nenhum jogador encontrado.</div>'; return; }
     grid.innerHTML = list.map(p => {
       const on = sess.attendees.includes(p.id);
-      return `<div class="chip ${on ? 'on' : ''}" data-att="${p.id}"><span class="chip-check"></span>${escapeHtml(p.name)}${p.number ? ` <span style="color:var(--muted);">#${escapeHtml(p.number)}</span>` : ''}</div>`;
+      return `<div class="chip ${on ? 'on' : ''}" data-att="${p.id}"><span class="chip-check"></span>${escapeHtml(p.name)}</div>`;
     }).join('');
     grid.querySelectorAll('[data-att]').forEach(chip => chip.addEventListener('click', () => {
       const pid = chip.dataset.att;
@@ -1906,7 +1817,7 @@
       <ol>
         <li>Primeiro os <strong>goleiros</strong> são distribuídos — um por time, começando pelos de maior nota.</li>
         <li>Depois cada jogador entra no time que tem <strong>menos gente da posição principal dele</strong>, para não concentrar alas ou pivôs num time só.</li>
-        <li>Em caso de empate, vai para o time com <strong>menor nota somada</strong> (a nota em estrelas de cada jogador; a 2ª posição soma um pouco).</li>
+        <li>Em caso de empate, vai para o time com <strong>menor força somada</strong> — a força mistura o <strong>nível por função</strong> (nativo &gt; adaptado &gt; improvisado) com a <strong>nota geral</strong> em estrelas do jogador.</li>
         <li>Empates ainda restantes são sorteados — por isso, clicar de novo em <strong>Gerar balanceado</strong> dá combinações diferentes e igualmente equilibradas.</li>
       </ol>
       Quer montar do seu jeito? Use <strong>Zerar (montar na mão)</strong> e arraste os jogadores do banco para os times.`;
@@ -1938,8 +1849,8 @@
         <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
         ${inCol.length ? inCol.map(p => `
           <div class="kanban-card selectable ${champSelected.has(p.id) ? 'on' : ''}" data-champ-att="${p.id}">
-            <div class="kanban-name">${escapeHtml(p.name)}${p.number ? ` <span class="player-number">#${escapeHtml(p.number)}</span>` : ''} ${starsHtml(p.primary.stars)}</div>
-            <div class="kanban-sub">${confBadge(p.champConf)}</div>
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)} ${starsHtml(p.stars)}</div>
+            <div class="kanban-sub">${POS_LABELS[p.primary.position]}</div>
           </div>`).join('') : '<div class="kanban-empty">—</div>'}
       </div>`;
     }).join('') + '</div>';
@@ -2307,7 +2218,7 @@
         <div class="team-name"><span class="team-swatch" style="background:${tm.color};"></span>${escapeHtml(tm.name)}</div>
         <select data-captain="${tm.id}">
           <option value="">— sem capitão —</option>
-          ${tm.players.map(pid => { const p = playerById(pid); return p ? `<option value="${pid}" ${t.captains[tm.id] === pid ? 'selected' : ''}>${escapeHtml(p.name)}${p.number ? ' #' + escapeHtml(p.number) : ''}</option>` : ''; }).join('')}
+          ${tm.players.map(pid => { const p = playerById(pid); return p ? `<option value="${pid}" ${t.captains[tm.id] === pid ? 'selected' : ''}>${escapeHtml(p.name)}</option>` : ''; }).join('')}
         </select>
       </div>`).join('');
     document.querySelectorAll('#captains-container [data-captain]').forEach(sel => sel.addEventListener('change', () => {
@@ -2425,20 +2336,20 @@
   const csvEsc = s => { const v = String(s == null ? '' : s); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
 
   function exportCsv() {
-    const header = 'nome,numero,time_do_coracao,origem,confianca_campeonato,posicao_principal,estrelas_principal,posicao_secundaria,estrelas_secundaria,ativo';
-    const rows = state.players.map(p => [csvEsc(p.name), csvEsc(p.number || ''), csvEsc(p.club || ''), p.origin || '', p.champConf || 'media', p.primary.position, p.primary.stars, p.secondary ? p.secondary.position : '', p.secondary ? p.secondary.stars : '', p.active ? 'true' : 'false'].join(','));
+    const header = 'nome,posicao_principal,nivel_principal,posicao_secundaria,nivel_secundaria,nota_geral,ativo';
+    const rows = state.players.map(p => [csvEsc(p.name), p.primary.position, p.primary.level, p.secondary ? p.secondary.position : '', p.secondary ? p.secondary.level : '', p.stars, p.active ? 'true' : 'false'].join(','));
     return [header, ...rows].join('\n');
   }
 
   // Formato longo: uma linha por jogador presente em cada fut
   function exportFutsCsv() {
-    const header = 'data,jogador,numero,time,gols,assistencias,vitorias_do_time';
+    const header = 'data,jogador,time,gols,assistencias,vitorias_do_time';
     const rows = [];
     state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date)).forEach(s => {
       const teamOf = {}; (s.teams || []).forEach(t => t.players.forEach(pid => teamOf[pid] = t));
       (s.attendees || []).forEach(pid => {
         const p = playerById(pid); const t = teamOf[pid];
-        rows.push([s.date, csvEsc(p ? p.name : pid), csvEsc(p ? (p.number || '') : ''), t ? csvEsc(t.name) : '', (s.goals || {})[pid] || 0, (s.assists || {})[pid] || 0, t ? ((s.wins || {})[t.id] || 0) : 0].join(','));
+        rows.push([s.date, csvEsc(p ? p.name : pid), t ? csvEsc(t.name) : '', (s.goals || {})[pid] || 0, (s.assists || {})[pid] || 0, t ? ((s.wins || {})[t.id] || 0) : 0].join(','));
       });
     });
     return [header, ...rows].join('\n');
@@ -2460,10 +2371,16 @@
     if (lines.length < 2) return [];
     const parseLine = line => { const out = []; let cur = '', q = false; for (let i = 0; i < line.length; i++) { const c = line[i]; if (q) { if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; } else { if (c === '"') q = true; else if (c === ',') { out.push(cur); cur = ''; } else cur += c; } } out.push(cur); return out; };
     const header = parseLine(lines[0]).map(h => h.trim().toLowerCase());
-    const vP = ['goleiro', 'fixo', 'ala', 'pivo'], vC = ['alta', 'media', 'baixa'], players = [];
-    const readStars = (starsCol, levelCol) => {
-      if (starsCol !== '' && starsCol != null && !isNaN(+starsCol)) return clampStars(+starsCol);
-      return starsFromLevel(levelCol); // compatível com CSV antigo (nivel_*)
+    const vP = ['goleiro', 'fixo', 'ala', 'pivo'], vL = ['nativo', 'adaptado', 'improvisado'], players = [];
+    const readLevel = (levelCol, starsCol) => {
+      if (vL.includes((levelCol || '').toLowerCase())) return levelCol.toLowerCase();
+      if (starsCol !== '' && starsCol != null && !isNaN(+starsCol)) return levelFromStars(+starsCol); // compat CSV com estrelas por posição
+      return 'adaptado';
+    };
+    const readGlobal = row => {
+      if (row.nota_geral !== '' && row.nota_geral != null && !isNaN(+row.nota_geral)) return clampStars(+row.nota_geral);
+      if (row.estrelas_principal !== '' && !isNaN(+row.estrelas_principal)) return clampStars(+row.estrelas_principal);
+      return starsFromLevel(readLevel(row.nivel_principal, row.estrelas_principal));
     };
     for (let i = 1; i < lines.length; i++) {
       const cols = parseLine(lines[i]), row = {};
@@ -2472,16 +2389,12 @@
       if (!name || !vP.includes(pPos)) continue;
       const sPos = row.posicao_secundaria;
       const ativo = (row.ativo || row.confirmado || '').toLowerCase();
-      const conf = (row.confianca_campeonato || '').toLowerCase();
-      const origem = (row.origem || '').toLowerCase();
       players.push({
         id: uid(), name,
-        primary: { position: pPos, stars: readStars(row.estrelas_principal, row.nivel_principal) },
-        secondary: vP.includes(sPos) ? { position: sPos, stars: readStars(row.estrelas_secundaria, row.nivel_secundaria) } : null,
+        primary: { position: pPos, level: readLevel(row.nivel_principal, row.estrelas_principal) },
+        secondary: vP.includes(sPos) ? { position: sPos, level: readLevel(row.nivel_secundaria, row.estrelas_secundaria) } : null,
         active: !(ativo === 'false' || ativo === 'nao' || ativo === 'não' || ativo === '0'), photo: null,
-        number: row.numero || '', club: row.time_do_coracao || row.time || '',
-        origin: ['domingo', 'quinta', 'conhecidas'].includes(origem) ? origem : '',
-        champConf: vC.includes(conf) ? conf : 'media'
+        stars: readGlobal(row)
       });
     }
     return players;
@@ -2574,17 +2487,6 @@
     save(); applyShowRatings();
   });
 
-  // ---- Informações nos cards ----
-  function applyCardFields() {
-    const c = state.ui.cardFields || {};
-    document.querySelectorAll('.cf-toggle').forEach(cb => { cb.checked = !!c[cb.dataset.cf]; });
-  }
-  document.querySelectorAll('.cf-toggle').forEach(cb => cb.addEventListener('change', e => {
-    state.ui.cardFields = state.ui.cardFields || { number: false, club: false, conf: false, origin: false };
-    state.ui.cardFields[cb.dataset.cf] = e.target.checked;
-    save(); renderRoster();
-  }));
-
   // ============ Init ============
   function renderAll() {
     renderRoster();
@@ -2599,7 +2501,6 @@
 
   function boot() {
     applyShowRatings();
-    applyCardFields();
     renderAll();
     document.getElementById('hybrid-config').style.display = selectedFormat === 'hybrid' ? '' : 'none';
     updatePublishStatus();
