@@ -49,7 +49,13 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .app { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+  .app {
+    max-width: 960px; margin: 0 auto;
+    padding-top: calc(24px + env(safe-area-inset-top));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: 80px;
+    padding-left: max(20px, env(safe-area-inset-left));
+  }
 
   header { margin-bottom: 22px; }
   .brand { display: flex; align-items: center; gap: 14px; }
@@ -642,6 +648,18 @@
     max-height: 90vh; overflow-y: auto;
   }
   .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .edit-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
+  .edit-photo { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+  .edit-avatar { width: 68px; height: 68px; font-size: 24px; }
+  .edit-photo-btns { display: flex; flex-direction: column; gap: 3px; }
+  .edit-photo-btns button { padding: 3px 8px; }
+  .edit-name-wrap { flex: 1; min-width: 0; }
+  .notas-row { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; opacity: 0.6; }
+  .notas-row:hover { opacity: 1; }
+  .notas-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
+  .notas-toggle input { width: 15px; height: 15px; accent-color: var(--accent); }
+  .notas-actions { display: flex; gap: 6px; }
+  button.tiny { font-size: 11px; padding: 4px 9px; }
   .modal-section { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--muted); margin: 18px 0 10px; padding-top: 14px; border-top: 1px solid var(--border); }
   .modal-footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
   .toggle-line { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
@@ -953,16 +971,6 @@
       <p class="hint" style="margin-top:10px;">Passo a passo no GitHub: <strong>Add file → Upload files</strong> → arraste o <code>dados.json</code> → edite o <code>sw.js</code> subindo o número da versão → <strong>Commit</strong>. Em ~1–2 min todos que abrirem (ou reabrirem) o link já pegam a versão nova.</p>
     </div>
     <div class="card">
-      <div class="card-title">Notas dos jogadores</div>
-      <div class="toggle-line">
-        <div>
-          <div class="settings-label">Mostrar notas (estrelas)</div>
-          <div class="settings-desc">As notas em estrelas (0 a 5) ficam ocultas por padrão. Para exibir e editar, ative aqui — pede uma senha.</div>
-        </div>
-        <input type="checkbox" class="check" id="toggle-show-ratings">
-      </div>
-    </div>
-    <div class="card">
       <div class="card-title">Backup automático (tudo)</div>
       <div class="settings-row">
         <div>
@@ -999,6 +1007,14 @@
       </div>
       <p class="hint">Onde ficam os dados: tudo é salvo automaticamente <strong>neste navegador</strong> a cada alteração. Para não depender do navegador, conecte o arquivo de backup acima (JSON, Chrome/Edge) ou baixe o JSON de vez em quando. Os CSVs são cópias para leitura/análise, não para restaurar.</p>
     </div>
+
+    <div class="notas-row">
+      <label class="notas-toggle"><input type="checkbox" id="toggle-show-ratings"><span>Mostrar notas dos jogadores</span></label>
+      <div class="rating-field notas-actions">
+        <button class="ghost neutral tiny" id="btn-download-notas">Baixar notas.json</button>
+        <button class="ghost neutral tiny" id="btn-import-notas">Importar notas.json</button>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -1006,8 +1022,16 @@
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-title">Editar jogador</div>
-    <div class="form-row">
-      <div>
+    <div class="edit-head">
+      <div class="edit-photo">
+        <div class="avatar edit-avatar" id="edit-avatar"></div>
+        <div class="edit-photo-btns">
+          <button type="button" class="ghost neutral tiny" id="btn-photo-pick">Foto</button>
+          <button type="button" class="ghost neutral tiny" id="btn-photo-remove">Remover</button>
+        </div>
+        <input type="file" id="edit-photo-input" accept="image/*" style="display:none;">
+      </div>
+      <div class="edit-name-wrap">
         <label for="edit-name">Nome</label>
         <input type="text" id="edit-name" autocomplete="off">
       </div>
@@ -1073,7 +1097,7 @@
   'use strict';
 
   // ============ State ============
-  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3 }, showRatings: false } };
+  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3, koHalfMin: 5 }, showRatings: false } };
   let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
   let hadLocalData = false;
 
@@ -1118,7 +1142,7 @@
     s.sessions = (p.sessions || []).map(migrateSession);
     s.tournament = p.tournament || null;
     s.ui = Object.assign({ activeSessionId: null, statsPeriod: 'month', showRatings: false }, p.ui || {});
-    s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3 }, (p.ui && p.ui.estimate) || {});
+    s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3, koHalfMin: 5 }, (p.ui && p.ui.estimate) || {});
     delete s.ui.hideLevels; delete s.ui.cardFields;
     return s;
   }
@@ -1241,6 +1265,24 @@
     if (p.secondary && p.secondary.position === 'goleiro') return 3 + LEVEL_RANK[p.secondary.level] - (p.stars || 0) * 0.1;
     return Infinity;
   }
+  function countGoalies(players) { return players.filter(p => p.primary.position === 'goleiro').length; }
+  // Mínimo por time: 4 normalmente; 5 se houver 3+ goleiros na lista (aí os goleiros entram na conta).
+  function minTeamSize(players) { return countGoalies(players) >= 3 ? 5 : 4; }
+  function maxTeamsFor(players) { return Math.max(1, Math.floor(players.length / minTeamSize(players))); }
+
+  function enforceMinSize(teams, idToPlayer, minSize) {
+    let guard = 0;
+    while (guard++ < 300) {
+      const small = teams.filter(t => t.players.length < minSize).sort((a, b) => a.players.length - b.players.length)[0];
+      if (!small) break;
+      const big = teams.slice().sort((a, b) => b.players.length - a.players.length)[0];
+      if (!big || big === small || big.players.length <= minSize) break; // não dá para melhorar sem quebrar outro
+      let idx = big.players.findIndex(pid => idToPlayer[pid].primary.position !== 'goleiro');
+      if (idx < 0) idx = big.players.length - 1;
+      small.players.push(big.players.splice(idx, 1)[0]);
+    }
+  }
+
   function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
   function balanceTeams(players, numTeams, balanced) {
     const teams = Array.from({ length: numTeams }, (_, i) => ({
@@ -1253,6 +1295,7 @@
     if (!balanced) {
       const sh = shuffle(players.slice());
       sh.forEach((p, i) => teams[i % numTeams].players.push(p.id));
+      enforceMinSize(teams, idToPlayer, minTeamSize(players));
       return teams;
     }
 
@@ -1278,6 +1321,7 @@
     const byPos = { fixo: [], ala: [], pivo: [], goleiro: [] };
     remaining.forEach(p => { const pos = byPos[p.primary.position] ? p.primary.position : 'ala'; byPos[pos].push(p); });
     ['fixo', 'pivo', 'ala', 'goleiro'].forEach(pos => byPos[pos].forEach(p => { pickTeam(p.primary.position).players.push(p.id); used.add(p.id); }));
+    enforceMinSize(teams, idToPlayer, minTeamSize(players));
     return teams;
   }
 
@@ -1459,10 +1503,46 @@
 
   // ---- Modal ----
   let editingPlayerId = null;
+  let editPhoto = null; // foto pendente (dataURL) enquanto o modal está aberto
   const modal = document.getElementById('modal-backdrop');
+
+  function renderEditAvatar() {
+    const el = document.getElementById('edit-avatar');
+    const name = (document.getElementById('edit-name').value || '?').trim();
+    if (editPhoto) { el.style.backgroundImage = `url('${editPhoto}')`; el.textContent = ''; }
+    else { el.style.backgroundImage = ''; el.textContent = initials(name || '?').toUpperCase(); }
+    document.getElementById('btn-photo-remove').style.display = editPhoto ? '' : 'none';
+    document.getElementById('btn-photo-pick').textContent = editPhoto ? 'Trocar' : 'Foto';
+  }
+  // Redimensiona/recorta a imagem em um quadrado pequeno (256px, JPEG) para caber no armazenamento.
+  function processImage(file, cb) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const DIM = 256, side = Math.min(img.width, img.height);
+      const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+      const canvas = document.createElement('canvas'); canvas.width = DIM; canvas.height = DIM;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, DIM, DIM);
+      try { cb(canvas.toDataURL('image/jpeg', 0.72)); } catch (e) { alert('Não consegui processar a imagem.'); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); alert('Arquivo de imagem inválido.'); };
+    img.src = url;
+  }
+  document.getElementById('btn-photo-pick').addEventListener('click', () => document.getElementById('edit-photo-input').click());
+  document.getElementById('edit-photo-input').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    processImage(f, dataUrl => { editPhoto = dataUrl; renderEditAvatar(); });
+    e.target.value = '';
+  });
+  document.getElementById('btn-photo-remove').addEventListener('click', () => { editPhoto = null; renderEditAvatar(); });
+  document.getElementById('edit-name').addEventListener('input', () => { if (!editPhoto) renderEditAvatar(); });
+
   function openPlayerModal(id) {
     const p = playerById(id); if (!p) return;
     editingPlayerId = id;
+    editPhoto = p.photo || null;
     document.getElementById('edit-name').value = p.name;
     document.getElementById('edit-primary-pos').value = p.primary.position;
     document.getElementById('edit-primary-level').value = p.primary.level;
@@ -1470,15 +1550,17 @@
     document.getElementById('edit-secondary-level').value = p.secondary ? p.secondary.level : 'nativo';
     setStars('edit-stars', p.stars);
     document.getElementById('edit-active').checked = p.active;
+    renderEditAvatar();
     modal.classList.add('show');
     setTimeout(() => document.getElementById('edit-name').focus(), 50);
   }
-  function closePlayerModal() { modal.classList.remove('show'); editingPlayerId = null; }
+  function closePlayerModal() { modal.classList.remove('show'); editingPlayerId = null; editPhoto = null; }
   function savePlayerModal() {
     const p = playerById(editingPlayerId); if (!p) { closePlayerModal(); return; }
     const name = document.getElementById('edit-name').value.trim();
     if (!name) { alert('Nome não pode ficar vazio.'); return; }
     p.name = name;
+    p.photo = editPhoto || null;
     p.primary = { position: document.getElementById('edit-primary-pos').value, level: document.getElementById('edit-primary-level').value };
     const sPos = document.getElementById('edit-secondary-pos').value;
     p.secondary = sPos ? { position: sPos, level: document.getElementById('edit-secondary-level').value } : null;
@@ -1589,14 +1671,18 @@
     const hint = document.getElementById('teams-hint');
     const present = sess.attendees.map(playerById).filter(Boolean);
     if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
-    if (present.length < numTeams) { hint.textContent = `Marque pelo menos ${numTeams} presentes. Marcados: ${present.length}.`; hint.classList.add('error'); return; }
+    const minSize = minTeamSize(present), maxT = maxTeamsFor(present);
+    if (numTeams > maxT) {
+      hint.textContent = `Com ${present.length} presentes e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
+      hint.classList.add('error'); return;
+    }
     hint.classList.remove('error');
     sess.numTeams = numTeams;
     sess.teams = balanceTeams(present, numTeams, balanced);
     sess.wins = {}; // ids dos times mudaram
     hint.innerHTML = balanced
-      ? 'Times balanceados: goleiros primeiro, depois cada jogador vai ao time com menos gente da posição dele.'
-      : 'Times sorteados aleatoriamente.';
+      ? `Times balanceados (mínimo ${minSize} por time): goleiros primeiro, depois cada jogador vai ao time com menos gente da posição dele.`
+      : `Times sorteados (mínimo ${minSize} por time).`;
     save(); renderSessionEditor();
   }
 
@@ -1871,9 +1957,13 @@
     const hint = document.getElementById('champ-teams-hint');
     const players = [...champSelected].map(playerById).filter(Boolean);
     if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
-    if (players.length < numTeams) { hint.textContent = `Selecione pelo menos ${numTeams} jogadores. Selecionados: ${players.length}.`; hint.classList.add('error'); return; }
+    const minSize = minTeamSize(players), maxT = maxTeamsFor(players);
+    if (numTeams > maxT) {
+      hint.textContent = `Com ${players.length} selecionados e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
+      hint.classList.add('error'); return;
+    }
     hint.classList.remove('error');
-    hint.textContent = (selectedFormat === 'hybrid' && numTeams < 6) ? 'Dica: o híbrido fica melhor com 6+ times, mas segue funcionando.' : '';
+    hint.textContent = (selectedFormat === 'hybrid' && numTeams < 6) ? 'Dica: o híbrido fica melhor com 6+ times, mas segue funcionando.' : `Mínimo de ${minSize} jogadores por time.`;
     state.__champTeams = balanceTeams(players, numTeams, balanced);
     state.__champBench = [];
     save(); renderChampTeamPicker(); refreshAdvanceOptions();
@@ -1934,7 +2024,7 @@
   document.getElementById('btn-generate-tournament').addEventListener('click', generateTournament);
   document.getElementById('btn-reset-tournament').addEventListener('click', () => {
     if (!confirm('Reiniciar campeonato? Placares e times serão apagados.')) return;
-    stopTimer(); live = { matchId: null, running: false, elapsed: 0, startedAt: 0 };
+    stopTimer(); live = { matchId: null, running: false, elapsed: 0, startedAt: 0, half: 1 };
     state.tournament = null; state.__champTeams = null; state.__champBench = []; champSelected = new Set();
     save(); renderChampTeamPicker();
   });
@@ -2172,20 +2262,24 @@
   function fmtDuration(min) { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? `${h} h ${m} min` : `${m} min`; }
   function countGames(leagueGames, koTeams) {
     const ko = koTeams > 1 ? koTeams - 1 : 0;
-    return { league: leagueGames, ko, total: leagueGames + ko };
+    const semisPlus = Math.min(ko, 3); // semifinais + final (dois tempos)
+    return { league: leagueGames, ko, semisPlus, earlyKo: ko - semisPlus, total: leagueGames + ko };
   }
   function renderEstimate(el, leagueGames, koTeams) {
     if (!el) return;
     const e = state.ui.estimate;
     const g = countGames(leagueGames, koTeams);
-    const total = g.total * e.gameMin + Math.max(0, g.total - 1) * e.betweenMin + g.ko * e.penaltyMin;
+    const regularGames = g.league + g.earlyKo;
+    const koFull = e.koHalfMin * 2; // dois tempos
+    const total = regularGames * e.gameMin + g.semisPlus * koFull + Math.max(0, g.total - 1) * e.betweenMin + g.ko * e.penaltyMin;
     el.innerHTML = `
       <div class="estimate-inputs">
         <div><label>Min por jogo</label><input type="number" min="1" data-est="gameMin" value="${e.gameMin}"></div>
         <div><label>Min entre jogos</label><input type="number" min="0" data-est="betweenMin" value="${e.betweenMin}"></div>
         <div><label>Pênaltis (min/jogo elim.)</label><input type="number" min="0" data-est="penaltyMin" value="${e.penaltyMin}"></div>
+        <div><label>Semis+: cada tempo (×2)</label><input type="number" min="1" data-est="koHalfMin" value="${e.koHalfMin}"></div>
       </div>
-      <div class="estimate-result">≈ <strong>${fmtDuration(total)}</strong> &nbsp;·&nbsp; ${g.total} jogos${g.ko ? ` (${g.league} na liga + ${g.ko} no mata-mata)` : ''}</div>`;
+      <div class="estimate-result">≈ <strong>${fmtDuration(total)}</strong> &nbsp;·&nbsp; ${g.total} jogos${g.ko ? ` (${g.league} na liga + ${g.ko} no mata-mata${g.semisPlus ? `, ${g.semisPlus} em 2 tempos de ${e.koHalfMin}′` : ''})` : ''}</div>`;
     el.querySelectorAll('[data-est]').forEach(inp => inp.addEventListener('input', () => {
       const v = parseInt(inp.value, 10);
       state.ui.estimate[inp.dataset.est] = (isNaN(v) || v < 0) ? 0 : v;
@@ -2249,7 +2343,7 @@
   }
 
   // ---- Jogo ao vivo (cronômetro + gols/assist em tempo real) ----
-  let live = { matchId: null, running: false, elapsed: 0, startedAt: 0 };
+  let live = { matchId: null, running: false, elapsed: 0, startedAt: 0, half: 1 };
   let liveInterval = null;
   function findTMatch(id) {
     const t = state.tournament; if (!t) return null;
@@ -2257,6 +2351,14 @@
     if (t.knockout) for (const r of t.knockout) { const mm = r.find(x => x.id === id); if (mm) return mm; }
     return null;
   }
+  // Semifinais em diante = jogo nas duas últimas rodadas do mata-mata (dois tempos).
+  function matchIsSemiPlus(id) {
+    const t = state.tournament; if (!t || !t.knockout) return false;
+    const R = t.knockout.length;
+    for (let r = 0; r < R; r++) { if (t.knockout[r].some(x => x.id === id)) return r >= R - 2; }
+    return false;
+  }
+  function liveTargetMin() { return (live.matchId && matchIsSemiPlus(live.matchId)) ? (state.ui.estimate.koHalfMin || 0) : (state.ui.estimate.gameMin || 0); }
   function liveElapsed() { return live.elapsed + (live.running ? (Date.now() - live.startedAt) : 0); }
   function fmtClock(ms) { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
   function stopTimer() { live.running = false; if (liveInterval) { clearInterval(liveInterval); liveInterval = null; } }
@@ -2267,12 +2369,12 @@
   function updateClockEl() {
     const el = document.getElementById('live-clock'); if (!el) { stopTimer(); return; }
     const ms = liveElapsed(); el.textContent = fmtClock(ms);
-    const target = (state.ui.estimate.gameMin || 0) * 60000;
+    const target = liveTargetMin() * 60000;
     el.classList.toggle('over', target > 0 && ms >= target);
   }
   function syncTimerButton() { const b = document.getElementById('btn-timer-toggle'); if (b) b.textContent = live.running ? 'Pausar' : 'Iniciar'; }
   function setLive(id) {
-    stopTimer(); live = { matchId: id, running: false, elapsed: 0, startedAt: 0 };
+    stopTimer(); live = { matchId: id, running: false, elapsed: 0, startedAt: 0, half: 1 };
     renderTournament();
     const c = document.getElementById('live-card'); if (c && c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -2312,14 +2414,22 @@
           </span>
         </div>`; }).join('')}
     </div>`;
+    const semiPlus = matchIsSemiPlus(m.id);
+    const km = state.ui.estimate.koHalfMin;
+    const centerInfo = semiPlus
+      ? `<div class="live-target">${live.half}º tempo · ${km} min &nbsp;(2 tempos)</div>`
+      : `<div class="live-target">meta: ${state.ui.estimate.gameMin} min</div>`;
+    const halfBtn = (semiPlus && live.half === 1)
+      ? `<button class="secondary" id="btn-half-next">Fim do 1º tempo</button>`
+      : '';
     card.innerHTML = `
-      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">Jogo ao vivo <button class="ghost neutral" id="btn-live-close">Fechar</button></div>
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">Jogo ao vivo${semiPlus ? ' <span class="hint" style="font-weight:400;">(semis/final — 2 tempos)</span>' : ''} <button class="ghost neutral" id="btn-live-close">Fechar</button></div>
       <div class="live-scoreboard">
         <div class="live-side"><div class="live-sname">${escapeHtml(t1.name)}</div><div class="live-score">${m.score1 || 0}</div></div>
         <div class="live-center">
           <div class="live-clock" id="live-clock">${fmtClock(liveElapsed())}</div>
-          <div class="live-target">meta: ${state.ui.estimate.gameMin} min</div>
-          <div class="live-controls"><button class="primary" id="btn-timer-toggle">${live.running ? 'Pausar' : 'Iniciar'}</button><button class="secondary" id="btn-timer-reset">Zerar</button></div>
+          ${centerInfo}
+          <div class="live-controls"><button class="primary" id="btn-timer-toggle">${live.running ? 'Pausar' : 'Iniciar'}</button>${halfBtn}<button class="secondary" id="btn-timer-reset">Zerar</button></div>
         </div>
         <div class="live-side"><div class="live-sname">${escapeHtml(t2.name)}</div><div class="live-score">${m.score2 || 0}</div></div>
       </div>
@@ -2328,6 +2438,8 @@
     document.getElementById('btn-live-close').addEventListener('click', () => { stopTimer(); live.matchId = null; renderTournament(); });
     document.getElementById('btn-timer-toggle').addEventListener('click', () => { live.running ? pauseTimer() : startTimer(); syncTimerButton(); });
     document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
+    const hb = document.getElementById('btn-half-next');
+    if (hb) hb.addEventListener('click', () => { stopTimer(); live.elapsed = 0; live.startedAt = 0; live.half = 2; renderTournament(); });
     card.querySelectorAll('[data-lg]').forEach(b => b.addEventListener('click', () => liveScore(m, parseInt(b.dataset.side, 10), b.dataset.p, b.dataset.lg, parseInt(b.dataset.d, 10))));
     if (live.running && !liveInterval) liveInterval = setInterval(tickTimer, 250);
   }
@@ -2416,9 +2528,33 @@
     setTimeout(() => downloadBlob(exportCampeonatoCsv(), 'fut-da-juf-campeonato.csv', 'text/csv;charset=utf-8'), 800);
   }
   document.getElementById('btn-download-all-csv').addEventListener('click', downloadAllCsvs);
+  // dados.json publicado NÃO leva as notas (estrelas). Elas vivem só localmente e no notas.json privado.
+  function stripStars(st) {
+    const copy = JSON.parse(JSON.stringify(st));
+    (copy.players || []).forEach(p => { delete p.stars; });
+    delete copy.__champTeams; delete copy.__champBench;
+    return copy;
+  }
   document.getElementById('btn-publish-download').addEventListener('click', () => {
     if (!state.updatedAt) state.updatedAt = new Date().toISOString();
-    downloadBlob(JSON.stringify(state, null, 2), 'dados.json', 'application/json');
+    downloadBlob(JSON.stringify(stripStars(state), null, 2), 'dados.json', 'application/json');
+  });
+  // notas.json: arquivo separado só com as estrelas (id -> nota). Só quem tem a senha vê/baixa.
+  document.getElementById('btn-download-notas').addEventListener('click', () => {
+    if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
+    const notas = {}; state.players.forEach(p => { notas[p.id] = (p.stars === 0 || p.stars) ? p.stars : 3; });
+    downloadBlob(JSON.stringify({ v: 1, updatedAt: new Date().toISOString(), notas }, null, 2), 'notas.json', 'application/json');
+  });
+  document.getElementById('btn-import-notas').addEventListener('click', () => {
+    if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
+    pickFile('.json,application/json', text => {
+      let data; try { data = JSON.parse(text); } catch (e) { alert('Arquivo inválido.'); return; }
+      const notas = data && data.notas ? data.notas : data;
+      if (!notas || typeof notas !== 'object') { alert('notas.json inválido.'); return; }
+      let n = 0; state.players.forEach(p => { if (notas[p.id] === 0 || notas[p.id]) { p.stars = clampStars(notas[p.id]); n++; } });
+      save(); renderRoster();
+      alert(`Notas aplicadas a ${n} jogador(es).`);
+    });
   });
   document.getElementById('btn-use-git').addEventListener('click', () => {
     if (confirm('Descartar as alterações locais deste aparelho e usar a versão publicada no GitHub?')) useGitVersion();
@@ -2430,12 +2566,16 @@
     if (!imported.length) { alert('Nenhum jogador válido no CSV.'); return; }
     if (confirm(`Importar ${imported.length} jogador(es)? Isso substitui o elenco atual (o histórico de futs é mantido).`)) { state.players = imported; save(); renderRoster(); }
   }));
-  document.getElementById('btn-download-json').addEventListener('click', () => downloadBlob(JSON.stringify(state, null, 2), 'fut-da-juf-backup.json', 'application/json'));
+  function overlayLocalStars(newState, oldPlayers) {
+    const m = {}; (oldPlayers || []).forEach(p => { if (p && (p.stars === 0 || p.stars)) m[p.id] = p.stars; });
+    (newState.players || []).forEach(p => { if (m[p.id] === 0 || m[p.id]) p.stars = m[p.id]; });
+  }
+  document.getElementById('btn-download-json').addEventListener('click', () => downloadBlob(JSON.stringify(stripStars(state), null, 2), 'fut-da-juf-backup.json', 'application/json'));
   document.getElementById('btn-import-json').addEventListener('click', () => pickFile('.json,application/json', text => {
     let parsed; try { parsed = JSON.parse(text); } catch (e) { alert('JSON inválido.'); return; }
     if (!parsed.players) { alert('Arquivo não parece um backup do Fut da JUF.'); return; }
-    if (confirm('Restaurar tudo a partir deste arquivo? O conteúdo atual será substituído.')) {
-      state = migrate(parsed); save(); renderAll();
+    if (confirm('Restaurar tudo a partir deste arquivo? O conteúdo atual será substituído. (As notas em estrelas atuais deste aparelho são mantidas — use Importar notas.json para trocá-las.)')) {
+      const old = state.players; state = migrate(parsed); overlayLocalStars(state, old); save(); renderAll();
     }
   }));
 
@@ -2447,7 +2587,7 @@
   async function idbGet(k) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('h', 'readonly'); const rq = tx.objectStore('h').get(k); rq.onsuccess = () => res(rq.result || null); rq.onerror = () => rej(rq.error); }); }
   async function idbDel(k) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('h', 'readwrite'); tx.objectStore('h').delete(k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
   async function verifyPerm(h, req) { const o = { mode: 'readwrite' }; if ((await h.queryPermission(o)) === 'granted') return true; if (req && (await h.requestPermission(o)) === 'granted') return true; return false; }
-  async function writeBackup() { if (!backupHandle) return; if (!(await verifyPerm(backupHandle, false))) { renderSettings(); return; } try { const w = await backupHandle.createWritable(); await w.write(JSON.stringify(state, null, 2)); await w.close(); } catch (e) { console.warn(e); } }
+  async function writeBackup() { if (!backupHandle) return; if (!(await verifyPerm(backupHandle, false))) { renderSettings(); return; } try { const w = await backupHandle.createWritable(); await w.write(JSON.stringify(stripStars(state), null, 2)); await w.close(); } catch (e) { console.warn(e); } }
   function scheduleBackup() { if (!backupHandle) return; clearTimeout(backupTimer); backupTimer = setTimeout(writeBackup, 500); }
   async function connectBackup() {
     if (!HAS_FS) { alert('Seu navegador não suporta backup automático em arquivo. Use os botões de baixar/importar.'); return; }
@@ -2508,7 +2648,9 @@
   }
 
   function adoptGitData(git) {
+    const oldPlayers = state.players;
     state = migrate(git);
+    overlayLocalStars(state, oldPlayers); // dados.json não traz notas; preserva as locais
     state.updatedAt = git.updatedAt || state.updatedAt;
     selectedFormat = state.tournament ? state.tournament.format : 'hybrid';
     champSelected = new Set();
