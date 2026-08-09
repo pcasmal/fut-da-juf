@@ -673,6 +673,14 @@
   .gh-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .gh-box input { width: 100%; }
   @media (max-width: 520px) { .gh-fields { grid-template-columns: 1fr; } }
+  .form-badge { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 20px; display: inline-flex; align-items: center; gap: 2px; line-height: 1.5; white-space: nowrap; }
+  .form-badge.up { color: #34D399; background: rgba(52,211,153,0.13); }
+  .form-badge.down { color: #F85149; background: rgba(248,81,73,0.13); }
+  .form-badge.flat { color: var(--muted); background: var(--surface-2); }
+  .feet { display: inline-flex; gap: 1px; align-items: center; vertical-align: middle; }
+  .foot svg { width: 11px; height: 14px; display: block; fill: var(--border); }
+  .foot.on svg { fill: var(--accent); }
+  .foot.flip { transform: scaleX(-1); }
   .undo-toast {
     position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
     bottom: calc(18px + env(safe-area-inset-bottom));
@@ -798,6 +806,16 @@
           </div>
         </div>
       </div>
+      <div class="form-row">
+        <div>
+          <label for="player-foot">Pé preferido</label>
+          <select id="player-foot">
+            <option value="destro">Destro</option>
+            <option value="canhoto">Canhoto</option>
+            <option value="ambidestro">Ambidestro</option>
+          </select>
+        </div>
+      </div>
       <div class="rating-field" style="margin-bottom:14px;">
         <label>Nota geral</label>
         <span class="star-input" id="player-stars" data-stars="3"></span>
@@ -853,6 +871,16 @@
       </div>
     </div>
 
+    <div class="card" id="goalsonly-bar" style="display:none;">
+      <label class="toggle-line" style="cursor:pointer;">
+        <div>
+          <div class="settings-label">Só marcar gols (sem times)</div>
+          <div class="settings-desc" id="goalsonly-desc">Para dias sem separação de times — anota só quem fez gol/assistência.</div>
+        </div>
+        <input type="checkbox" class="check" id="toggle-goalsonly">
+      </label>
+    </div>
+
     <div class="card" id="session-teams-card" style="display:none;">
       <div class="card-title">Times do dia</div>
       <div class="controls">
@@ -873,9 +901,11 @@
       <div class="card-title">Gols e assistências do dia</div>
       <p class="hint">Marque quem fez gol e quem deu assistência no fut. Não precisa lançar jogo a jogo — isso fica só no Campeonato.</p>
       <div id="scoring-container" style="margin-top:12px;"></div>
-      <div class="card-title" style="margin-top:20px;">Vitórias por time <span class="card-count">· opcional</span></div>
-      <p class="hint">Se quiserem, anotem quantos jogos cada time venceu no dia. Isso alimenta o ranking de vitórias e as duplas que mais ganham juntas.</p>
-      <div id="wins-container" style="margin-top:10px;"></div>
+      <div id="wins-section">
+        <div class="card-title" style="margin-top:20px;">Vitórias por time <span class="card-count">· opcional</span></div>
+        <p class="hint">Se quiserem, anotem quantos jogos cada time venceu no dia. Isso alimenta o ranking de vitórias e as duplas que mais ganham juntas.</p>
+        <div id="wins-container" style="margin-top:10px;"></div>
+      </div>
     </div>
 
     <div id="session-close-bar" style="display:none; margin-top:4px;">
@@ -1004,30 +1034,12 @@
     <div class="card">
       <div class="card-title">Publicar no GitHub (todos veem)</div>
       <p id="publish-status" class="settings-desc" style="margin-bottom:12px;"></p>
-
-      <div class="gh-box">
-        <div class="settings-label" style="margin-bottom:8px;">⚡ Publicar em 1 clique (via API)</div>
-        <div class="gh-fields">
-          <div><label>Usuário/Org</label><input type="text" id="gh-owner" placeholder="ex: paulo" autocomplete="off"></div>
-          <div><label>Repositório</label><input type="text" id="gh-repo" placeholder="ex: fut-da-juf" autocomplete="off"></div>
-          <div><label>Branch</label><input type="text" id="gh-branch" placeholder="main" autocomplete="off"></div>
-          <div><label>Caminho (opcional)</label><input type="text" id="gh-path" placeholder="(raiz)" autocomplete="off"></div>
-        </div>
-        <label style="margin-top:8px;">Token (fine-grained, permissão “Contents: Read and write”)</label>
-        <input type="password" id="gh-token" placeholder="cole o token aqui" autocomplete="off">
-        <div class="settings-actions" style="margin-top:10px;">
-          <button class="primary" id="btn-gh-publish">Publicar agora (dados + notas)</button>
-          <button class="secondary" id="btn-gh-save">Salvar config</button>
-        </div>
-        <p class="hint" style="margin-top:8px;">O token fica salvo <strong>só neste aparelho</strong> e nunca entra nos dados publicados. Como o app é um site estático, quem usar este aparelho consegue ver o token — use um token restrito a este repositório.</p>
-      </div>
-
-      <p class="settings-desc" style="margin:14px 0 8px;">Ou publique manualmente: baixe os arquivos e suba no repositório (sobrescrevendo).</p>
+      <p class="settings-desc" style="margin-bottom:8px;">Publique manualmente: baixe o arquivo e suba no repositório (sobrescrevendo). Para publicar em 1 clique, veja <strong>Configurações avançadas</strong> no fim da página.</p>
       <div class="settings-actions">
         <button class="secondary" id="btn-publish-download">Baixar dados.json</button>
         <button class="secondary" id="btn-use-git">Usar versão publicada (descartar alterações locais)</button>
       </div>
-      <p class="hint" style="margin-top:10px;">No manual: <strong>Add file → Upload files</strong> → arraste <code>dados.json</code> (e <code>notas.json</code>, se usar notas) → edite o <code>sw.js</code> subindo a versão do cache → <strong>Commit</strong>.</p>
+      <p class="hint" style="margin-top:10px;">No manual: <strong>Add file → Upload files</strong> → arraste <code>dados.json</code> → edite o <code>sw.js</code> subindo a versão do cache → <strong>Commit</strong>.</p>
     </div>
     <div class="card">
       <div class="card-title">Backup automático (tudo)</div>
@@ -1067,11 +1079,44 @@
       <p class="hint">Onde ficam os dados: tudo é salvo automaticamente <strong>neste navegador</strong> a cada alteração. Para não depender do navegador, conecte o arquivo de backup acima (JSON, Chrome/Edge) ou baixe o JSON de vez em quando. Os CSVs são cópias para leitura/análise, não para restaurar.</p>
     </div>
 
-    <div class="notas-row">
-      <label class="notas-toggle"><input type="checkbox" id="toggle-show-ratings"><span>Mostrar notas dos jogadores</span></label>
-      <div class="rating-field notas-actions">
-        <button class="ghost neutral tiny" id="btn-download-notas">Baixar notas.json</button>
-        <button class="ghost neutral tiny" id="btn-import-notas">Importar notas.json</button>
+    <div class="card" id="advanced-card">
+      <div class="card-title collapse-head" id="advanced-toggle" role="button" tabindex="0">
+        <span>🔒 Configurações avançadas</span>
+        <span class="collapse-arrow" id="advanced-arrow">▸</span>
+      </div>
+      <p class="settings-desc" id="advanced-locked-note">Itens sensíveis (notas dos jogadores e publicação automática). Toque para desbloquear com a senha.</p>
+
+      <div id="advanced-body" style="display:none;">
+        <div class="toggle-line">
+          <div>
+            <div class="settings-label">Mostrar notas (estrelas)</div>
+            <div class="settings-desc">Exibe as notas em estrelas (0 a 5) nos cards. As notas ficam no arquivo separado <code>notas.json</code>.</div>
+          </div>
+          <input type="checkbox" class="check" id="toggle-show-ratings">
+        </div>
+        <div class="settings-actions" style="margin-top:6px;">
+          <button class="ghost neutral tiny" id="btn-download-notas">Baixar notas.json</button>
+          <button class="ghost neutral tiny" id="btn-import-notas">Importar notas.json</button>
+        </div>
+
+        <div class="gh-box" style="margin-top:16px;">
+          <div class="settings-label" style="margin-bottom:8px;">⚡ Publicar em 1 clique (via API do GitHub)</div>
+          <div class="gh-fields">
+            <div><label>Usuário/Org</label><input type="text" id="gh-owner" placeholder="ex: paulo" autocomplete="off"></div>
+            <div><label>Repositório</label><input type="text" id="gh-repo" placeholder="ex: fut-da-juf" autocomplete="off"></div>
+            <div><label>Branch</label><input type="text" id="gh-branch" placeholder="main" autocomplete="off"></div>
+            <div><label>Caminho (opcional)</label><input type="text" id="gh-path" placeholder="(raiz)" autocomplete="off"></div>
+          </div>
+          <label style="margin-top:8px;">Token (fine-grained, permissão “Contents: Read and write”)</label>
+          <input type="password" id="gh-token" placeholder="cole o token aqui" autocomplete="off">
+          <div class="settings-actions" style="margin-top:10px;">
+            <button class="primary" id="btn-gh-publish">Publicar agora (dados + notas)</button>
+            <button class="secondary" id="btn-gh-save">Salvar config</button>
+          </div>
+          <p class="hint" style="margin-top:8px;">O token fica salvo <strong>só neste aparelho</strong> e nunca entra nos dados publicados. Como o app é um site estático, quem usar este aparelho consegue ver o token — use um token restrito a este repositório.</p>
+        </div>
+
+        <button class="ghost neutral tiny" id="btn-advanced-lock" style="margin-top:14px;">Bloquear novamente</button>
       </div>
     </div>
   </section>
@@ -1120,6 +1165,16 @@
             <option value="improvisado">Improvisado</option>
           </select></div>
         </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="edit-foot">Pé preferido</label>
+        <select id="edit-foot">
+          <option value="destro">Destro</option>
+          <option value="canhoto">Canhoto</option>
+          <option value="ambidestro">Ambidestro</option>
+        </select>
       </div>
     </div>
     <div class="rating-field" style="margin-bottom:14px;">
@@ -1193,7 +1248,7 @@
       primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
       active: pl.active !== false,
-      stars: globalStarsOf(pl)
+      stars: globalStarsOf(pl), foot: pl.foot || 'destro'
     }));
     s.sessions = (p.sessions || []).map(migrateSession);
     s.tournament = p.tournament || null;
@@ -1207,7 +1262,8 @@
     const out = {
       id: sess.id || uid(), date: sess.date, attendees: sess.attendees || [],
       teams: sess.teams || [], numTeams: sess.numTeams || 2,
-      goals: sess.goals || {}, assists: sess.assists || {}, wins: sess.wins || {}
+      goals: sess.goals || {}, assists: sess.assists || {}, wins: sess.wins || {},
+      goalsOnly: !!sess.goalsOnly
     };
     if (sess.matches && sess.matches.length) {
       sess.matches.forEach(m => {
@@ -1227,7 +1283,7 @@
       id: pl.id || uid(), name: pl.name,
       primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
-      active: true, stars: globalStarsOf(pl)
+      active: true, stars: globalStarsOf(pl), foot: pl.foot || 'destro'
     }));
     return s;
   }
@@ -1485,7 +1541,7 @@
       primary: { position: pPos, level: document.getElementById('primary-level').value },
       secondary: sPos ? { position: sPos, level: document.getElementById('secondary-level').value } : null,
       active: true,
-      stars: getStars('player-stars')
+      stars: getStars('player-stars'), foot: document.getElementById('player-foot').value
     });
     save();
     renderRoster();
@@ -1494,11 +1550,57 @@
     document.getElementById('secondary-pos').value = '';
     document.getElementById('primary-level').value = 'nativo';
     document.getElementById('secondary-level').value = 'nativo';
+    document.getElementById('player-foot').value = 'destro';
     setStars('player-stars', 3);
     nameInput.focus();
   }
 
   function posBadge(pl) { return `<span class="pos-badge"><span class="dot ${pl.level}"></span>${POS_LABELS[pl.position]}</span>`; }
+  const FOOT_LABEL = { destro: 'Destro', canhoto: 'Canhoto', ambidestro: 'Ambidestro' };
+  function footSvg() { return `<svg viewBox="0 0 22 28" aria-hidden="true"><path d="M11 2c3.2 0 5 2.8 5 6.8 0 2.9-1.1 5-1.5 7.3-.3 1.9-.2 3.6-1.5 4.8-1.1 1-3.1 1.2-4.7.5-1.6-.7-2.1-2.3-2.1-4.2 0-1.3.2-2.2-.2-4C5.3 12 5 10.2 5 8.8 5 4.8 7.8 2 11 2z"/><circle cx="16.6" cy="5.4" r="1.5"/><circle cx="18.2" cy="9" r="1.3"/></svg>`; }
+  function footHtml(foot) {
+    foot = foot || 'destro';
+    const left = foot === 'canhoto' || foot === 'ambidestro';
+    const right = foot === 'destro' || foot === 'ambidestro';
+    return `<span class="feet" title="Pé preferido: ${FOOT_LABEL[foot]}"><span class="foot flip ${left ? 'on' : ''}">${footSvg()}</span><span class="foot ${right ? 'on' : ''}">${footSvg()}</span></span>`;
+  }
+
+  // ---- Fase (forma) do jogador ----
+  // Desempenho por fut = gols + assistências + vitórias do time (pesos iguais).
+  function sessionPointsFor(pid, sess) {
+    const g = (sess.goals || {})[pid] || 0;
+    const a = (sess.assists || {})[pid] || 0;
+    let w = 0;
+    const team = (sess.teams || []).find(t => t.players.includes(pid));
+    if (team) w = (sess.wins || {})[team.id] || 0;
+    return g + a + w;
+  }
+  function currentYm() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
+  // Compara a média/fut DESTE mês com a média/fut histórica (EXCLUINDO o mês atual).
+  function playerForm(pid) {
+    const ym = currentYm();
+    let monthPts = 0, monthN = 0, histPts = 0, histN = 0;
+    state.sessions.forEach(s => {
+      if (!(s.attendees || []).includes(pid)) return;
+      const pts = sessionPointsFor(pid, s);
+      if ((s.date || '').slice(0, 7) === ym) { monthPts += pts; monthN++; }
+      else { histPts += pts; histN++; }
+    });
+    if (monthN === 0 || histN === 0) return null; // sem base de comparação
+    const monthAvg = monthPts / monthN, histAvg = histPts / histN;
+    if (histAvg === 0) return monthAvg > 0 ? { dir: 'up', pct: null } : null;
+    const pct = Math.round((monthAvg / histAvg - 1) * 100);
+    return { dir: pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat', pct };
+  }
+  function formHtml(pid) {
+    const f = playerForm(pid);
+    if (!f) return '';
+    if (f.dir === 'flat') return `<span class="form-badge flat" title="Fase do mês vs. média histórica">→ 0%</span>`;
+    const arrow = f.dir === 'up' ? '▲' : '▼';
+    const pctText = f.pct == null ? '' : ` ${Math.abs(f.pct)}%`;
+    const title = f.pct == null ? 'Fase: primeiro mês acima da média' : 'Fase do mês vs. média histórica (fora este mês)';
+    return `<span class="form-badge ${f.dir}" title="${title}">${arrow}${pctText}</span>`;
+  }
   function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}">${escapeHtml(initials(p.name).toUpperCase())}</div>`; }
   function globalStarsLine(p) { return `<div class="pc-meta">${starsHtml(p.stars)}</div>`; }
 
@@ -1531,8 +1633,8 @@
         <div class="player-card-top">
           ${avatarHtml(p)}
           <div style="min-width:0;">
-            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${starsHtml(p.stars)}</div>
-            <div class="player-card-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
+            <div class="player-name-line"><span class="player-card-name">${escapeHtml(p.name)}</span>${formHtml(p.id)}${starsHtml(p.stars)}</div>
+            <div class="player-card-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${footHtml(p.foot)}</div>
           </div>
         </div>
         <div class="player-stats">
@@ -1552,8 +1654,8 @@
       <div class="roster-row ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
         ${avatarHtml(p)}
         <div class="roster-row-main">
-          <div class="roster-row-name">${escapeHtml(p.name)} ${starsHtml(p.stars)}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
-          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}</div>
+          <div class="roster-row-name">${escapeHtml(p.name)} ${formHtml(p.id)}${starsHtml(p.stars)}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${footHtml(p.foot)}</div>
         </div>
         <div class="roster-row-stats">
           <span>P <b>${st.presencas || 0}</b></span>
@@ -1592,6 +1694,7 @@
     document.getElementById('edit-primary-level').value = p.primary.level;
     document.getElementById('edit-secondary-pos').value = p.secondary ? p.secondary.position : '';
     document.getElementById('edit-secondary-level').value = p.secondary ? p.secondary.level : 'nativo';
+    document.getElementById('edit-foot').value = p.foot || 'destro';
     setStars('edit-stars', p.stars);
     document.getElementById('edit-active').checked = p.active;
     modal.classList.add('show');
@@ -1607,6 +1710,7 @@
     const sPos = document.getElementById('edit-secondary-pos').value;
     p.secondary = sPos ? { position: sPos, level: document.getElementById('edit-secondary-level').value } : null;
     p.stars = getStars('edit-stars');
+    p.foot = document.getElementById('edit-foot').value;
     p.active = document.getElementById('edit-active').checked;
     save(); renderRoster(); renderSessionEditor(); closePlayerModal();
   }
@@ -1647,7 +1751,7 @@
 
   document.getElementById('session-date').addEventListener('change', e => {
     const sess = activeSession(); if (!sess) return;
-    sess.date = e.target.value; save(); renderSessionSelect();
+    sess.date = e.target.value; save(); renderSessionSelect(); renderSessionEditor();
   });
 
   document.getElementById('session-select').addEventListener('change', e => {
@@ -1662,14 +1766,27 @@
     sel.style.display = state.sessions.length ? '' : 'none';
   }
 
+  const LEGACY_CUTOFF = '2026-08-01';
+  function isLegacySession(date) { return (date || '') < LEGACY_CUTOFF; }
+  function effGoalsOnly(sess) { return !!(sess && (sess.goalsOnly || isLegacySession(sess.date))); }
+
   function renderSessionEditor() {
     const sess = activeSession();
     document.getElementById('no-session').style.display = sess ? 'none' : '';
     document.getElementById('session-editor').style.display = sess ? '' : 'none';
-    document.getElementById('session-teams-card').style.display = sess ? '' : 'none';
-    document.getElementById('session-scoring-card').style.display = (sess && sess.teams.length) ? '' : 'none';
     document.getElementById('session-close-bar').style.display = sess ? '' : 'none';
+    document.getElementById('goalsonly-bar').style.display = sess ? '' : 'none';
     if (!sess) return;
+
+    const go = effGoalsOnly(sess), legacy = isLegacySession(sess.date);
+    document.getElementById('session-teams-card').style.display = go ? 'none' : '';
+    document.getElementById('session-scoring-card').style.display = (go || sess.teams.length) ? '' : 'none';
+    document.getElementById('wins-section').style.display = go ? 'none' : '';
+    const cb = document.getElementById('toggle-goalsonly');
+    cb.checked = go; cb.disabled = legacy;
+    document.getElementById('goalsonly-desc').textContent = legacy
+      ? 'Fut antigo (antes de ago/2026): sem times, só os gols — como era antes.'
+      : 'Para dias sem separação de times — anota só quem fez gol/assistência.';
 
     document.getElementById('session-date').value = sess.date;
     renderAttendees();
@@ -1677,6 +1794,12 @@
     renderSessionTeams();
     renderScoring();
   }
+  document.getElementById('toggle-goalsonly').addEventListener('change', e => {
+    const sess = activeSession(); if (!sess) return;
+    sess.goalsOnly = e.target.checked;
+    if (sess.goalsOnly) { sess.teams = []; sess.wins = {}; } // sai do modo times
+    save(); renderSessionEditor();
+  });
   document.getElementById('btn-save-close').addEventListener('click', () => {
     save(); // já salvo continuamente, mas garante
     state.ui.activeSessionId = null;
@@ -1818,6 +1941,26 @@
     const sess = activeSession(); if (!sess) return;
     const cont = document.getElementById('scoring-container');
     const winsCont = document.getElementById('wins-container');
+    const go = effGoalsOnly(sess);
+
+    if (go) {
+      // modo sem times: lista plana de presentes com gols e assistências
+      winsCont.innerHTML = '';
+      const present = sess.attendees.map(playerById).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name));
+      if (!present.length) { cont.innerHTML = '<div class="empty">Marque os presentes acima para lançar os gols.</div>'; }
+      else cont.innerHTML = `<div class="scoring-team">
+        <div class="scoring-cols-head"><span>Jogador</span><span>⚽ Gols</span><span>🅰 Assist.</span></div>
+        ${present.map(p => { const g = (sess.goals && sess.goals[p.id]) || 0, a = (sess.assists && sess.assists[p.id]) || 0; return `
+          <div class="scoring-row">
+            <span>${escapeHtml(p.name)}</span>
+            <div class="stepper"><button data-dec="gols" data-p="${p.id}">−</button><span class="val">${g}</span><button data-inc="gols" data-p="${p.id}">+</button></div>
+            <div class="stepper"><button data-dec="assist" data-p="${p.id}">−</button><span class="val">${a}</span><button data-inc="assist" data-p="${p.id}">+</button></div>
+          </div>`; }).join('')}
+      </div>`;
+      wireScoringSteppers(cont, sess);
+      return;
+    }
+
     if (!sess.teams.length) { cont.innerHTML = ''; winsCont.innerHTML = ''; return; }
 
     cont.innerHTML = sess.teams.map(t => `
@@ -1838,21 +1981,24 @@
         <div class="stepper"><button data-wdec="${t.id}">−</button><span class="val">${w}</span><button data-winc="${t.id}">+</button></div>
       </div>`; }).join('');
 
-    cont.querySelectorAll('[data-inc], [data-dec]').forEach(b => b.addEventListener('click', () => {
-      const inc = b.hasAttribute('data-inc');
-      const field = inc ? b.dataset.inc : b.dataset.dec; // 'gols' | 'assist'
-      const pid = b.dataset.p;
-      const bag = field === 'gols' ? (sess.goals = sess.goals || {}) : (sess.assists = sess.assists || {});
-      bag[pid] = Math.max(0, (bag[pid] || 0) + (inc ? 1 : -1));
-      if (bag[pid] === 0) delete bag[pid];
-      save(); renderScoring();
-    }));
+    wireScoringSteppers(cont, sess);
     winsCont.querySelectorAll('[data-winc], [data-wdec]').forEach(b => b.addEventListener('click', () => {
       const inc = b.hasAttribute('data-winc');
       const tid = inc ? b.dataset.winc : b.dataset.wdec;
       sess.wins = sess.wins || {};
       sess.wins[tid] = Math.max(0, (sess.wins[tid] || 0) + (inc ? 1 : -1));
       if (sess.wins[tid] === 0) delete sess.wins[tid];
+      save(); renderScoring();
+    }));
+  }
+  function wireScoringSteppers(cont, sess) {
+    cont.querySelectorAll('[data-inc], [data-dec]').forEach(b => b.addEventListener('click', () => {
+      const inc = b.hasAttribute('data-inc');
+      const field = inc ? b.dataset.inc : b.dataset.dec;
+      const pid = b.dataset.p;
+      const bag = field === 'gols' ? (sess.goals = sess.goals || {}) : (sess.assists = sess.assists || {});
+      bag[pid] = Math.max(0, (bag[pid] || 0) + (inc ? 1 : -1));
+      if (bag[pid] === 0) delete bag[pid];
       save(); renderScoring();
     }));
   }
@@ -2064,9 +2210,9 @@
     box.style.display = '';
     box.innerHTML = `<strong>Como o balanceamento funciona</strong>
       <ol>
-        <li>Primeiro os <strong>goleiros</strong> são distribuídos — um por time, começando pelos de maior nota.</li>
+        <li>Primeiro os <strong>goleiros</strong> são distribuídos — um por time, começando pelos de melhor nível.</li>
         <li>Depois cada jogador entra no time que tem <strong>menos gente da posição principal dele</strong>, para não concentrar alas ou pivôs num time só.</li>
-        <li>Em caso de empate, vai para o time com <strong>menor força somada</strong> — a força mistura o <strong>nível por função</strong> (nativo &gt; adaptado &gt; improvisado) com a <strong>nota geral</strong> em estrelas do jogador.</li>
+        <li>Em caso de empate, vai para o time com <strong>menor força somada</strong> pelo <strong>nível por função</strong> (nativo &gt; adaptado &gt; improvisado).</li>
         <li>Empates ainda restantes são sorteados — por isso, clicar de novo em <strong>Gerar balanceado</strong> dá combinações diferentes e igualmente equilibradas.</li>
       </ol>
       Quer montar do seu jeito? Use <strong>Zerar (montar na mão)</strong> e arraste os jogadores do banco para os times.`;
@@ -2714,8 +2860,8 @@
   const csvEsc = s => { const v = String(s == null ? '' : s); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
 
   function exportCsv() {
-    const header = 'nome,posicao_principal,nivel_principal,posicao_secundaria,nivel_secundaria,nota_geral,ativo';
-    const rows = state.players.map(p => [csvEsc(p.name), p.primary.position, p.primary.level, p.secondary ? p.secondary.position : '', p.secondary ? p.secondary.level : '', p.stars, p.active ? 'true' : 'false'].join(','));
+    const header = 'nome,posicao_principal,nivel_principal,posicao_secundaria,nivel_secundaria,pe_preferido,nota_geral,ativo';
+    const rows = state.players.map(p => [csvEsc(p.name), p.primary.position, p.primary.level, p.secondary ? p.secondary.position : '', p.secondary ? p.secondary.level : '', p.foot || 'destro', p.stars, p.active ? 'true' : 'false'].join(','));
     return [header, ...rows].join('\n');
   }
 
@@ -2767,12 +2913,13 @@
       if (!name || !vP.includes(pPos)) continue;
       const sPos = row.posicao_secundaria;
       const ativo = (row.ativo || row.confirmado || '').toLowerCase();
+      const foot = (row.pe_preferido || row.pe || '').toLowerCase();
       players.push({
         id: uid(), name,
         primary: { position: pPos, level: readLevel(row.nivel_principal, row.estrelas_principal) },
         secondary: vP.includes(sPos) ? { position: sPos, level: readLevel(row.nivel_secundaria, row.estrelas_secundaria) } : null,
         active: !(ativo === 'false' || ativo === 'nao' || ativo === 'não' || ativo === '0'),
-        stars: readGlobal(row)
+        stars: readGlobal(row), foot: ['destro', 'canhoto', 'ambidestro'].includes(foot) ? foot : 'destro'
       });
     }
     return players;
@@ -2814,11 +2961,11 @@
   });
   // notas.json: arquivo separado só com as estrelas (id -> nota). Baixar/importar só com a senha.
   document.getElementById('btn-download-notas').addEventListener('click', () => {
-    if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
+    if (!advancedUnlocked) { alert('Abra as configurações avançadas primeiro.'); return; }
     downloadBlob(JSON.stringify(notasObject(), null, 2), 'notas.json', 'application/json');
   });
   document.getElementById('btn-import-notas').addEventListener('click', () => {
-    if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
+    if (!advancedUnlocked) { alert('Abra as configurações avançadas primeiro.'); return; }
     pickFile('.json,application/json', text => {
       let data; try { data = JSON.parse(text); } catch (e) { alert('Arquivo inválido.'); return; }
       const notas = data && data.notas ? data.notas : data;
@@ -2924,6 +3071,7 @@
   async function tryRestoreHandle() { if (!HAS_FS) return; try { const h = await idbGet('backup'); if (h) backupHandle = h; } catch (e) {} }
 
   async function renderSettings() {
+    renderAdvancedLock();
     renderGhConfig();
     const pill = document.getElementById('backup-pill'), status = document.getElementById('backup-status'), actions = document.getElementById('backup-actions');
     if (!pill) return;
@@ -2935,21 +3083,37 @@
   }
   document.getElementById('btn-connect-backup').addEventListener('click', connectBackup);
 
-  // ---- Mostrar notas (estrelas) — protegido por senha ----
-  const RATINGS_PASSWORD = 'erick';
+  // ---- Configurações avançadas (senha para entrar) ----
+  const ADVANCED_PASSWORD = 'erick';
+  let advancedUnlocked = false;
+  function renderAdvancedLock() {
+    const body = document.getElementById('advanced-body');
+    const note = document.getElementById('advanced-locked-note');
+    const arrow = document.getElementById('advanced-arrow');
+    if (!body) return;
+    body.style.display = advancedUnlocked ? '' : 'none';
+    if (note) note.style.display = advancedUnlocked ? 'none' : '';
+    if (arrow) arrow.textContent = advancedUnlocked ? '▾' : '▸';
+  }
+  function toggleAdvanced() {
+    if (advancedUnlocked) { advancedUnlocked = false; renderAdvancedLock(); return; }
+    const pass = prompt('Senha para abrir as configurações avançadas:');
+    if (pass == null) return;
+    if (pass !== ADVANCED_PASSWORD) { alert('Senha incorreta.'); return; }
+    advancedUnlocked = true; renderAdvancedLock(); renderGhConfig();
+  }
+  document.getElementById('advanced-toggle').addEventListener('click', toggleAdvanced);
+  document.getElementById('advanced-toggle').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAdvanced(); } });
+  document.getElementById('btn-advanced-lock').addEventListener('click', () => { advancedUnlocked = false; renderAdvancedLock(); });
+
+  // ---- Mostrar notas (estrelas) — já dentro das avançadas (protegidas por senha) ----
   function applyShowRatings() {
     document.body.classList.toggle('ratings-on', !!state.ui.showRatings);
     const cb = document.getElementById('toggle-show-ratings');
     if (cb) cb.checked = !!state.ui.showRatings;
   }
   document.getElementById('toggle-show-ratings').addEventListener('change', e => {
-    if (e.target.checked) {
-      const pass = prompt('Digite a senha para mostrar as notas:');
-      if (pass !== RATINGS_PASSWORD) { alert('Senha incorreta.'); e.target.checked = false; return; }
-      state.ui.showRatings = true;
-    } else {
-      state.ui.showRatings = false;
-    }
+    state.ui.showRatings = e.target.checked;
     save(); applyShowRatings();
   });
 
