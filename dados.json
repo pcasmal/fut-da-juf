@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-08T22:05:21.356Z",
+  "updatedAt": "2026-08-09T03:03:44.926Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -514,8 +514,8 @@
           "players": [
             "yhzlnt5394m",
             "3bk2x1ya",
-            "eqklwjq4",
-            "vk6nnhld"
+            "vk6nnhld",
+            "c04e4jsc"
           ]
         },
         {
@@ -526,7 +526,7 @@
             "och72djy",
             "q0i74yd7",
             "pem3iz20",
-            "c04e4jsc"
+            "eqklwjq4"
           ]
         },
         {
@@ -549,7 +549,7 @@
   ],
   "tournament": null,
   "ui": {
-    "activeSessionId": "4q4mvxzjous",
+    "activeSessionId": "9lsuf20eyzd",
     "statsPeriod": "month",
     "showRatings": true,
     "estimate": {
