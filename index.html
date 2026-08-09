@@ -648,13 +648,41 @@
     max-height: 90vh; overflow-y: auto;
   }
   .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
-  .edit-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
-  .edit-photo { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-  .edit-avatar { width: 68px; height: 68px; font-size: 24px; }
-  .edit-photo-btns { display: flex; flex-direction: column; gap: 3px; }
-  .edit-photo-btns button { padding: 3px 8px; }
-  .edit-name-wrap { flex: 1; min-width: 0; }
   .notas-row { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; opacity: 0.6; }
+  .collapse-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; user-select: none; margin-bottom: 0; }
+  .collapse-arrow { color: var(--muted); transition: transform 0.2s; font-size: 13px; }
+  .collapsible:not(.collapsed) .collapse-arrow { transform: rotate(90deg); }
+  .collapsible.collapsed .collapse-body { display: none; }
+  .collapsible:not(.collapsed) .collapse-head { margin-bottom: 16px; }
+  .records-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .record-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .record-icon { font-size: 20px; }
+  .record-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-top: 6px; }
+  .record-value { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .record-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .evo-legend { display: flex; gap: 14px; font-size: 11px; margin-bottom: 10px; }
+  .evo-key.gols { color: var(--accent); } .evo-key.pres { color: #34D399; }
+  .evo-chart { display: flex; align-items: flex-end; gap: 10px; height: 150px; padding-top: 10px; overflow-x: auto; }
+  .evo-col { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 42px; flex: 1; }
+  .evo-bars { display: flex; align-items: flex-end; gap: 3px; height: 120px; }
+  .evo-bar { width: 12px; border-radius: 3px 3px 0 0; min-height: 2px; position: relative; }
+  .evo-bar.gols { background: var(--accent); } .evo-bar.pres { background: #34D399; }
+  .evo-bar b { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--muted); font-weight: 600; }
+  .evo-month { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .gh-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .gh-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gh-box input { width: 100%; }
+  @media (max-width: 520px) { .gh-fields { grid-template-columns: 1fr; } }
+  .undo-toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    background: #1C1826; border: 1px solid var(--accent); border-radius: 10px;
+    padding: 11px 14px; display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5); z-index: 3000; max-width: min(92vw, 460px);
+    font-size: 13px; transition: transform 0.25s ease; pointer-events: none;
+  }
+  .undo-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .undo-toast button { background: var(--accent); color: #16121F; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
   .notas-row:hover { opacity: 1; }
   .notas-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
   .notas-toggle input { width: 15px; height: 15px; accent-color: var(--accent); }
@@ -722,8 +750,12 @@
 
   <!-- ELENCO -->
   <section class="panel active" id="panel-elenco">
-    <div class="card">
-      <div class="card-title">Adicionar jogador ao elenco</div>
+    <div class="card collapsible collapsed" id="add-player-card">
+      <div class="card-title collapse-head" id="add-player-toggle" role="button" tabindex="0">
+        <span>Adicionar jogador ao elenco</span>
+        <span class="collapse-arrow">▸</span>
+      </div>
+      <div class="collapse-body">
       <div class="form-row">
         <div>
           <label for="player-name">Nome</label>
@@ -771,6 +803,7 @@
         <span class="star-input" id="player-stars" data-stars="3"></span>
       </div>
       <button class="primary" id="add-player">Adicionar</button>
+      </div>
     </div>
 
     <div class="card">
@@ -833,6 +866,7 @@
       <p class="hint" id="teams-hint">Só entram os jogadores marcados como presentes.</p>
       <div class="team-grid" id="teams-container"></div>
       <p class="dnd-hint" id="dnd-hint" style="display:none;">Dica: arraste um jogador de um time para outro para ajustar manualmente.</p>
+      <button class="secondary" id="btn-share-teams" style="display:none; margin-top:12px;">📋 Compartilhar times (WhatsApp)</button>
     </div>
 
     <div class="card" id="session-scoring-card" style="display:none;">
@@ -868,6 +902,12 @@
         <button class="period-btn" data-period="all">Tudo</button>
       </div>
       <p class="hint" id="stats-summary"></p>
+    </div>
+    <div id="records-card"></div>
+    <div class="card" id="evolution-card" style="display:none;">
+      <div class="card-title">Evolução do grupo (por mês)</div>
+      <div class="evo-legend"><span class="evo-key gols">● Gols</span> <span class="evo-key pres">● Presenças</span></div>
+      <div id="evolution-chart"></div>
     </div>
     <div class="rank-grid" id="rank-grid"></div>
   </section>
@@ -939,6 +979,7 @@
         <div id="league-section"></div>
         <div id="knockout-section"></div>
       </div>
+      <div class="card" id="champion-card" style="display:none;"></div>
       <div class="card" id="captains-card">
         <div class="card-title">Capitães</div>
         <div id="captains-container"></div>
@@ -963,12 +1004,30 @@
     <div class="card">
       <div class="card-title">Publicar no GitHub (todos veem)</div>
       <p id="publish-status" class="settings-desc" style="margin-bottom:12px;"></p>
-      <p class="settings-desc" style="margin-bottom:12px;">Quem abre o link vê sempre a versão publicada mais recente. Para publicar suas alterações: baixe o <code>dados.json</code>, suba no seu repositório (sobrescrevendo o antigo) e troque a versão do cache no <code>sw.js</code>.</p>
+
+      <div class="gh-box">
+        <div class="settings-label" style="margin-bottom:8px;">⚡ Publicar em 1 clique (via API)</div>
+        <div class="gh-fields">
+          <div><label>Usuário/Org</label><input type="text" id="gh-owner" placeholder="ex: paulo" autocomplete="off"></div>
+          <div><label>Repositório</label><input type="text" id="gh-repo" placeholder="ex: fut-da-juf" autocomplete="off"></div>
+          <div><label>Branch</label><input type="text" id="gh-branch" placeholder="main" autocomplete="off"></div>
+          <div><label>Caminho (opcional)</label><input type="text" id="gh-path" placeholder="(raiz)" autocomplete="off"></div>
+        </div>
+        <label style="margin-top:8px;">Token (fine-grained, permissão “Contents: Read and write”)</label>
+        <input type="password" id="gh-token" placeholder="cole o token aqui" autocomplete="off">
+        <div class="settings-actions" style="margin-top:10px;">
+          <button class="primary" id="btn-gh-publish">Publicar agora (dados + notas)</button>
+          <button class="secondary" id="btn-gh-save">Salvar config</button>
+        </div>
+        <p class="hint" style="margin-top:8px;">O token fica salvo <strong>só neste aparelho</strong> e nunca entra nos dados publicados. Como o app é um site estático, quem usar este aparelho consegue ver o token — use um token restrito a este repositório.</p>
+      </div>
+
+      <p class="settings-desc" style="margin:14px 0 8px;">Ou publique manualmente: baixe os arquivos e suba no repositório (sobrescrevendo).</p>
       <div class="settings-actions">
-        <button class="primary" id="btn-publish-download">Baixar dados.json para publicar</button>
+        <button class="secondary" id="btn-publish-download">Baixar dados.json</button>
         <button class="secondary" id="btn-use-git">Usar versão publicada (descartar alterações locais)</button>
       </div>
-      <p class="hint" style="margin-top:10px;">Passo a passo no GitHub: <strong>Add file → Upload files</strong> → arraste o <code>dados.json</code> → edite o <code>sw.js</code> subindo o número da versão → <strong>Commit</strong>. Em ~1–2 min todos que abrirem (ou reabrirem) o link já pegam a versão nova.</p>
+      <p class="hint" style="margin-top:10px;">No manual: <strong>Add file → Upload files</strong> → arraste <code>dados.json</code> (e <code>notas.json</code>, se usar notas) → edite o <code>sw.js</code> subindo a versão do cache → <strong>Commit</strong>.</p>
     </div>
     <div class="card">
       <div class="card-title">Backup automático (tudo)</div>
@@ -1022,16 +1081,8 @@
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-title">Editar jogador</div>
-    <div class="edit-head">
-      <div class="edit-photo">
-        <div class="avatar edit-avatar" id="edit-avatar"></div>
-        <div class="edit-photo-btns">
-          <button type="button" class="ghost neutral tiny" id="btn-photo-pick">Foto</button>
-          <button type="button" class="ghost neutral tiny" id="btn-photo-remove">Remover</button>
-        </div>
-        <input type="file" id="edit-photo-input" accept="image/*" style="display:none;">
-      </div>
-      <div class="edit-name-wrap">
+    <div class="form-row">
+      <div>
         <label for="edit-name">Nome</label>
         <input type="text" id="edit-name" autocomplete="off">
       </div>
@@ -1092,6 +1143,11 @@
   </div>
 </div>
 
+<div id="undo-toast" class="undo-toast">
+  <span id="undo-label"></span>
+  <button id="undo-btn">Desfazer</button>
+</div>
+
 <script>
 (function () {
   'use strict';
@@ -1136,7 +1192,7 @@
       id: pl.id || uid(), name: pl.name,
       primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
-      active: pl.active !== false, photo: pl.photo || null,
+      active: pl.active !== false,
       stars: globalStarsOf(pl)
     }));
     s.sessions = (p.sessions || []).map(migrateSession);
@@ -1171,7 +1227,7 @@
       id: pl.id || uid(), name: pl.name,
       primary: migPos(pl.primary) || { position: 'ala', level: 'adaptado' },
       secondary: pl.secondary ? migPos(pl.secondary) : null,
-      active: true, photo: null, stars: globalStarsOf(pl)
+      active: true, stars: globalStarsOf(pl)
     }));
     return s;
   }
@@ -1182,6 +1238,24 @@
     scheduleBackup();
     updatePublishStatus();
   }
+
+  // ---- Desfazer (undo da última ação destrutiva) ----
+  let undoFn = null, undoTimer = null;
+  function pushUndo(label, fn) {
+    undoFn = fn;
+    const toast = document.getElementById('undo-toast');
+    document.getElementById('undo-label').textContent = label;
+    document.getElementById('undo-btn').style.display = '';
+    toast.classList.add('show');
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => { toast.classList.remove('show'); undoFn = null; }, 7000);
+  }
+  document.getElementById('undo-btn').addEventListener('click', () => {
+    document.getElementById('undo-toast').classList.remove('show');
+    clearTimeout(undoTimer);
+    const fn = undoFn; undoFn = null;
+    if (fn) fn();
+  });
 
   // ============ Constants & helpers ============
   const POS_LABELS = { goleiro: 'Goleiro', fixo: 'Fixo', ala: 'Ala', pivo: 'Pivô' };
@@ -1395,6 +1469,11 @@
   }));
   ['player-stars', 'edit-stars'].forEach(id => { const el = document.getElementById(id); if (el) paintStars(el); });
 
+  const addCard = document.getElementById('add-player-card');
+  function toggleAddCard() { addCard.classList.toggle('collapsed'); if (!addCard.classList.contains('collapsed')) nameInput.focus(); }
+  document.getElementById('add-player-toggle').addEventListener('click', toggleAddCard);
+  document.getElementById('add-player-toggle').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAddCard(); } });
+
   function addPlayer() {
     const name = nameInput.value.trim();
     const pPos = document.getElementById('primary-pos').value;
@@ -1405,7 +1484,7 @@
       id: uid(), name,
       primary: { position: pPos, level: document.getElementById('primary-level').value },
       secondary: sPos ? { position: sPos, level: document.getElementById('secondary-level').value } : null,
-      active: true, photo: null,
+      active: true,
       stars: getStars('player-stars')
     });
     save();
@@ -1420,7 +1499,7 @@
   }
 
   function posBadge(pl) { return `<span class="pos-badge"><span class="dot ${pl.level}"></span>${POS_LABELS[pl.position]}</span>`; }
-  function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}" ${p.photo ? `style="background-image:url('${escapeHtml(p.photo)}')"` : ''}>${p.photo ? '' : escapeHtml(initials(p.name).toUpperCase())}</div>`; }
+  function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}">${escapeHtml(initials(p.name).toUpperCase())}</div>`; }
   function globalStarsLine(p) { return `<div class="pc-meta">${starsHtml(p.stars)}</div>`; }
 
   function renderRoster() {
@@ -1503,46 +1582,11 @@
 
   // ---- Modal ----
   let editingPlayerId = null;
-  let editPhoto = null; // foto pendente (dataURL) enquanto o modal está aberto
   const modal = document.getElementById('modal-backdrop');
-
-  function renderEditAvatar() {
-    const el = document.getElementById('edit-avatar');
-    const name = (document.getElementById('edit-name').value || '?').trim();
-    if (editPhoto) { el.style.backgroundImage = `url('${editPhoto}')`; el.textContent = ''; }
-    else { el.style.backgroundImage = ''; el.textContent = initials(name || '?').toUpperCase(); }
-    document.getElementById('btn-photo-remove').style.display = editPhoto ? '' : 'none';
-    document.getElementById('btn-photo-pick').textContent = editPhoto ? 'Trocar' : 'Foto';
-  }
-  // Redimensiona/recorta a imagem em um quadrado pequeno (256px, JPEG) para caber no armazenamento.
-  function processImage(file, cb) {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const DIM = 256, side = Math.min(img.width, img.height);
-      const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
-      const canvas = document.createElement('canvas'); canvas.width = DIM; canvas.height = DIM;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, sx, sy, side, side, 0, 0, DIM, DIM);
-      try { cb(canvas.toDataURL('image/jpeg', 0.72)); } catch (e) { alert('Não consegui processar a imagem.'); }
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); alert('Arquivo de imagem inválido.'); };
-    img.src = url;
-  }
-  document.getElementById('btn-photo-pick').addEventListener('click', () => document.getElementById('edit-photo-input').click());
-  document.getElementById('edit-photo-input').addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0]; if (!f) return;
-    processImage(f, dataUrl => { editPhoto = dataUrl; renderEditAvatar(); });
-    e.target.value = '';
-  });
-  document.getElementById('btn-photo-remove').addEventListener('click', () => { editPhoto = null; renderEditAvatar(); });
-  document.getElementById('edit-name').addEventListener('input', () => { if (!editPhoto) renderEditAvatar(); });
 
   function openPlayerModal(id) {
     const p = playerById(id); if (!p) return;
     editingPlayerId = id;
-    editPhoto = p.photo || null;
     document.getElementById('edit-name').value = p.name;
     document.getElementById('edit-primary-pos').value = p.primary.position;
     document.getElementById('edit-primary-level').value = p.primary.level;
@@ -1550,17 +1594,15 @@
     document.getElementById('edit-secondary-level').value = p.secondary ? p.secondary.level : 'nativo';
     setStars('edit-stars', p.stars);
     document.getElementById('edit-active').checked = p.active;
-    renderEditAvatar();
     modal.classList.add('show');
     setTimeout(() => document.getElementById('edit-name').focus(), 50);
   }
-  function closePlayerModal() { modal.classList.remove('show'); editingPlayerId = null; editPhoto = null; }
+  function closePlayerModal() { modal.classList.remove('show'); editingPlayerId = null; }
   function savePlayerModal() {
     const p = playerById(editingPlayerId); if (!p) { closePlayerModal(); return; }
     const name = document.getElementById('edit-name').value.trim();
     if (!name) { alert('Nome não pode ficar vazio.'); return; }
     p.name = name;
-    p.photo = editPhoto || null;
     p.primary = { position: document.getElementById('edit-primary-pos').value, level: document.getElementById('edit-primary-level').value };
     const sPos = document.getElementById('edit-secondary-pos').value;
     p.secondary = sPos ? { position: sPos, level: document.getElementById('edit-secondary-level').value } : null;
@@ -1571,8 +1613,10 @@
   function deletePlayerFromModal() {
     const p = playerById(editingPlayerId); if (!p) return;
     if (!confirm(`Excluir ${p.name} do elenco? O histórico de jogos dele nas estatísticas será perdido.`)) return;
+    const removed = JSON.parse(JSON.stringify(p));
     state.players = state.players.filter(x => x.id !== editingPlayerId);
     save(); renderRoster(); renderSessionEditor(); closePlayerModal();
+    pushUndo(`${removed.name} excluído`, () => { state.players.push(removed); save(); renderRoster(); });
   }
   document.getElementById('btn-modal-save').addEventListener('click', savePlayerModal);
   document.getElementById('btn-modal-cancel').addEventListener('click', closePlayerModal);
@@ -1690,10 +1734,47 @@
     const sess = activeSession();
     const container = document.getElementById('teams-container');
     const dndHint = document.getElementById('dnd-hint');
-    if (!sess || !sess.teams.length) { container.innerHTML = ''; dndHint.style.display = 'none'; return; }
+    const shareBtn = document.getElementById('btn-share-teams');
+    if (!sess || !sess.teams.length) { container.innerHTML = ''; dndHint.style.display = 'none'; shareBtn.style.display = 'none'; return; }
     dndHint.style.display = '';
+    shareBtn.style.display = '';
     container.innerHTML = teamCardsHtml(sess.teams);
     wireTeamDnd(container, sess.teams, () => { save(); renderSessionEditor(); });
+  }
+  document.getElementById('btn-share-teams').addEventListener('click', () => {
+    const sess = activeSession(); if (!sess || !sess.teams.length) return;
+    shareText(`⚽ Times — Fut da JUF (${formatDate(sess.date)})`, teamsToText(sess.teams, `⚽ *Fut da JUF* — ${formatDate(sess.date)}`));
+  });
+
+  function teamsToText(teams, header) {
+    const lines = [header, ''];
+    teams.forEach(t => {
+      lines.push(`*${t.name}* (${t.players.length})`);
+      t.players.forEach(pid => { const p = playerById(pid); if (p) lines.push(`• ${p.name}`); });
+      lines.push('');
+    });
+    return lines.join('\n').trim();
+  }
+  // Copia o texto e abre o WhatsApp para colar/enviar.
+  function shareText(title, text) {
+    const done = () => window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    if (navigator.share) { navigator.share({ title, text }).catch(() => copyThen(text, done)); return; }
+    copyThen(text, done);
+  }
+  function copyThen(text, cb) {
+    const finish = ok => { pushUndoLikeToast(ok ? 'Texto copiado — abrindo WhatsApp…' : 'Abrindo WhatsApp…'); cb(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => finish(true), () => finish(false));
+    else finish(false);
+  }
+  // toast simples (sem botão desfazer) reaproveitando o visual
+  function pushUndoLikeToast(label) {
+    undoFn = null;
+    const toast = document.getElementById('undo-toast');
+    document.getElementById('undo-label').textContent = label;
+    document.getElementById('undo-btn').style.display = 'none';
+    toast.classList.add('show');
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => { toast.classList.remove('show'); document.getElementById('undo-btn').style.display = ''; }, 3500);
   }
 
   function teamCardsHtml(teams) {
@@ -1825,9 +1906,16 @@
       const s = state.sessions.find(x => x.id === b.dataset.deleteSession);
       if (!s) return;
       if (!confirm(`Excluir o fut de ${formatDate(s.date)}?`)) return;
-      state.sessions = state.sessions.filter(x => x.id !== b.dataset.deleteSession);
-      if (state.ui.activeSessionId === b.dataset.deleteSession) state.ui.activeSessionId = null;
+      const removed = JSON.parse(JSON.stringify(s));
+      const wasActive = state.ui.activeSessionId === s.id;
+      state.sessions = state.sessions.filter(x => x.id !== s.id);
+      if (wasActive) state.ui.activeSessionId = null;
       save(); renderResults(); renderSessionSelect(); renderSessionEditor();
+      pushUndo(`Fut de ${formatDate(removed.date)} excluído`, () => {
+        state.sessions.push(removed);
+        if (wasActive) state.ui.activeSessionId = removed.id;
+        save(); renderResults(); renderSessionSelect(); renderSessionEditor();
+      });
     }));
   }
 
@@ -1845,13 +1933,88 @@
     state.ui.statsPeriod = btn.dataset.period; save(); renderStats();
   }));
 
+  // ---- Recordes (todo o histórico) ----
+  function longestStreak(pid, sessionsByDate) {
+    let best = 0, cur = 0;
+    sessionsByDate.forEach(s => { if ((s.attendees || []).includes(pid)) { cur++; best = Math.max(best, cur); } else cur = 0; });
+    return best;
+  }
+  function renderRecords() {
+    const host = document.getElementById('records-card');
+    const all = state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+    if (!all.length) { host.innerHTML = ''; return; }
+    const stats = computeStats(all);
+    const rows = Object.keys(stats).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
+    const top = (key) => rows.filter(r => r[key] > 0).sort((a, b) => b[key] - a[key])[0];
+    const items = [];
+    const artil = top('gols'); if (artil) items.push({ icon: '⚽', label: 'Artilheiro geral', value: artil.name, sub: `${artil.gols} gols` });
+    const garcom = top('assist'); if (garcom) items.push({ icon: '👟', label: 'Garçom (assistências)', value: garcom.name, sub: `${garcom.assist} assist.` });
+    const presente = top('presencas'); if (presente) items.push({ icon: '📅', label: 'Mais presente', value: presente.name, sub: `${presente.presencas} futs` });
+    // sequência de presenças
+    let bestStreak = { streak: 0 };
+    rows.forEach(r => { const st = longestStreak(r.pid, all); if (st > bestStreak.streak) bestStreak = { name: r.name, streak: st }; });
+    if (bestStreak.streak > 1) items.push({ icon: '🔥', label: 'Maior sequência', value: bestStreak.name, sub: `${bestStreak.streak} futs seguidos` });
+    // melhor dupla (mais vitórias juntos; desempate por jogos juntos)
+    const pairs = computePairs(all).filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos);
+    if (pairs.length) { const d = pairs[0]; items.push({ icon: '🤝', label: 'Melhor dupla', value: `${playerName(d.a)} & ${playerName(d.b)}`, sub: `${d.vitorias} vitórias juntos` }); }
+    // craque do último fut
+    const last = all[all.length - 1];
+    if (last) {
+      const g = last.goals || {}; let bestPid = null, bestG = 0;
+      Object.keys(g).forEach(pid => { if (g[pid] > bestG) { bestG = g[pid]; bestPid = pid; } });
+      if (bestPid) items.push({ icon: '⭐', label: `Craque do último fut (${formatDate(last.date)})`, value: playerName(bestPid), sub: `${bestG} gols` });
+    }
+    if (!items.length) { host.innerHTML = ''; return; }
+    host.innerHTML = `<div class="card"><div class="card-title">Recordes 🏅</div>
+      <div class="records-grid">${items.map(it => `<div class="record-item">
+        <div class="record-icon">${it.icon}</div>
+        <div class="record-label">${it.label}</div>
+        <div class="record-value">${escapeHtml(it.value)}</div>
+        <div class="record-sub">${escapeHtml(it.sub)}</div>
+      </div>`).join('')}</div></div>`;
+  }
+
+  // ---- Evolução do grupo por mês ----
+  function renderEvolution() {
+    const card = document.getElementById('evolution-card');
+    const host = document.getElementById('evolution-chart');
+    const byMonth = {};
+    state.sessions.forEach(s => {
+      const ym = (s.date || '').slice(0, 7); if (!ym) return;
+      const m = byMonth[ym] || (byMonth[ym] = { gols: 0, pres: 0 });
+      const g = s.goals || {}; Object.keys(g).forEach(pid => m.gols += g[pid] || 0);
+      m.pres += (s.attendees || []).length;
+    });
+    const months = Object.keys(byMonth).sort().slice(-12);
+    if (months.length < 2) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    const maxG = Math.max(1, ...months.map(m => byMonth[m].gols));
+    const maxP = Math.max(1, ...months.map(m => byMonth[m].pres));
+    const ML = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    const label = ym => { const [y, mo] = ym.split('-'); return `${ML[+mo - 1]}/${y.slice(2)}`; };
+    host.className = 'evo-chart';
+    host.innerHTML = months.map(m => {
+      const d = byMonth[m];
+      const hg = Math.round(d.gols / maxG * 110), hp = Math.round(d.pres / maxP * 110);
+      return `<div class="evo-col">
+        <div class="evo-bars">
+          <div class="evo-bar gols" style="height:${Math.max(2, hg)}px;"><b>${d.gols}</b></div>
+          <div class="evo-bar pres" style="height:${Math.max(2, hp)}px;"><b>${d.pres}</b></div>
+        </div>
+        <div class="evo-month">${label(m)}</div>
+      </div>`;
+    }).join('');
+  }
+
   function renderStats() {
     const period = state.ui.statsPeriod || 'month';
     document.querySelectorAll('#period-picker .period-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+    renderRecords();   // recordes são sempre de todo o histórico
+    renderEvolution();
     const sessions = state.sessions.filter(s => inPeriod(s.date, period));
     const summary = document.getElementById('stats-summary');
     const grid = document.getElementById('rank-grid');
-    if (!sessions.length) { summary.textContent = 'Nenhum fut nesse período.'; grid.innerHTML = ''; return; }
+    if (!sessions.length) { summary.textContent = 'Nenhum fut nesse período (os recordes e a evolução acima consideram todo o histórico).'; grid.innerHTML = ''; return; }
     summary.textContent = `${sessions.length} fut${sessions.length === 1 ? '' : 's'} no período.`;
 
     const stats = computeStats(sessions);
@@ -2087,6 +2250,11 @@
     return null;
   }
 
+  function matchLoser(m) {
+    const w = matchWinner(m); if (!w || !m.team1 || !m.team2) return null;
+    return w === m.team1 ? m.team2 : m.team1;
+  }
+
   function propagateKnockout(rounds) {
     for (let r = 0; r < rounds.length - 1; r++) {
       rounds[r].forEach((m, i) => {
@@ -2096,6 +2264,19 @@
         if (i % 2 === 0) next.team1 = w; else next.team2 = w;
       });
     }
+  }
+  // Disputa de 3º lugar: perdedores das semifinais (rodada que alimenta a final).
+  function setupThirdPlace(t) {
+    if (!t.knockout || t.knockout.length < 2) { t.thirdPlace = null; return; }
+    const semis = t.knockout[t.knockout.length - 2];
+    if (semis.length !== 2) { t.thirdPlace = null; return; }
+    if (!t.thirdPlace) t.thirdPlace = { id: 'k3rd', team1: null, team2: null, score1: null, score2: null, third: true };
+  }
+  function propagateThird(t) {
+    if (!t || !t.thirdPlace || !t.knockout || t.knockout.length < 2) return;
+    const semis = t.knockout[t.knockout.length - 2];
+    t.thirdPlace.team1 = matchLoser(semis[0]);
+    t.thirdPlace.team2 = matchLoser(semis[1]);
   }
 
   function generateTournament() {
@@ -2113,6 +2294,7 @@
     } else if (selectedFormat === 'knockout') {
       t.knockout = buildKnockout(teamIds);
       propagateKnockout(t.knockout);
+      setupThirdPlace(t); propagateThird(t);
       t.phase = 'knockout';
     } else { // hybrid
       const numAdvance = parseInt(document.getElementById('num-advance').value, 10) || Math.min(4, teamIds.length);
@@ -2151,9 +2333,10 @@
     let found = null;
     if (t.league) found = t.league.find(m => m.id === matchId);
     if (!found && t.knockout) { for (const r of t.knockout) { const m = r.find(x => x.id === matchId); if (m) { found = m; break; } } }
+    if (!found && t.thirdPlace && t.thirdPlace.id === matchId) found = t.thirdPlace;
     if (!found) return;
     found['score' + side] = clean;
-    if (t.knockout) propagateKnockout(t.knockout);
+    if (t.knockout) { propagateKnockout(t.knockout); propagateThird(t); }
     save(); renderTournament();
   }
 
@@ -2163,6 +2346,7 @@
     const advancing = standings.slice(0, t.numAdvance).map(r => r.team.id);
     t.knockout = buildKnockout(advancing);
     propagateKnockout(t.knockout);
+    setupThirdPlace(t); propagateThird(t);
     t.phase = 'knockout';
     save(); renderTournament();
   }
@@ -2205,10 +2389,15 @@
     if (t.knockout) {
       const total = t.knockout.length;
       const label = (idx) => { const fe = total - idx; return fe === 1 ? 'Final' : fe === 2 ? 'Semifinal' : fe === 3 ? 'Quartas de final' : fe === 4 ? 'Oitavas de final' : `Fase ${idx + 1}`; };
-      koSec.innerHTML = `<div class="round-title">Mata-mata</div><div class="bracket-wrap"><div class="bracket">${t.knockout.map((round, ri) => `
+      let html = `<div class="round-title">Mata-mata</div><div class="bracket-wrap"><div class="bracket">${t.knockout.map((round, ri) => `
         <div class="bracket-round"><div class="bracket-round-title">${label(ri)}</div>${round.map(m => bracketMatchHtml(m)).join('')}</div>`).join('')}</div></div>`;
+      if (t.thirdPlace) {
+        html += `<div class="bracket-round" style="margin-top:14px; max-width:280px;"><div class="bracket-round-title">Disputa de 3º lugar 🥉</div>${bracketMatchHtml(t.thirdPlace)}</div>`;
+      }
+      koSec.innerHTML = html;
     } else koSec.innerHTML = '';
 
+    renderChampionCard();
     wireTournamentInputs();
     const startBtn = document.getElementById('btn-start-ko');
     if (startBtn) startBtn.addEventListener('click', startKnockout);
@@ -2323,13 +2512,20 @@
   function captainOf(teamId) { const t = state.tournament; return t && t.captains ? t.captains[teamId] : null; }
 
   // ---- Artilharia do campeonato ----
+  function allMatches(t) {
+    const arr = [];
+    (t.league || []).forEach(m => arr.push(m));
+    (t.knockout || []).forEach(r => r.forEach(m => arr.push(m)));
+    if (t.thirdPlace) arr.push(t.thirdPlace);
+    return arr;
+  }
   function champScorers() {
     const t = state.tournament; const g = {}, a = {};
     const acc = m => {
       Object.keys(m.goals || {}).forEach(pid => g[pid] = (g[pid] || 0) + m.goals[pid]);
       Object.keys(m.assists || {}).forEach(pid => a[pid] = (a[pid] || 0) + m.assists[pid]);
     };
-    (t.league || []).forEach(acc); (t.knockout || []).forEach(r => r.forEach(acc));
+    allMatches(t).forEach(acc);
     const ids = new Set([...Object.keys(g), ...Object.keys(a)]);
     return [...ids].map(pid => ({ pid, gols: g[pid] || 0, assist: a[pid] || 0 })).sort((x, y) => y.gols - x.gols || y.assist - x.assist);
   }
@@ -2342,6 +2538,73 @@
       <tbody>${rows.map((r, i) => `<tr><td class="rank-medal">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${escapeHtml(playerName(r.pid))}</td><td class="big">${r.gols}</td><td>${r.assist}</td></tr>`).join('')}</tbody></table>`;
   }
 
+  // ---- Campeão, vice, 3º, MVP e Luva de Ouro ----
+  function goalsConcededByTeam() {
+    const t = state.tournament, gc = {};
+    allMatches(t).forEach(m => {
+      if (m.score1 == null || m.score2 == null || !m.team1 || !m.team2) return;
+      gc[m.team1] = (gc[m.team1] || 0) + m.score2;
+      gc[m.team2] = (gc[m.team2] || 0) + m.score1;
+    });
+    return gc;
+  }
+  function teamGoalie(teamId) {
+    const t = state.tournament, tm = (t.teams || []).find(x => x.id === teamId); if (!tm) return null;
+    let sec = null;
+    for (const pid of tm.players) { const p = playerById(pid); if (!p) continue; if (p.primary.position === 'goleiro') return pid; if (p.secondary && p.secondary.position === 'goleiro' && !sec) sec = pid; }
+    return sec;
+  }
+  function championSummary() {
+    const t = state.tournament; if (!t) return null;
+    let champion = null, runnerUp = null, third = null;
+    if (t.knockout && t.knockout.length) {
+      const final = t.knockout[t.knockout.length - 1][0];
+      const w = matchWinner(final); if (!w) return null; // final ainda não decidida
+      champion = w; runnerUp = matchLoser(final);
+      if (t.thirdPlace) third = matchWinner(t.thirdPlace);
+    } else if (t.format === 'round-robin' && t.league && leagueComplete(t.league)) {
+      const s = leagueStandings(t.league, t.teams); champion = s[0] && s[0].team.id; runnerUp = s[1] && s[1].team.id; third = s[2] && s[2].team.id;
+    } else return null;
+    const scorers = champScorers();
+    const mvp = scorers.find(r => r.gols || r.assist) || null;
+    // Luva de ouro: goleiro do time que menos sofreu (entre os que jogaram)
+    const gc = goalsConcededByTeam();
+    const played = Object.keys(gc);
+    let gloveTeam = null;
+    if (played.length) { gloveTeam = played.sort((a, b) => gc[a] - gc[b])[0]; }
+    const glove = gloveTeam ? { teamId: gloveTeam, pid: teamGoalie(gloveTeam), conceded: gc[gloveTeam] } : null;
+    return { champion, runnerUp, third, mvp, glove, scorers };
+  }
+  function renderChampionCard() {
+    const card = document.getElementById('champion-card');
+    const s = championSummary();
+    if (!s || !s.champion) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    const line = (icon, label, val, sub) => `<div class="record-item"><div class="record-icon">${icon}</div><div class="record-label">${label}</div><div class="record-value">${escapeHtml(val)}</div>${sub ? `<div class="record-sub">${escapeHtml(sub)}</div>` : ''}</div>`;
+    const items = [line('🏆', 'Campeão', tName(s.champion))];
+    if (s.runnerUp) items.push(line('🥈', 'Vice', tName(s.runnerUp)));
+    if (s.third) items.push(line('🥉', '3º lugar', tName(s.third)));
+    if (s.mvp) items.push(line('⭐', 'MVP (artilheiro)', playerName(s.mvp.pid), `${s.mvp.gols} gols · ${s.mvp.assist} assist.`));
+    if (s.glove && s.glove.pid) items.push(line('🧤', 'Luva de Ouro', playerName(s.glove.pid), `${tName(s.glove.teamId)} · ${s.glove.conceded} gols sofridos`));
+    card.innerHTML = `<div class="card-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span>🎉 Campeonato encerrado</span>
+      <button class="secondary" id="btn-share-sumula">📋 Compartilhar súmula</button></div>
+      <div class="records-grid">${items.join('')}</div>`;
+    document.getElementById('btn-share-sumula').addEventListener('click', () => shareText('Súmula — Fut da JUF', sumulaText(s)));
+  }
+  function sumulaText(s) {
+    const L = ['🏆 *Fut da JUF — Campeonato*', ''];
+    L.push(`🥇 Campeão: *${tName(s.champion)}*`);
+    if (s.runnerUp) L.push(`🥈 Vice: ${tName(s.runnerUp)}`);
+    if (s.third) L.push(`🥉 3º lugar: ${tName(s.third)}`);
+    L.push('');
+    if (s.mvp) L.push(`⭐ MVP: ${playerName(s.mvp.pid)} (${s.mvp.gols} gols)`);
+    if (s.glove && s.glove.pid) L.push(`🧤 Luva de Ouro: ${playerName(s.glove.pid)} (${s.glove.conceded} sofridos)`);
+    const top = s.scorers.filter(r => r.gols).slice(0, 3);
+    if (top.length) { L.push('', '👟 Artilharia:'); top.forEach((r, i) => L.push(`${['🥇', '🥈', '🥉'][i]} ${playerName(r.pid)} — ${r.gols}`)); }
+    return L.join('\n');
+  }
+
   // ---- Jogo ao vivo (cronômetro + gols/assist em tempo real) ----
   let live = { matchId: null, running: false, elapsed: 0, startedAt: 0, half: 1 };
   let liveInterval = null;
@@ -2349,11 +2612,14 @@
     const t = state.tournament; if (!t) return null;
     let m = (t.league || []).find(x => x.id === id); if (m) return m;
     if (t.knockout) for (const r of t.knockout) { const mm = r.find(x => x.id === id); if (mm) return mm; }
+    if (t.thirdPlace && t.thirdPlace.id === id) return t.thirdPlace;
     return null;
   }
-  // Semifinais em diante = jogo nas duas últimas rodadas do mata-mata (dois tempos).
+  // Semifinais em diante = jogo nas duas últimas rodadas do mata-mata (dois tempos). O 3º lugar também.
   function matchIsSemiPlus(id) {
-    const t = state.tournament; if (!t || !t.knockout) return false;
+    const t = state.tournament; if (!t) return false;
+    if (t.thirdPlace && t.thirdPlace.id === id) return true;
+    if (!t.knockout) return false;
     const R = t.knockout.length;
     for (let r = 0; r < R; r++) { if (t.knockout[r].some(x => x.id === id)) return r >= R - 2; }
     return false;
@@ -2389,7 +2655,7 @@
       m.goals[pid] = Math.max(0, (m.goals[pid] || 0) + delta);
       if (m.goals[pid] === 0) delete m.goals[pid];
       m.score1 = teamGoalSum(m, 1); m.score2 = teamGoalSum(m, 2);
-      if (state.tournament.knockout) propagateKnockout(state.tournament.knockout);
+      if (state.tournament.knockout) { propagateKnockout(state.tournament.knockout); propagateThird(state.tournament); }
     } else {
       m.assists[pid] = Math.max(0, (m.assists[pid] || 0) + delta);
       if (m.assists[pid] === 0) delete m.assists[pid];
@@ -2505,7 +2771,7 @@
         id: uid(), name,
         primary: { position: pPos, level: readLevel(row.nivel_principal, row.estrelas_principal) },
         secondary: vP.includes(sPos) ? { position: sPos, level: readLevel(row.nivel_secundaria, row.estrelas_secundaria) } : null,
-        active: !(ativo === 'false' || ativo === 'nao' || ativo === 'não' || ativo === '0'), photo: null,
+        active: !(ativo === 'false' || ativo === 'nao' || ativo === 'não' || ativo === '0'),
         stars: readGlobal(row)
       });
     }
@@ -2535,15 +2801,21 @@
     delete copy.__champTeams; delete copy.__champBench;
     return copy;
   }
+  function notasObject() {
+    const notas = {}; state.players.forEach(p => { notas[p.id] = (p.stars === 0 || p.stars) ? p.stars : 3; });
+    return { v: 1, updatedAt: state.updatedAt || new Date().toISOString(), notas };
+  }
+  function applyNotas(map) {
+    if (!map) return; state.players.forEach(p => { if (map[p.id] === 0 || map[p.id]) p.stars = clampStars(map[p.id]); });
+  }
   document.getElementById('btn-publish-download').addEventListener('click', () => {
     if (!state.updatedAt) state.updatedAt = new Date().toISOString();
     downloadBlob(JSON.stringify(stripStars(state), null, 2), 'dados.json', 'application/json');
   });
-  // notas.json: arquivo separado só com as estrelas (id -> nota). Só quem tem a senha vê/baixa.
+  // notas.json: arquivo separado só com as estrelas (id -> nota). Baixar/importar só com a senha.
   document.getElementById('btn-download-notas').addEventListener('click', () => {
     if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
-    const notas = {}; state.players.forEach(p => { notas[p.id] = (p.stars === 0 || p.stars) ? p.stars : 3; });
-    downloadBlob(JSON.stringify({ v: 1, updatedAt: new Date().toISOString(), notas }, null, 2), 'notas.json', 'application/json');
+    downloadBlob(JSON.stringify(notasObject(), null, 2), 'notas.json', 'application/json');
   });
   document.getElementById('btn-import-notas').addEventListener('click', () => {
     if (!state.ui.showRatings) { alert('Ative as notas com a senha primeiro.'); return; }
@@ -2551,14 +2823,67 @@
       let data; try { data = JSON.parse(text); } catch (e) { alert('Arquivo inválido.'); return; }
       const notas = data && data.notas ? data.notas : data;
       if (!notas || typeof notas !== 'object') { alert('notas.json inválido.'); return; }
-      let n = 0; state.players.forEach(p => { if (notas[p.id] === 0 || notas[p.id]) { p.stars = clampStars(notas[p.id]); n++; } });
+      const before = state.players.length; applyNotas(notas);
       save(); renderRoster();
-      alert(`Notas aplicadas a ${n} jogador(es).`);
+      alert(`Notas importadas.`);
     });
   });
+
+  // ---- Publicar em 1 clique via API do GitHub ----
+  const GH_CFG_KEY = 'futdajuf-gh', GH_TOKEN_KEY = 'futdajuf-gh-token';
+  function ghConfig() { try { return JSON.parse(localStorage.getItem(GH_CFG_KEY)) || {}; } catch (e) { return {}; } }
+  function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function b64utf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+  async function githubPut(path, contentStr, message) {
+    const c = ghConfig(), token = ghToken();
+    const base = `https://api.github.com/repos/${c.owner}/${c.repo}/contents/${encodeURIComponent(path).replace(/%2F/g, '/')}`;
+    const headers = { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' };
+    let sha;
+    const getRes = await fetch(`${base}?ref=${encodeURIComponent(c.branch || 'main')}`, { headers });
+    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
+    const putRes = await fetch(base, { method: 'PUT', headers, body: JSON.stringify({ message, content: b64utf8(contentStr), branch: c.branch || 'main', sha }) });
+    if (!putRes.ok) { const txt = await putRes.text(); throw new Error(`${putRes.status} — ${txt.slice(0, 160)}`); }
+  }
+  async function publishToGitHub() {
+    const c = ghConfig();
+    if (!c.owner || !c.repo || !ghToken()) { alert('Configure usuário, repositório e token do GitHub primeiro.'); return; }
+    const btn = document.getElementById('btn-gh-publish');
+    const prefix = (c.path || '').replace(/^\/+/, ''); const P = prefix && !prefix.endsWith('/') ? prefix + '/' : prefix;
+    if (btn) { btn.disabled = true; btn.textContent = 'Publicando…'; }
+    try {
+      state.updatedAt = new Date().toISOString();
+      const stamp = new Date().toLocaleString('pt-BR');
+      await githubPut(P + 'dados.json', JSON.stringify(stripStars(state), null, 2), 'Fut da JUF: dados ' + stamp);
+      await githubPut(P + 'notas.json', JSON.stringify(notasObject(), null, 2), 'Fut da JUF: notas ' + stamp);
+      gitPublishedAt = state.updatedAt; localStorage.setItem('futdajuf-state', JSON.stringify(state));
+      updatePublishStatus();
+      alert('Publicado no GitHub! Em ~1 min todos que reabrirem o link já pegam a versão nova.');
+    } catch (e) {
+      alert('Não consegui publicar: ' + e.message + '\n\nConfira o token (precisa de permissão "Contents: Read and write" no repositório), o usuário/repositório e o branch.');
+    } finally { if (btn) { btn.disabled = false; btn.textContent = 'Publicar agora (dados + notas)'; } }
+  }
+  function saveGhConfig() {
+    const cfg = {
+      owner: document.getElementById('gh-owner').value.trim(),
+      repo: document.getElementById('gh-repo').value.trim(),
+      branch: document.getElementById('gh-branch').value.trim() || 'main',
+      path: document.getElementById('gh-path').value.trim()
+    };
+    localStorage.setItem(GH_CFG_KEY, JSON.stringify(cfg));
+    const tok = document.getElementById('gh-token').value.trim();
+    if (tok) localStorage.setItem(GH_TOKEN_KEY, tok);
+  }
+  function renderGhConfig() {
+    const c = ghConfig();
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    set('gh-owner', c.owner); set('gh-repo', c.repo); set('gh-branch', c.branch || 'main'); set('gh-path', c.path);
+    const tokEl = document.getElementById('gh-token'); if (tokEl) tokEl.placeholder = ghToken() ? '•••••• (salvo neste aparelho)' : 'cole o token aqui';
+  }
   document.getElementById('btn-use-git').addEventListener('click', () => {
     if (confirm('Descartar as alterações locais deste aparelho e usar a versão publicada no GitHub?')) useGitVersion();
   });
+  document.getElementById('btn-gh-save').addEventListener('click', () => { saveGhConfig(); renderGhConfig(); alert('Configuração do GitHub salva neste aparelho.'); });
+  document.getElementById('btn-gh-publish').addEventListener('click', () => { saveGhConfig(); publishToGitHub(); });
   document.getElementById('banner-publish-btn').addEventListener('click', () => document.getElementById('btn-config').click());
   document.getElementById('btn-download-csv').addEventListener('click', () => downloadBlob(exportCsv(), 'fut-da-juf-elenco.csv', 'text/csv;charset=utf-8'));
   document.getElementById('btn-import-csv').addEventListener('click', () => pickFile('.csv,text/csv', text => {
@@ -2599,6 +2924,7 @@
   async function tryRestoreHandle() { if (!HAS_FS) return; try { const h = await idbGet('backup'); if (h) backupHandle = h; } catch (e) {} }
 
   async function renderSettings() {
+    renderGhConfig();
     const pill = document.getElementById('backup-pill'), status = document.getElementById('backup-status'), actions = document.getElementById('backup-actions');
     if (!pill) return;
     if (!HAS_FS) { pill.className = 'status-pill off'; pill.textContent = 'Indisponível'; status.innerHTML = 'Navegador sem suporte. Use baixar/importar.'; actions.innerHTML = ''; return; }
@@ -2647,25 +2973,25 @@
     tryRestoreHandle().then(renderSettings);
   }
 
-  function adoptGitData(git) {
+  function adoptGitData(git, notas) {
     const oldPlayers = state.players;
     state = migrate(git);
-    overlayLocalStars(state, oldPlayers); // dados.json não traz notas; preserva as locais
+    if (notas && notas.notas) applyNotas(notas.notas); // notas publicadas (compartilhadas) vêm do notas.json
+    else overlayLocalStars(state, oldPlayers);          // sem notas.json -> preserva as locais
     state.updatedAt = git.updatedAt || state.updatedAt;
     selectedFormat = state.tournament ? state.tournament.format : 'hybrid';
     champSelected = new Set();
     save({ bump: false }); // preserva a data publicada -> fica "em sincronia"
   }
 
-  // Toda abertura busca a versão publicada no GitHub (dados.json). Se ela for
-  // MAIS NOVA que a do aparelho, adota — assim quem tem o link sempre vê a
-  // versão mais atual. Nunca sobrescreve alterações locais mais recentes (essas
-  // aparecem como "não publicadas" para você publicar).
-  function handleGit(git) {
+  // Toda abertura busca a versão publicada no GitHub (dados.json + notas.json). Se ela for
+  // MAIS NOVA que a do aparelho, adota — assim quem tem o link sempre vê a versão mais atual.
+  // Nunca sobrescreve alterações locais mais recentes (essas aparecem como "não publicadas").
+  function handleGit(git, notas) {
     if (git && git.players) {
       gitPublishedAt = git.updatedAt || '';
       const gitT = git.updatedAt || '';
-      if (!hadLocalData || (gitT && gitT > localUpdatedAt)) adoptGitData(git);
+      if (!hadLocalData || (gitT && gitT > localUpdatedAt)) adoptGitData(git, notas);
     }
     boot();
   }
@@ -2674,10 +3000,10 @@
   } else {
     let done = false;
     const go = fn => { if (!done) { done = true; fn(); } };
+    const getJson = url => fetch(url, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
     try {
-      fetch('dados.json', { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : null)
-        .then(git => go(() => handleGit(git)))
+      Promise.all([getJson('dados.json'), getJson('notas.json')])
+        .then(([git, notas]) => go(() => handleGit(git, notas)))
         .catch(() => go(boot));
     } catch (e) { go(boot); }
   }
@@ -2685,9 +3011,10 @@
   // Força usar a versão publicada, descartando alterações locais (para quem só vê)
   function useGitVersion() {
     if (typeof fetch !== 'function') { alert('Sem conexão para buscar a versão publicada.'); return; }
-    fetch('dados.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(git => {
+    const getJson = url => fetch(url, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    Promise.all([getJson('dados.json'), getJson('notas.json')]).then(([git, notas]) => {
       if (!git || !git.players) { alert('Não encontrei dados publicados (dados.json) no servidor.'); return; }
-      adoptGitData(git);
+      adoptGitData(git, notas);
       applyShowRatings(); renderAll(); updatePublishStatus();
       alert('Pronto — agora você está vendo a versão publicada no GitHub.');
     }).catch(() => alert('Não consegui buscar a versão publicada.'));

@@ -35,7 +35,7 @@ Todos os dados (elenco, futs, estatísticas, campeonatos) ficam no arquivo **`da
 1. Faça as alterações no app normalmente (cadastrar jogador, lançar fut, etc.). Aparece a faixa "alterações não publicadas".
 2. **Config. (⚙) → Publicar → Baixar dados.json para publicar.**
 3. No GitHub: **Add file → Upload files** → arraste o `dados.json` (sobrescreve o antigo).
-4. Edite o `sw.js` e suba o número da versão do cache (ex.: `futdajuf-v6` → `futdajuf-v7`).
+4. Edite o `sw.js` e suba o número da versão do cache (ex.: `futdajuf-v10` → `futdajuf-v11`).
 5. **Commit changes.** Em ~1–2 minutos, todos que abrirem/reabrirem o link já pegam a versão nova.
 
 **Como funciona a sincronia (importante):**
@@ -45,8 +45,14 @@ Todos os dados (elenco, futs, estatísticas, campeonatos) ficam no arquivo **`da
 - É colaboração de "uma pessoa publica": não é tempo real. Se duas pessoas editarem ao mesmo tempo em aparelhos diferentes, quem publicar por último prevalece. Para tempo real de verdade (vários editando juntos), seria preciso um backend (ex.: Firebase/Supabase).
 - **Privacidade:** como o GitHub Pages gratuito exige repositório **público**, o `dados.json` (com nomes dos jogadores) fica visível na web. Se isso for um problema, use um repositório privado (requer plano pago para Pages) ou não publique o `dados.json` e troque dados via **Baixar/Importar JSON** manual.
 
-## Notas dos jogadores (estrelas) ficam separadas
-As notas em estrelas (0–5) **nunca** entram no `dados.json` nem nos outros backups — ficam só no aparelho e num arquivo próprio **`notas.json`**. Em **Config**, bem discreto no rodapé, há o botão "Mostrar notas" (pede a senha) e, com a senha ativa, os botões **Baixar/Importar notas.json**. Assim as notas não vão para o repositório público. Para levar as notas a outro aparelho, use Baixar/Importar `notas.json` (não publique esse arquivo no GitHub se quiser mantê-lo privado).
+## Notas dos jogadores (estrelas)
+As notas em estrelas (0–5) ficam num arquivo próprio **`notas.json`** — nunca entram no `dados.json` nem nos outros backups. O app **lê o `notas.json`** do repositório ao abrir (as notas passam a ser compartilhadas, junto com o `dados.json`). Em **Config**, bem discreto no rodapé, há o botão "Mostrar notas" (pede a senha) e, com a senha ativa, os botões **Baixar/Importar notas.json**. Como o repositório do Pages é público, o `notas.json` fica visível na web — a senha só controla a exibição no app.
+
+## Publicar em 1 clique (via API do GitHub)
+Em **Config → Publicar no GitHub → Publicar em 1 clique**, informe **usuário/org**, **repositório**, **branch** (padrão `main`), um **caminho** opcional e um **token**. Clique em **Publicar agora** e o app faz o commit do `dados.json` **e** do `notas.json` direto no repositório — sem baixar/subir manualmente.
+- Use um **token fine-grained** com acesso **só a esse repositório** e permissão **"Contents: Read and write"**.
+- O token fica salvo **só neste aparelho** e **nunca** entra nos dados publicados. Como o app é um site estático, quem usar este aparelho consegue ver o token — por isso o escopo restrito.
+- Ainda dá para publicar manualmente (botões "Baixar dados.json" + upload no GitHub).
 
 ## Tamanho mínimo dos times
 Ao gerar times (no fut da semana ou no campeonato), cada time tem no mínimo **4 jogadores**. Se houver **3 ou mais goleiros** na lista, o mínimo sobe para **5 por time**. Se o número de times pedido não couber, o app avisa o máximo possível.
@@ -55,4 +61,4 @@ Ao gerar times (no fut da semana ou no campeonato), cada time tem no mínimo **4
 No cronômetro do jogo ao vivo, a partir das **semifinais** os jogos rodam em **dois tempos** (5 min cada por padrão, configurável no card de estimativa). Aparece o indicador "1º/2º tempo" e um botão para encerrar o 1º tempo.
 
 ## Atualizar o app (o código) depois de publicado
-Editou o `index.html` (ou trocou ícones/`dados.json`)? Suba os arquivos novos e, no `sw.js`, troque o número da versão do cache (ex.: `futdajuf-v9` → `futdajuf-v10`) e suba também. Isso garante que todo mundo receba a versão nova em vez de uma em cache.
+Editou o `index.html` (ou trocou ícones/`dados.json`)? Suba os arquivos novos e, no `sw.js`, troque o número da versão do cache (ex.: `futdajuf-v10` → `futdajuf-v11`) e suba também. Isso garante que todo mundo receba a versão nova em vez de uma em cache.
