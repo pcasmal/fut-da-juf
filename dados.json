@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-09T03:03:44.926Z",
+  "updatedAt": "2026-08-09T15:22:20.298Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -10,8 +10,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "3a6qrb5o",
@@ -24,8 +23,7 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "3bk2x1ya",
@@ -38,8 +36,7 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "na3m57u1",
@@ -49,8 +46,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "fing6501",
@@ -60,8 +56,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "da3pkntb",
@@ -71,8 +66,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "ihjjs7ny",
@@ -85,8 +79,7 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "och72djy",
@@ -96,8 +89,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "6le274n0",
@@ -110,8 +102,7 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "vlj130hf",
@@ -124,8 +115,7 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "v440nyj5",
@@ -138,8 +128,7 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "lc7kjr1l",
@@ -149,8 +138,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "4loro9d7",
@@ -160,8 +148,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "4i5e5dnx",
@@ -174,8 +161,7 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "goexclc7",
@@ -188,8 +174,7 @@
         "position": "ala",
         "level": "nativo"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "g392acow",
@@ -199,8 +184,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "xc6kxlk5",
@@ -213,8 +197,7 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "1lo9d7ot",
@@ -227,8 +210,7 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "q0i74yd7",
@@ -241,8 +223,7 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "vk6nnhld",
@@ -255,8 +236,7 @@
         "position": "pivo",
         "level": "improvisado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "eqklwjq4",
@@ -266,8 +246,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "5x29v8hn",
@@ -280,8 +259,7 @@
         "position": "ala",
         "level": "improvisado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "pem3iz20",
@@ -294,8 +272,7 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "dltd4nxp",
@@ -305,8 +282,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "q62q1pxy",
@@ -316,8 +292,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "au7rynh9",
@@ -327,8 +302,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "splc2r7u2ea",
@@ -338,8 +312,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "jyw3v5fz8gv",
@@ -349,8 +322,7 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "w7umlxkw4c7",
@@ -363,8 +335,7 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "yhzlnt5394m",
@@ -377,8 +348,7 @@
         "position": "ala",
         "level": "nativo"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "yz06djbra28",
@@ -391,8 +361,7 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "rbrvlqb7o4p",
@@ -402,8 +371,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     },
     {
       "id": "81mqk6xvbsq",
@@ -413,8 +381,7 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "photo": null
+      "active": true
     }
   ],
   "sessions": [
@@ -479,9 +446,16 @@
       "numTeams": 3,
       "goals": {
         "c04e4jsc": 2,
-        "lc7kjr1l": 1,
+        "lc7kjr1l": 3,
         "3a6qrb5o": 2,
-        "fing6501": 3
+        "fing6501": 3,
+        "goexclc7": 1,
+        "3bk2x1ya": 4,
+        "4i5e5dnx": 2,
+        "vlj130hf": 1,
+        "v440nyj5": 2,
+        "och72djy": 5,
+        "1lo9d7ot": 4
       },
       "assists": {
         "c04e4jsc": 1,
@@ -498,7 +472,6 @@
         "och72djy",
         "c04e4jsc",
         "yhzlnt5394m",
-        "eqklwjq4",
         "pem3iz20",
         "yz06djbra28",
         "lc7kjr1l",
@@ -508,49 +481,605 @@
       ],
       "teams": [
         {
-          "id": "un8j800g70z",
+          "id": "wbez0oftj5p",
           "name": "Time A",
           "color": "#A78BFA",
           "players": [
-            "yhzlnt5394m",
             "3bk2x1ya",
-            "vk6nnhld",
+            "och72djy",
+            "v440nyj5",
+            "q0i74yd7",
             "c04e4jsc"
           ]
         },
         {
-          "id": "xrxciw5070z",
+          "id": "qoe0g2dnj5p",
           "name": "Time B",
           "color": "#22D3EE",
           "players": [
-            "och72djy",
-            "q0i74yd7",
-            "pem3iz20",
-            "eqklwjq4"
-          ]
-        },
-        {
-          "id": "tn7vm0z570z",
-          "name": "Time C",
-          "color": "#34D399",
-          "players": [
+            "yhzlnt5394m",
             "lc7kjr1l",
             "4i5e5dnx",
-            "v440nyj5",
-            "yz06djbra28"
+            "pem3iz20",
+            "yz06djbra28",
+            "vk6nnhld"
           ]
         }
       ],
-      "numTeams": 3,
-      "goals": {},
+      "numTeams": 2,
+      "goals": {
+        "lc7kjr1l": 5,
+        "c04e4jsc": 6,
+        "yhzlnt5394m": 7,
+        "och72djy": 2,
+        "3bk2x1ya": 1,
+        "yz06djbra28": 1,
+        "4i5e5dnx": 1,
+        "v440nyj5": 5
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "veckqsoaa0o",
+      "date": "2026-07-26",
+      "attendees": [
+        "4i5e5dnx",
+        "vk6nnhld",
+        "5x29v8hn",
+        "ihjjs7ny",
+        "g392acow",
+        "na3m57u1",
+        "dltd4nxp",
+        "w7umlxkw4c7",
+        "q62q1pxy"
+      ],
+      "teams": [
+        {
+          "id": "k6w30yjzkyf",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "dltd4nxp",
+            "4i5e5dnx",
+            "5x29v8hn",
+            "w7umlxkw4c7",
+            "vk6nnhld"
+          ]
+        },
+        {
+          "id": "5u3j3rbdkyf",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "na3m57u1",
+            "ihjjs7ny",
+            "q62q1pxy",
+            "g392acow"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "4i5e5dnx": 5,
+        "vk6nnhld": 1,
+        "ihjjs7ny": 1,
+        "5x29v8hn": 1
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "464dke0q8or",
+      "date": "2026-07-19",
+      "attendees": [
+        "1lo9d7ot",
+        "vlj130hf",
+        "6le274n0",
+        "4i5e5dnx",
+        "w7umlxkw4c7",
+        "eqklwjq4",
+        "g392acow",
+        "5x29v8hn",
+        "lc7kjr1l",
+        "goexclc7"
+      ],
+      "teams": [
+        {
+          "id": "b96fqp9ihwk",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "goexclc7",
+            "1lo9d7ot",
+            "4i5e5dnx",
+            "eqklwjq4",
+            "g392acow"
+          ]
+        },
+        {
+          "id": "jsjr0cdfhwk",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "lc7kjr1l",
+            "vlj130hf",
+            "6le274n0",
+            "5x29v8hn",
+            "w7umlxkw4c7"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "1lo9d7ot": 3,
+        "goexclc7": 2,
+        "4i5e5dnx": 2,
+        "eqklwjq4": 1,
+        "g392acow": 1,
+        "lc7kjr1l": 4,
+        "6le274n0": 5,
+        "w7umlxkw4c7": 2,
+        "5x29v8hn": 1,
+        "vlj130hf": 3
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "vg6p3r4panl",
+      "date": "2026-07-12",
+      "attendees": [
+        "w7umlxkw4c7",
+        "vlj130hf",
+        "lc7kjr1l",
+        "eqklwjq4",
+        "fing6501",
+        "3a6qrb5o",
+        "c04e4jsc",
+        "v440nyj5",
+        "vk6nnhld"
+      ],
+      "teams": [
+        {
+          "id": "ilqytds5697",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "fing6501",
+            "lc7kjr1l",
+            "v440nyj5",
+            "w7umlxkw4c7",
+            "vk6nnhld"
+          ]
+        },
+        {
+          "id": "xhtoztix697",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "3a6qrb5o",
+            "vlj130hf",
+            "eqklwjq4",
+            "c04e4jsc"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "w7umlxkw4c7": 2,
+        "vlj130hf": 4,
+        "lc7kjr1l": 3,
+        "eqklwjq4": 4,
+        "c04e4jsc": 3,
+        "3a6qrb5o": 1,
+        "v440nyj5": 2,
+        "vk6nnhld": 2
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "2mb0lmywg4i",
+      "date": "2026-07-05",
+      "attendees": [
+        "goexclc7",
+        "lc7kjr1l",
+        "4i5e5dnx",
+        "w7umlxkw4c7",
+        "g392acow",
+        "och72djy",
+        "ihjjs7ny",
+        "fing6501",
+        "c04e4jsc"
+      ],
+      "teams": [
+        {
+          "id": "iiab8a9iex2",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "fing6501",
+            "och72djy",
+            "4i5e5dnx",
+            "w7umlxkw4c7"
+          ]
+        },
+        {
+          "id": "p477ukjpex2",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "goexclc7",
+            "lc7kjr1l",
+            "ihjjs7ny",
+            "c04e4jsc",
+            "g392acow"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "goexclc7": 6,
+        "lc7kjr1l": 3,
+        "ihjjs7ny": 4,
+        "c04e4jsc": 1,
+        "g392acow": 3,
+        "w7umlxkw4c7": 3,
+        "4i5e5dnx": 3,
+        "och72djy": 1,
+        "fing6501": 4
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "tx3pfxylwcm",
+      "date": "2026-06-28",
+      "attendees": [
+        "v440nyj5",
+        "1lo9d7ot",
+        "ihjjs7ny",
+        "vlj130hf",
+        "c04e4jsc",
+        "och72djy",
+        "fing6501",
+        "da3pkntb",
+        "eqklwjq4"
+      ],
+      "teams": [
+        {
+          "id": "cukpphplq0l",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "fing6501",
+            "och72djy",
+            "ihjjs7ny",
+            "v440nyj5",
+            "c04e4jsc"
+          ]
+        },
+        {
+          "id": "fugbiwwiq0l",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "da3pkntb",
+            "vlj130hf",
+            "1lo9d7ot",
+            "eqklwjq4"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "fing6501": 1,
+        "da3pkntb": 1,
+        "vlj130hf": 4,
+        "c04e4jsc": 5,
+        "och72djy": 4,
+        "ihjjs7ny": 3,
+        "v440nyj5": 4,
+        "eqklwjq4": 1,
+        "1lo9d7ot": 2
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "vt3s8155q1q",
+      "date": "2026-06-21",
+      "attendees": [
+        "xc6kxlk5",
+        "lc7kjr1l",
+        "v440nyj5",
+        "1lo9d7ot",
+        "3a6qrb5o",
+        "4i5e5dnx",
+        "3bk2x1ya",
+        "c04e4jsc"
+      ],
+      "teams": [
+        {
+          "id": "r416ka6knp5",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "3a6qrb5o",
+            "1lo9d7ot",
+            "v440nyj5",
+            "c04e4jsc"
+          ]
+        },
+        {
+          "id": "wygism4jnp5",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "3bk2x1ya",
+            "lc7kjr1l",
+            "4i5e5dnx",
+            "xc6kxlk5"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "3a6qrb5o": 2,
+        "1lo9d7ot": 3,
+        "c04e4jsc": 1,
+        "3bk2x1ya": 1,
+        "lc7kjr1l": 2,
+        "4i5e5dnx": 1,
+        "xc6kxlk5": 3
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "v1mv97kfn4c",
+      "date": "2026-06-14",
+      "attendees": [
+        "3bk2x1ya",
+        "v440nyj5",
+        "4i5e5dnx",
+        "eqklwjq4",
+        "4loro9d7",
+        "ihjjs7ny",
+        "3a6qrb5o",
+        "6le274n0",
+        "dltd4nxp",
+        "w7umlxkw4c7",
+        "q62q1pxy",
+        "vlj130hf"
+      ],
+      "teams": [
+        {
+          "id": "ulwo3hp4la9",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "dltd4nxp",
+            "3bk2x1ya",
+            "6le274n0",
+            "ihjjs7ny",
+            "eqklwjq4",
+            "w7umlxkw4c7"
+          ]
+        },
+        {
+          "id": "vf4k3ucmla9",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "4loro9d7",
+            "3a6qrb5o",
+            "vlj130hf",
+            "4i5e5dnx",
+            "v440nyj5",
+            "q62q1pxy"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "3bk2x1ya": 1,
+        "ihjjs7ny": 1,
+        "3a6qrb5o": 2,
+        "6le274n0": 4,
+        "dltd4nxp": 1,
+        "q62q1pxy": 1,
+        "v440nyj5": 2,
+        "4i5e5dnx": 3,
+        "vlj130hf": 1,
+        "4loro9d7": 2,
+        "eqklwjq4": 1,
+        "w7umlxkw4c7": 3
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "3n55v36m7og",
+      "date": "2026-06-07",
+      "attendees": [
+        "och72djy",
+        "1lo9d7ot",
+        "eqklwjq4",
+        "v440nyj5",
+        "q0i74yd7",
+        "lc7kjr1l",
+        "c04e4jsc",
+        "vlj130hf",
+        "4loro9d7",
+        "ihjjs7ny",
+        "3a6qrb5o"
+      ],
+      "teams": [
+        {
+          "id": "dmcma70weqd",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "3a6qrb5o",
+            "lc7kjr1l",
+            "vlj130hf",
+            "v440nyj5",
+            "q0i74yd7"
+          ]
+        },
+        {
+          "id": "ydsaduy4eqd",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "4loro9d7",
+            "och72djy",
+            "1lo9d7ot",
+            "ihjjs7ny",
+            "eqklwjq4",
+            "c04e4jsc"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "3a6qrb5o": 1,
+        "ihjjs7ny": 1,
+        "4loro9d7": 1,
+        "vlj130hf": 1,
+        "v440nyj5": 3,
+        "q0i74yd7": 2,
+        "lc7kjr1l": 1,
+        "och72djy": 1,
+        "1lo9d7ot": 3
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "bahk3e7vez3",
+      "date": "2026-05-31",
+      "attendees": [
+        "lc7kjr1l",
+        "och72djy",
+        "w7umlxkw4c7",
+        "ihjjs7ny",
+        "3bk2x1ya",
+        "v440nyj5",
+        "vlj130hf",
+        "1lo9d7ot",
+        "3a6qrb5o",
+        "fing6501",
+        "goexclc7"
+      ],
+      "teams": [
+        {
+          "id": "kkcqx44rfpk",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "goexclc7",
+            "3bk2x1ya",
+            "lc7kjr1l",
+            "vlj130hf",
+            "v440nyj5"
+          ]
+        },
+        {
+          "id": "n69vlm5kfpk",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "fing6501",
+            "3a6qrb5o",
+            "och72djy",
+            "1lo9d7ot",
+            "ihjjs7ny",
+            "w7umlxkw4c7"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "goexclc7": 1,
+        "3bk2x1ya": 1,
+        "och72djy": 2,
+        "3a6qrb5o": 1,
+        "fing6501": 1,
+        "1lo9d7ot": 3,
+        "ihjjs7ny": 1,
+        "w7umlxkw4c7": 3,
+        "v440nyj5": 1,
+        "vlj130hf": 1,
+        "lc7kjr1l": 3
+      },
+      "assists": {},
+      "wins": {}
+    },
+    {
+      "id": "unrpkb6qjxu",
+      "date": "2026-05-24",
+      "attendees": [
+        "g392acow",
+        "eqklwjq4",
+        "na3m57u1",
+        "c04e4jsc",
+        "lc7kjr1l",
+        "3a6qrb5o",
+        "3bk2x1ya",
+        "v440nyj5",
+        "5x29v8hn",
+        "fing6501"
+      ],
+      "teams": [
+        {
+          "id": "ndm7zu2ii8m",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "fing6501",
+            "3bk2x1ya",
+            "lc7kjr1l",
+            "v440nyj5",
+            "c04e4jsc"
+          ]
+        },
+        {
+          "id": "2damhf78i8m",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "na3m57u1",
+            "3a6qrb5o",
+            "5x29v8hn",
+            "eqklwjq4",
+            "g392acow"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {
+        "fing6501": 1,
+        "3bk2x1ya": 1,
+        "lc7kjr1l": 1,
+        "v440nyj5": 2,
+        "c04e4jsc": 2,
+        "na3m57u1": 3,
+        "3a6qrb5o": 2,
+        "5x29v8hn": 5,
+        "eqklwjq4": 5,
+        "g392acow": 3
+      },
       "assists": {},
       "wins": {}
     }
   ],
   "tournament": null,
   "ui": {
-    "activeSessionId": "9lsuf20eyzd",
-    "statsPeriod": "month",
+    "activeSessionId": null,
+    "statsPeriod": "all",
     "showRatings": true,
     "estimate": {
       "gameMin": 12,
