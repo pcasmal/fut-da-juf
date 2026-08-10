@@ -81,7 +81,7 @@
   #publish-banner {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     background: rgba(224,169,59,0.12); border: 1px solid rgba(224,169,59,0.4);
-    color: var(--adaptado); border-radius: 8px; padding: 9px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 600;
+    color: var(--adaptado); border-radius: 8px; padding: 9px 14px; margin-top: 28px; font-size: 13px; font-weight: 600;
   }
   #publish-banner button {
     background: var(--adaptado); color: #16121F; border: none; border-radius: 6px;
@@ -674,6 +674,11 @@
   .gh-box input { width: 100%; }
   @media (max-width: 520px) { .gh-fields { grid-template-columns: 1fr; } }
   .form-badge { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 20px; display: inline-flex; align-items: center; gap: 2px; line-height: 1.5; white-space: nowrap; }
+  .detail-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+  .detail-hero { display: flex; align-items: center; gap: 14px; }
+  .avatar.big { width: 60px; height: 60px; font-size: 22px; flex-shrink: 0; }
+  .detail-id { min-width: 0; }
+  .detail-name { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
   .form-badge.up { color: #34D399; background: rgba(52,211,153,0.13); }
   .form-badge.down { color: #F85149; background: rgba(248,81,73,0.13); }
   .form-badge.flat { color: var(--muted); background: var(--surface-2); }
@@ -681,16 +686,6 @@
   .foot svg { width: 11px; height: 14px; display: block; fill: var(--border); }
   .foot.on svg { fill: var(--accent); }
   .foot.flip { transform: scaleX(-1); }
-  .undo-toast {
-    position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
-    bottom: calc(18px + env(safe-area-inset-bottom));
-    background: #1C1826; border: 1px solid var(--accent); border-radius: 10px;
-    padding: 11px 14px; display: flex; align-items: center; gap: 14px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.5); z-index: 3000; max-width: min(92vw, 460px);
-    font-size: 13px; transition: transform 0.25s ease; pointer-events: none;
-  }
-  .undo-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
-  .undo-toast button { background: var(--accent); color: #16121F; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
   .notas-row:hover { opacity: 1; }
   .notas-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
   .notas-toggle input { width: 15px; height: 15px; accent-color: var(--accent); }
@@ -742,11 +737,6 @@
       <button class="gear-btn" id="btn-config" title="Configurações" aria-label="Configurações">⚙</button>
     </div>
   </header>
-
-  <div id="publish-banner" style="display:none;">
-    <span>● Alterações não publicadas.</span>
-    <button id="banner-publish-btn">Publicar</button>
-  </div>
 
   <nav class="tabs">
     <button class="tab active" data-tab="elenco">Elenco</button>
@@ -824,7 +814,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="roster-card">
       <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
         <span>Elenco <span class="card-count" id="roster-count"></span></span>
         <div class="view-toggle" id="roster-view-toggle">
@@ -839,10 +829,11 @@
         <span class="legend-item"><span class="dot nativo"></span>Nativo</span>
         <span class="legend-item"><span class="dot adaptado"></span>Adaptado</span>
         <span class="legend-item"><span class="dot improvisado"></span>Improvisado</span>
-        <span class="legend-item ratings-hint">★ = nota geral (0 a 5).</span>
-        <span class="legend-item">Toque para editar.</span>
+        <span class="legend-item">Toque para ver o perfil.</span>
       </div>
     </div>
+
+    <div id="player-detail" style="display:none;"></div>
   </section>
 
   <!-- FUT DA SEMANA -->
@@ -1120,6 +1111,11 @@
       </div>
     </div>
   </section>
+
+  <div id="publish-banner" style="display:none;">
+    <span>● Alterações não publicadas.</span>
+    <button id="banner-publish-btn">Publicar</button>
+  </div>
 </div>
 
 <!-- Modal de edição de jogador -->
@@ -1196,11 +1192,6 @@
       </div>
     </div>
   </div>
-</div>
-
-<div id="undo-toast" class="undo-toast">
-  <span id="undo-label"></span>
-  <button id="undo-btn">Desfazer</button>
 </div>
 
 <script>
@@ -1295,24 +1286,6 @@
     updatePublishStatus();
   }
 
-  // ---- Desfazer (undo da última ação destrutiva) ----
-  let undoFn = null, undoTimer = null;
-  function pushUndo(label, fn) {
-    undoFn = fn;
-    const toast = document.getElementById('undo-toast');
-    document.getElementById('undo-label').textContent = label;
-    document.getElementById('undo-btn').style.display = '';
-    toast.classList.add('show');
-    clearTimeout(undoTimer);
-    undoTimer = setTimeout(() => { toast.classList.remove('show'); undoFn = null; }, 7000);
-  }
-  document.getElementById('undo-btn').addEventListener('click', () => {
-    document.getElementById('undo-toast').classList.remove('show');
-    clearTimeout(undoTimer);
-    const fn = undoFn; undoFn = null;
-    if (fn) fn();
-  });
-
   // ============ Constants & helpers ============
   const POS_LABELS = { goleiro: 'Goleiro', fixo: 'Fixo', ala: 'Ala', pivo: 'Pivô' };
   const LEVEL_LABELS = { nativo: 'Nativo', adaptado: 'Adaptado', improvisado: 'Improvisado' };
@@ -1365,6 +1338,7 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
+      if (detailId) closePlayerDetail();
       document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
       if (tab.dataset.tab === 'stats') renderStats();
       if (tab.dataset.tab === 'resultados') renderResults();
@@ -1588,18 +1562,20 @@
     });
     if (monthN === 0 || histN === 0) return null; // sem base de comparação
     const monthAvg = monthPts / monthN, histAvg = histPts / histN;
-    if (histAvg === 0) return monthAvg > 0 ? { dir: 'up', pct: null } : null;
-    const pct = Math.round((monthAvg / histAvg - 1) * 100);
-    return { dir: pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat', pct };
+    if (histAvg === 0) return monthAvg > 0 ? { dir: 'up', score: null } : null;
+    // "lúdico": variação percentual dividida por 10 (ex.: +42% -> 4.2, -75% -> -7.5)
+    const score = Math.round((monthAvg / histAvg - 1) * 10 * 10) / 10;
+    return { dir: score > 0 ? 'up' : score < 0 ? 'down' : 'flat', score };
   }
+  function fmtScore(n) { return (Math.round(Math.abs(n) * 10) / 10).toFixed(1); }
   function formHtml(pid) {
     const f = playerForm(pid);
     if (!f) return '';
-    if (f.dir === 'flat') return `<span class="form-badge flat" title="Fase do mês vs. média histórica">→ 0%</span>`;
+    if (f.dir === 'flat') return `<span class="form-badge flat" title="Fase do mês vs. média histórica">→ 0.0</span>`;
     const arrow = f.dir === 'up' ? '▲' : '▼';
-    const pctText = f.pct == null ? '' : ` ${Math.abs(f.pct)}%`;
-    const title = f.pct == null ? 'Fase: primeiro mês acima da média' : 'Fase do mês vs. média histórica (fora este mês)';
-    return `<span class="form-badge ${f.dir}" title="${title}">${arrow}${pctText}</span>`;
+    const num = f.score == null ? '' : ` ${fmtScore(f.score)}`;
+    const title = f.score == null ? 'Fase: primeiro mês acima da média' : 'Fase do mês vs. média histórica (fora este mês)';
+    return `<span class="form-badge ${f.dir}" title="${title}">${arrow}${num}</span>`;
   }
   function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}">${escapeHtml(initials(p.name).toUpperCase())}</div>`; }
   function globalStarsLine(p) { return `<div class="pc-meta">${starsHtml(p.stars)}</div>`; }
@@ -1621,7 +1597,195 @@
     else if (rosterView === 'list') cont.innerHTML = rosterListHtml(list, stats);
     else cont.innerHTML = rosterKanbanHtml(list, stats);
 
-    cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerModal(el.dataset.edit)));
+    cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerDetail(el.dataset.edit)));
+  }
+
+  // ============ TELA DE DETALHE DO JOGADOR ============
+  let detailId = null;
+  function openPlayerDetail(pid) {
+    if (!playerById(pid)) return;
+    detailId = pid;
+    document.getElementById('add-player-card').style.display = 'none';
+    document.getElementById('roster-card').style.display = 'none';
+    document.getElementById('player-detail').style.display = '';
+    renderPlayerDetail();
+    window.scrollTo(0, 0);
+  }
+  function closePlayerDetail() {
+    detailId = null;
+    document.getElementById('player-detail').style.display = 'none';
+    document.getElementById('add-player-card').style.display = '';
+    document.getElementById('roster-card').style.display = '';
+  }
+
+  function rankOf(pid, key, stats) {
+    const mine = (stats[pid] || {})[key] || 0;
+    if (!mine) return null;
+    const better = state.players.filter(p => ((stats[p.id] || {})[key] || 0) > mine).length;
+    return { pos: better + 1, total: state.players.length };
+  }
+  function currentStreak(pid) {
+    const desc = state.sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+    let n = 0;
+    for (const s of desc) { if ((s.attendees || []).includes(pid)) n++; else break; }
+    return n;
+  }
+  function monthTotals(pid) {
+    const ym = currentYm(); let g = 0, a = 0, futs = 0;
+    state.sessions.forEach(s => {
+      if ((s.date || '').slice(0, 7) !== ym) return;
+      if (!(s.attendees || []).includes(pid)) return;
+      futs++; g += (s.goals || {})[pid] || 0; a += (s.assists || {})[pid] || 0;
+    });
+    return { g, a, futs };
+  }
+  function bestDay(pid, kind) {
+    let best = { v: 0, date: null };
+    state.sessions.forEach(s => {
+      const g = (s.goals || {})[pid] || 0, a = (s.assists || {})[pid] || 0;
+      const v = kind === 'g' ? g : kind === 'a' ? a : g + a;
+      if (v > best.v) best = { v, date: s.date };
+    });
+    return best;
+  }
+  function partnersOf(pid) {
+    const pairs = computePairs(state.sessions).filter(p => p.a === pid || p.b === pid);
+    const other = p => (p.a === pid ? p.b : p.a);
+    const byWins = pairs.filter(p => p.vitorias > 0).sort((x, y) => y.vitorias - x.vitorias || y.juntos - x.juntos)[0];
+    const byFreq = pairs.slice().sort((x, y) => y.juntos - x.juntos)[0];
+    return {
+      best: byWins ? { name: playerName(other(byWins)), v: byWins.vitorias } : null,
+      freq: byFreq && byFreq.juntos > 0 ? { name: playerName(other(byFreq)), v: byFreq.juntos } : null
+    };
+  }
+  function playerMonthlyGoals(pid) {
+    const byMonth = {};
+    state.sessions.forEach(s => {
+      if (!(s.attendees || []).includes(pid)) return;
+      const ym = (s.date || '').slice(0, 7); if (!ym) return;
+      byMonth[ym] = (byMonth[ym] || 0) + ((s.goals || {})[pid] || 0);
+    });
+    return byMonth;
+  }
+
+  function renderPlayerDetail() {
+    const host = document.getElementById('player-detail');
+    const p = playerById(detailId); if (!p) { closePlayerDetail(); return; }
+    const all = state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const stats = computeStats(state.sessions);
+    const st = stats[p.id] || { presencas: 0, gols: 0, assist: 0 };
+    const pres = st.presencas || 0, gols = st.gols || 0, assist = st.assist || 0;
+    const wp = winPct(st);
+    const per = n => pres ? (n / pres).toFixed(1) : '0.0';
+
+    const attended = all.filter(s => (s.attendees || []).includes(p.id));
+    const firstF = attended[0], lastF = attended[attended.length - 1];
+    const futsSince = firstF ? all.filter(s => s.date >= firstF.date).length : 0;
+    const freq = futsSince ? Math.round(pres / futsSince * 100) : 0;
+
+    const rG = rankOf(p.id, 'gols', stats), rA = rankOf(p.id, 'assist', stats), rP = rankOf(p.id, 'presencas', stats);
+    const dG = bestDay(p.id, 'g'), dA = bestDay(p.id, 'a'), dGA = bestDay(p.id, 'ga');
+    const streakMax = longestStreak(p.id, all), streakNow = currentStreak(p.id);
+    const mt = monthTotals(p.id);
+    const f = playerForm(p.id);
+    const part = partnersOf(p.id);
+
+    const tile = (label, value, sub) => `<div class="record-item"><div class="record-label">${label}</div><div class="record-value">${value}</div>${sub ? `<div class="record-sub">${escapeHtml(sub)}</div>` : ''}</div>`;
+    const posLine = `${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${footHtml(p.foot)}`;
+
+    // mini gráfico de gols por mês (12 últimos)
+    const gm = playerMonthlyGoals(p.id);
+    const months = Object.keys(gm).sort().slice(-12);
+    const ML = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    const monLabel = ym => { const [y, mo] = ym.split('-'); return `${ML[+mo - 1]}/${y.slice(2)}`; };
+    const maxG = Math.max(1, ...months.map(m => gm[m]));
+    const evoHtml = months.length >= 2 ? `
+      <div class="card"><div class="card-title">Gols por mês</div>
+        <div class="evo-chart">${months.map(m => `<div class="evo-col">
+          <div class="evo-bars"><div class="evo-bar gols" style="height:${Math.max(2, Math.round(gm[m] / maxG * 110))}px;"><b>${gm[m]}</b></div></div>
+          <div class="evo-month">${monLabel(m)}</div></div>`).join('')}</div>
+      </div>` : '';
+
+    const partHtml = (part.best || part.freq) ? `
+      <div class="card"><div class="card-title">Parcerias 🤝</div>
+        <div class="records-grid">
+          ${part.best ? tile('Melhor dupla', escapeHtml(part.best.name), `${part.best.v} vitórias juntos`) : ''}
+          ${part.freq ? tile('Parceiro mais frequente', escapeHtml(part.freq.name), `${part.freq.v} futs no mesmo time`) : ''}
+        </div>
+      </div>` : '';
+
+    const rankTile = (r, label) => r ? tile(label, `${r.pos}º`, `de ${r.total}`) : '';
+
+    host.innerHTML = `
+      <div class="detail-head">
+        <button class="ghost neutral" id="btn-detail-back">← Voltar</button>
+        <button class="secondary" id="btn-detail-edit">Editar</button>
+      </div>
+      <div class="card detail-hero">
+        ${avatarHtml(p, 'big')}
+        <div class="detail-id">
+          <div class="detail-name">${escapeHtml(p.name)} ${formHtml(p.id)}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="player-card-pos">${posLine}</div>
+        </div>
+      </div>
+
+      <div class="card"><div class="card-title">Resumo</div>
+        <div class="records-grid">
+          ${tile('Presenças', pres)}
+          ${tile('Gols', gols)}
+          ${tile('Assistências', assist)}
+          ${tile('% Vitórias', wp == null ? '—' : wp + '%')}
+        </div>
+      </div>
+
+      <div class="card"><div class="card-title">Médias por fut</div>
+        <div class="records-grid">
+          ${tile('Gols/fut', per(gols))}
+          ${tile('Assist./fut', per(assist))}
+          ${tile('Participações/fut', per(gols + assist), 'gols + assist.')}
+        </div>
+      </div>
+
+      <div class="card"><div class="card-title">Mês atual & fase</div>
+        <div class="records-grid">
+          ${tile('Fase', f ? (f.dir === 'flat' ? '→ 0.0' : (f.dir === 'up' ? '▲' : '▼') + (f.score == null ? '' : ' ' + fmtScore(f.score))) : '—', 'mês vs. histórico')}
+          ${tile('Gols no mês', mt.g)}
+          ${tile('Assist. no mês', mt.a)}
+          ${tile('Futs no mês', mt.futs)}
+        </div>
+      </div>
+
+      ${(rG || rA || rP) ? `<div class="card"><div class="card-title">No grupo</div>
+        <div class="records-grid">
+          ${rankTile(rG, 'Artilharia')}
+          ${rankTile(rA, 'Assistências')}
+          ${rankTile(rP, 'Presenças')}
+        </div>
+      </div>` : ''}
+
+      <div class="card"><div class="card-title">Recordes pessoais 🏅</div>
+        <div class="records-grid">
+          ${tile('Mais gols num dia', dG.v, dG.date ? formatDate(dG.date) : '—')}
+          ${tile('Mais assist. num dia', dA.v, dA.date ? formatDate(dA.date) : '—')}
+          ${tile('Mais participações num dia', dGA.v, dGA.date ? formatDate(dGA.date) : '—')}
+          ${tile('Maior sequência', streakMax, 'futs seguidos')}
+        </div>
+      </div>
+
+      <div class="card"><div class="card-title">Frequência</div>
+        <div class="records-grid">
+          ${tile('Primeiro fut', firstF ? formatDate(firstF.date) : '—')}
+          ${tile('Último fut', lastF ? formatDate(lastF.date) : '—')}
+          ${tile('Sequência atual', streakNow, 'futs seguidos')}
+          ${tile('Presença', freq + '%', 'dos futs desde que entrou')}
+        </div>
+      </div>
+
+      ${partHtml}
+      ${evoHtml}
+    `;
+    document.getElementById('btn-detail-back').addEventListener('click', closePlayerDetail);
+    document.getElementById('btn-detail-edit').addEventListener('click', () => openPlayerModal(p.id));
   }
 
   function rosterCardsHtml(list, stats) {
@@ -1713,14 +1877,15 @@
     p.foot = document.getElementById('edit-foot').value;
     p.active = document.getElementById('edit-active').checked;
     save(); renderRoster(); renderSessionEditor(); closePlayerModal();
+    if (detailId) renderPlayerDetail();
   }
   function deletePlayerFromModal() {
     const p = playerById(editingPlayerId); if (!p) return;
     if (!confirm(`Excluir ${p.name} do elenco? O histórico de jogos dele nas estatísticas será perdido.`)) return;
-    const removed = JSON.parse(JSON.stringify(p));
     state.players = state.players.filter(x => x.id !== editingPlayerId);
-    save(); renderRoster(); renderSessionEditor(); closePlayerModal();
-    pushUndo(`${removed.name} excluído`, () => { state.players.push(removed); save(); renderRoster(); });
+    save(); closePlayerModal();
+    if (detailId) closePlayerDetail();
+    renderRoster(); renderSessionEditor();
   }
   document.getElementById('btn-modal-save').addEventListener('click', savePlayerModal);
   document.getElementById('btn-modal-cancel').addEventListener('click', closePlayerModal);
@@ -1885,19 +2050,8 @@
     copyThen(text, done);
   }
   function copyThen(text, cb) {
-    const finish = ok => { pushUndoLikeToast(ok ? 'Texto copiado — abrindo WhatsApp…' : 'Abrindo WhatsApp…'); cb(); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => finish(true), () => finish(false));
-    else finish(false);
-  }
-  // toast simples (sem botão desfazer) reaproveitando o visual
-  function pushUndoLikeToast(label) {
-    undoFn = null;
-    const toast = document.getElementById('undo-toast');
-    document.getElementById('undo-label').textContent = label;
-    document.getElementById('undo-btn').style.display = 'none';
-    toast.classList.add('show');
-    clearTimeout(undoTimer);
-    undoTimer = setTimeout(() => { toast.classList.remove('show'); document.getElementById('undo-btn').style.display = ''; }, 3500);
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(cb, cb);
+    else cb();
   }
 
   function teamCardsHtml(teams) {
@@ -2051,17 +2205,11 @@
     list.querySelectorAll('[data-delete-session]').forEach(b => b.addEventListener('click', () => {
       const s = state.sessions.find(x => x.id === b.dataset.deleteSession);
       if (!s) return;
-      if (!confirm(`Excluir o fut de ${formatDate(s.date)}?`)) return;
-      const removed = JSON.parse(JSON.stringify(s));
+      if (!confirm(`Excluir o fut de ${formatDate(s.date)}? Isso não pode ser desfeito.`)) return;
       const wasActive = state.ui.activeSessionId === s.id;
       state.sessions = state.sessions.filter(x => x.id !== s.id);
       if (wasActive) state.ui.activeSessionId = null;
       save(); renderResults(); renderSessionSelect(); renderSessionEditor();
-      pushUndo(`Fut de ${formatDate(removed.date)} excluído`, () => {
-        state.sessions.push(removed);
-        if (wasActive) state.ui.activeSessionId = removed.id;
-        save(); renderResults(); renderSessionSelect(); renderSessionEditor();
-      });
     }));
   }
 
@@ -2110,6 +2258,21 @@
       Object.keys(g).forEach(pid => { if (g[pid] > bestG) { bestG = g[pid]; bestPid = pid; } });
       if (bestPid) items.push({ icon: '⭐', label: `Craque do último fut (${formatDate(last.date)})`, value: playerName(bestPid), sub: `${bestG} gols` });
     }
+    // recordes de um único dia
+    let bestDayG = { v: 0 }, bestDayA = { v: 0 }, bestDayGA = { v: 0 };
+    all.forEach(s => {
+      const g = s.goals || {}, a = s.assists || {};
+      const ids = new Set([...Object.keys(g), ...Object.keys(a)]);
+      ids.forEach(pid => {
+        const gg = g[pid] || 0, aa = a[pid] || 0;
+        if (gg > bestDayG.v) bestDayG = { v: gg, pid, date: s.date };
+        if (aa > bestDayA.v) bestDayA = { v: aa, pid, date: s.date };
+        if (gg + aa > bestDayGA.v) bestDayGA = { v: gg + aa, pid, date: s.date };
+      });
+    });
+    if (bestDayG.v > 0) items.push({ icon: '🎯', label: 'Mais gols num dia', value: playerName(bestDayG.pid), sub: `${bestDayG.v} gols · ${formatDate(bestDayG.date)}` });
+    if (bestDayA.v > 0) items.push({ icon: '🎩', label: 'Mais assistências num dia', value: playerName(bestDayA.pid), sub: `${bestDayA.v} assist. · ${formatDate(bestDayA.date)}` });
+    if (bestDayGA.v > 0) items.push({ icon: '💥', label: 'Mais participações em gols num dia', value: playerName(bestDayGA.pid), sub: `${bestDayGA.v} (gols+assist.) · ${formatDate(bestDayGA.date)}` });
     if (!items.length) { host.innerHTML = ''; return; }
     host.innerHTML = `<div class="card"><div class="card-title">Recordes 🏅</div>
       <div class="records-grid">${items.map(it => `<div class="record-item">
