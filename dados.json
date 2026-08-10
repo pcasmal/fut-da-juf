@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-09T17:31:00.139Z",
+  "updatedAt": "2026-08-10T00:36:07.966Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -10,7 +10,8 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "3a6qrb5o",
@@ -23,7 +24,8 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "ambidestro"
     },
     {
       "id": "3bk2x1ya",
@@ -36,27 +38,30 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "na3m57u1",
       "name": "Dudu",
       "primary": {
         "position": "goleiro",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "fing6501",
       "name": "Bruninho",
       "primary": {
         "position": "goleiro",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "da3pkntb",
@@ -66,7 +71,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "ihjjs7ny",
@@ -79,7 +85,8 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "och72djy",
@@ -89,7 +96,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "6le274n0",
@@ -102,7 +110,8 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "vlj130hf",
@@ -115,7 +124,8 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "v440nyj5",
@@ -128,40 +138,44 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "canhoto"
     },
     {
       "id": "lc7kjr1l",
       "name": "Juninho",
       "primary": {
         "position": "fixo",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "4loro9d7",
       "name": "Leiz",
       "primary": {
         "position": "goleiro",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "4i5e5dnx",
       "name": "Cris",
       "primary": {
         "position": "pivo",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": {
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "goexclc7",
@@ -174,7 +188,8 @@
         "position": "ala",
         "level": "nativo"
       },
-      "active": true
+      "active": true,
+      "foot": "ambidestro"
     },
     {
       "id": "g392acow",
@@ -184,7 +199,8 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "xc6kxlk5",
@@ -197,7 +213,8 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "1lo9d7ot",
@@ -210,7 +227,8 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "q0i74yd7",
@@ -223,7 +241,8 @@
         "position": "ala",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "vk6nnhld",
@@ -236,7 +255,8 @@
         "position": "pivo",
         "level": "improvisado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "eqklwjq4",
@@ -246,7 +266,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "canhoto"
     },
     {
       "id": "5x29v8hn",
@@ -259,7 +280,8 @@
         "position": "ala",
         "level": "improvisado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "pem3iz20",
@@ -272,7 +294,8 @@
         "position": "fixo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "dltd4nxp",
@@ -282,7 +305,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "q62q1pxy",
@@ -292,7 +316,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "au7rynh9",
@@ -302,7 +327,8 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "splc2r7u2ea",
@@ -312,7 +338,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "jyw3v5fz8gv",
@@ -322,7 +349,8 @@
         "level": "adaptado"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "canhoto"
     },
     {
       "id": "w7umlxkw4c7",
@@ -335,7 +363,8 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "yhzlnt5394m",
@@ -348,7 +377,8 @@
         "position": "ala",
         "level": "nativo"
       },
-      "active": true
+      "active": true,
+      "foot": "canhoto"
     },
     {
       "id": "yz06djbra28",
@@ -361,7 +391,8 @@
         "position": "pivo",
         "level": "adaptado"
       },
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "rbrvlqb7o4p",
@@ -371,7 +402,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     },
     {
       "id": "81mqk6xvbsq",
@@ -381,7 +413,8 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true
+      "active": true,
+      "foot": "destro"
     }
   ],
   "sessions": [
@@ -461,7 +494,8 @@
         "c04e4jsc": 1,
         "3a6qrb5o": 3
       },
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "9lsuf20eyzd",
@@ -518,7 +552,8 @@
         "v440nyj5": 5
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "veckqsoaa0o",
@@ -567,7 +602,8 @@
         "5x29v8hn": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "464dke0q8or",
@@ -624,7 +660,8 @@
         "vlj130hf": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "vg6p3r4panl",
@@ -677,7 +714,8 @@
         "vk6nnhld": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "2mb0lmywg4i",
@@ -731,7 +769,8 @@
         "fing6501": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "tx3pfxylwcm",
@@ -785,7 +824,8 @@
         "1lo9d7ot": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "vt3s8155q1q",
@@ -835,7 +875,8 @@
         "xc6kxlk5": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "v1mv97kfn4c",
@@ -898,7 +939,8 @@
         "w7umlxkw4c7": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "3n55v36m7og",
@@ -956,7 +998,8 @@
         "1lo9d7ot": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "bahk3e7vez3",
@@ -1016,7 +1059,8 @@
         "lc7kjr1l": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "unrpkb6qjxu",
@@ -1073,7 +1117,8 @@
         "g392acow": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "zfquexs6ehr",
@@ -1130,7 +1175,8 @@
         "jyw3v5fz8gv": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "wg5l4ude0yn",
@@ -1184,7 +1230,8 @@
         "3a6qrb5o": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "ltvspjhgviu",
@@ -1241,7 +1288,8 @@
         "jyw3v5fz8gv": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "v9qo6ltcx3l",
@@ -1304,7 +1352,8 @@
         "jyw3v5fz8gv": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "okuv9sgj9e5",
@@ -1364,7 +1413,8 @@
         "och72djy": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "d266tgh8sbu",
@@ -1421,7 +1471,8 @@
         "3bk2x1ya": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "7bsk3ajjxz8",
@@ -1472,7 +1523,8 @@
         "g392acow": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "286r78fbxex",
@@ -1522,7 +1574,8 @@
         "5x29v8hn": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "3iurask1dfz",
@@ -1579,7 +1632,8 @@
         "eqklwjq4": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "9pcyr6pc6eg",
@@ -1636,7 +1690,8 @@
         "eqklwjq4": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "axxd9kj68ts",
@@ -1686,7 +1741,8 @@
         "3bk2x1ya": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "ub27x67wxzq",
@@ -1749,7 +1805,8 @@
         "q62q1pxy": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "1cuxnpwb71r",
@@ -1802,7 +1859,8 @@
         "ihjjs7ny": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "4z2won8dy35",
@@ -1865,7 +1923,8 @@
         "c04e4jsc": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "rojzgufn44e",
@@ -1925,7 +1984,8 @@
         "c04e4jsc": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "uy4uukha19k",
@@ -1988,7 +2048,8 @@
         "c04e4jsc": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "grsgjjc5f9i",
@@ -2042,7 +2103,8 @@
         "goexclc7": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "1bx3zbp74sk",
@@ -2102,14 +2164,15 @@
         "eqklwjq4": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     }
   ],
   "tournament": null,
   "ui": {
     "activeSessionId": null,
     "statsPeriod": "all",
-    "showRatings": true,
+    "showRatings": false,
     "estimate": {
       "gameMin": 12,
       "betweenMin": 2,
