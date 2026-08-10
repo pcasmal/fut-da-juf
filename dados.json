@@ -1,13 +1,13 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-10T00:36:07.966Z",
+  "updatedAt": "2026-08-10T17:30:11.536Z",
   "players": [
     {
       "id": "c04e4jsc",
       "name": "Paulinho",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
       "active": true,
@@ -196,7 +196,7 @@
       "name": "Danilinho",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
       "active": true,
@@ -207,7 +207,7 @@
       "name": "Maia",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": {
         "position": "pivo",
@@ -235,10 +235,10 @@
       "name": "Daniel B.",
       "primary": {
         "position": "ala",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": {
-        "position": "ala",
+        "position": "pivo",
         "level": "adaptado"
       },
       "active": true,
@@ -306,7 +306,7 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "canhoto"
     },
     {
       "id": "q62q1pxy",
@@ -324,7 +324,7 @@
       "name": "Teves",
       "primary": {
         "position": "goleiro",
-        "level": "adaptado"
+        "level": "nativo"
       },
       "secondary": null,
       "active": true,
@@ -410,6 +410,31 @@
       "name": "Deividi",
       "primary": {
         "position": "ala",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "foot": "destro"
+    },
+    {
+      "id": "wwr8zjrigfx",
+      "name": "Tigar",
+      "primary": {
+        "position": "pivo",
+        "level": "nativo"
+      },
+      "secondary": {
+        "position": "ala",
+        "level": "adaptado"
+      },
+      "active": true,
+      "foot": "destro"
+    },
+    {
+      "id": "jh2pwd05lcg",
+      "name": "Jonas",
+      "primary": {
+        "position": "goleiro",
         "level": "nativo"
       },
       "secondary": null,
