@@ -679,6 +679,24 @@
   .avatar.big { width: 60px; height: 60px; font-size: 22px; flex-shrink: 0; }
   .detail-id { min-width: 0; }
   .detail-name { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .week-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; font-size: 11px; }
+  .week-key { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+  .week-key b { color: var(--text); }
+  .week-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .week-chart { display: flex; align-items: flex-end; gap: 8px; min-height: 175px; overflow-x: auto; padding-top: 6px; }
+  .week-col { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 34px; }
+  .week-total { font-size: 10px; color: var(--muted); font-weight: 700; }
+  .week-stack { display: flex; flex-direction: column-reverse; width: 20px; border-radius: 4px 4px 0 0; overflow: hidden; }
+  .week-seg { width: 100%; }
+  .week-lbl { font-size: 9px; color: var(--muted); white-space: nowrap; }
+  .motm-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 12px; color: var(--muted); background: var(--surface-2); border-radius: 0 0 8px 8px; margin-top: -2px; flex-wrap: wrap; }
+  .motm-row select { width: auto; flex: 1; min-width: 120px; font-size: 12px; padding: 4px 8px; }
+  .match-block { margin-bottom: 12px; }
+  .rank-block { margin-bottom: 18px; }
+  .rank-sub { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+  .rank-goalie { color: var(--muted); font-size: 12px; font-weight: 400; }
+  .player-card.frequent { border-color: rgba(63,185,80,0.55); box-shadow: 0 0 0 1px rgba(63,185,80,0.25) inset; }
+  .roster-row.frequent { border-left: 3px solid var(--nativo); }
   .form-badge.up { color: #34D399; background: rgba(52,211,153,0.13); }
   .form-badge.down { color: #F85149; background: rgba(248,81,73,0.13); }
   .form-badge.flat { color: var(--muted); background: var(--surface-2); }
@@ -922,9 +940,21 @@
         <button class="period-btn" data-period="year">Este ano</button>
         <button class="period-btn" data-period="all">Tudo</button>
       </div>
+      <div class="period-picker" id="pos-filter">
+        <button class="period-btn active" data-pos="all">Todas posições</button>
+        <button class="period-btn" data-pos="goleiro">Goleiro</button>
+        <button class="period-btn" data-pos="fixo">Fixo</button>
+        <button class="period-btn" data-pos="ala">Ala</button>
+        <button class="period-btn" data-pos="pivo">Pivô</button>
+      </div>
       <p class="hint" id="stats-summary"></p>
     </div>
     <div id="records-card"></div>
+    <div class="card" id="weekscorers-card" style="display:none;">
+      <div class="card-title">Gols por semana — top 7 artilheiros</div>
+      <div id="weekscorers-legend" class="week-legend"></div>
+      <div id="weekscorers-chart"></div>
+    </div>
     <div class="card" id="evolution-card" style="display:none;">
       <div class="card-title">Evolução do grupo (por mês)</div>
       <div class="evo-legend"><span class="evo-key gols">● Gols</span> <span class="evo-key pres">● Presenças</span></div>
@@ -1010,7 +1040,7 @@
         <div class="standings-wrap"><table class="standings" id="standings-table"></table></div>
       </div>
       <div class="card" id="champ-scorers-card" style="display:none;">
-        <div class="card-title">Artilharia do campeonato</div>
+        <div class="card-title">Ranking do campeonato</div>
         <div id="champ-scorers"></div>
       </div>
       <div class="card">
@@ -1088,6 +1118,14 @@
         <div class="settings-actions" style="margin-top:6px;">
           <button class="ghost neutral tiny" id="btn-download-notas">Baixar notas.json</button>
           <button class="ghost neutral tiny" id="btn-import-notas">Importar notas.json</button>
+        </div>
+
+        <div class="toggle-line" style="margin-top:16px;">
+          <div>
+            <div class="settings-label">Fase pelos últimos 3 futs</div>
+            <div class="settings-desc">Em vez de comparar o mês atual, calcula a fase pelos <strong>últimos 3 futs que a pessoa jogou</strong> (vs. a média anterior dela).</div>
+          </div>
+          <input type="checkbox" class="check" id="toggle-fase-last3">
         </div>
 
         <div class="gh-box" style="margin-top:16px;">
@@ -1550,46 +1588,77 @@
     return g + a + w;
   }
   function currentYm() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
-  // Compara a média/fut DESTE mês com a média/fut histórica (EXCLUINDO o mês atual).
+  // Fase: compara a forma recente com a média histórica. Dois modos (em Config avançadas):
+  //  - 'month' (padrão): média/fut DESTE mês vs. média/fut dos outros meses.
+  //  - 'last3': média/fut dos ÚLTIMOS 3 futs que jogou vs. média/fut de tudo antes disso.
   function playerForm(pid) {
-    const ym = currentYm();
-    let monthPts = 0, monthN = 0, histPts = 0, histN = 0;
-    state.sessions.forEach(s => {
-      if (!(s.attendees || []).includes(pid)) return;
-      const pts = sessionPointsFor(pid, s);
-      if ((s.date || '').slice(0, 7) === ym) { monthPts += pts; monthN++; }
-      else { histPts += pts; histN++; }
-    });
-    if (monthN === 0 || histN === 0) return null; // sem base de comparação
-    const monthAvg = monthPts / monthN, histAvg = histPts / histN;
-    if (histAvg === 0) return monthAvg > 0 ? { dir: 'up', score: null } : null;
-    // "lúdico": variação percentual dividida por 10 (ex.: +42% -> 4.2, -75% -> -7.5)
-    const score = Math.round((monthAvg / histAvg - 1) * 10 * 10) / 10;
+    const attended = state.sessions.filter(s => (s.attendees || []).includes(pid))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    if (attended.length < 2) return null;
+    const mode = state.ui.faseMode === 'last3' ? 'last3' : 'month';
+    let recent, older;
+    if (mode === 'last3') {
+      if (attended.length < 4) return null; // precisa de histórico além dos 3 últimos
+      recent = attended.slice(-3);
+      older = attended.slice(0, -3);
+    } else {
+      const ym = currentYm();
+      recent = attended.filter(s => (s.date || '').slice(0, 7) === ym);
+      older = attended.filter(s => (s.date || '').slice(0, 7) !== ym);
+    }
+    if (!recent.length || !older.length) return null;
+    const avg = arr => arr.reduce((sum, s) => sum + sessionPointsFor(pid, s), 0) / arr.length;
+    const recAvg = avg(recent), histAvg = avg(older);
+    if (histAvg === 0) return recAvg > 0 ? { dir: 'up', score: null } : null;
+    const score = Math.round((recAvg / histAvg - 1) * 10 * 10) / 10;
     return { dir: score > 0 ? 'up' : score < 0 ? 'down' : 'flat', score };
+  }
+  function faseTitle() {
+    return state.ui.faseMode === 'last3'
+      ? 'Fase: últimos 3 futs vs. média anterior'
+      : 'Fase do mês vs. média histórica (fora este mês)';
   }
   function fmtScore(n) { return (Math.round(Math.abs(n) * 10) / 10).toFixed(1); }
   function formHtml(pid) {
     const f = playerForm(pid);
     if (!f) return '';
-    if (f.dir === 'flat') return `<span class="form-badge flat" title="Fase do mês vs. média histórica">→ 0.0</span>`;
+    if (f.dir === 'flat') return `<span class="form-badge flat" title="${faseTitle()}">→ 0.0</span>`;
     const arrow = f.dir === 'up' ? '▲' : '▼';
     const num = f.score == null ? '' : ` ${fmtScore(f.score)}`;
-    const title = f.score == null ? 'Fase: primeiro mês acima da média' : 'Fase do mês vs. média histórica (fora este mês)';
-    return `<span class="form-badge ${f.dir}" title="${title}">${arrow}${num}</span>`;
+    return `<span class="form-badge ${f.dir}" title="${faseTitle()}">${arrow}${num}</span>`;
   }
   function avatarHtml(p, cls) { return `<div class="avatar ${cls || ''}">${escapeHtml(initials(p.name).toUpperCase())}</div>`; }
   function globalStarsLine(p) { return `<div class="pc-meta">${starsHtml(p.stars)}</div>`; }
+
+  const FREQ_WINDOW = 10;
+  function recentSessionIds(n) {
+    return state.sessions.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, n).map(s => s.id);
+  }
+  // Frequente = apareceu em pelo menos 1 dos últimos 10 futs.
+  function computeFrequentSet() {
+    const ids = new Set(recentSessionIds(FREQ_WINDOW));
+    const freq = new Set();
+    state.sessions.forEach(s => { if (ids.has(s.id)) (s.attendees || []).forEach(pid => freq.add(pid)); });
+    return freq;
+  }
+  let frequentSet = new Set();
+  function isFrequent(pid) { return frequentSet.has(pid); }
+  // Ativo "efetivo": marcado como ativo OU frequente (quem jogou nos últimos 10 futs conta como ativo).
+  function effActive(p) { return p.active || isFrequent(p.id); }
 
   function renderRoster() {
     const cont = document.getElementById('roster-container');
     const count = document.getElementById('roster-count');
     const stats = computeStats(state.sessions);
-    const activeN = state.players.filter(p => p.active).length;
+    frequentSet = computeFrequentSet();
+    const activeN = state.players.filter(effActive).length;
     count.textContent = state.players.length ? `· ${activeN} ativos de ${state.players.length}` : '';
 
     if (state.players.length === 0) { cont.innerHTML = '<div class="empty">Nenhum jogador no elenco ainda.</div>'; return; }
 
-    let list = state.players.slice().sort((a, b) => (b.active - a.active) || a.name.localeCompare(b.name));
+    // ordena: frequentes primeiro, depois ativos, depois nome
+    let list = state.players.slice().sort((a, b) =>
+      (isFrequent(b.id) - isFrequent(a.id)) || (effActive(b) - effActive(a)) || a.name.localeCompare(b.name));
     if (rosterFilter) list = list.filter(p => p.name.toLowerCase().includes(rosterFilter));
     if (!list.length) { cont.innerHTML = '<div class="no-match">Nenhum jogador encontrado.</div>'; return; }
 
@@ -1790,10 +1859,10 @@
 
   function rosterCardsHtml(list, stats) {
     return '<div class="roster-grid">' + list.map(p => {
-      const st = stats[p.id] || {}; const wp = winPct(st);
+      const st = stats[p.id] || {}; const wp = winPct(st); const freq = isFrequent(p.id); const act = effActive(p);
       return `
-      <div class="player-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
-        ${p.active ? '' : '<span class="inactive-flag">Inativo</span>'}
+      <div class="player-card ${act ? '' : 'inactive'} ${freq ? 'frequent' : ''}" data-edit="${p.id}">
+        ${act ? '' : '<span class="inactive-flag">Inativo</span>'}
         <div class="player-card-top">
           ${avatarHtml(p)}
           <div style="min-width:0;">
@@ -1813,12 +1882,12 @@
 
   function rosterListHtml(list, stats) {
     return '<div class="roster-list">' + list.map(p => {
-      const st = stats[p.id] || {}; const wp = winPct(st);
+      const st = stats[p.id] || {}; const wp = winPct(st); const freq = isFrequent(p.id); const act = effActive(p);
       return `
-      <div class="roster-row ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
+      <div class="roster-row ${act ? '' : 'inactive'} ${freq ? 'frequent' : ''}" data-edit="${p.id}">
         ${avatarHtml(p)}
         <div class="roster-row-main">
-          <div class="roster-row-name">${escapeHtml(p.name)} ${formHtml(p.id)}${starsHtml(p.stars)}${p.active ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
+          <div class="roster-row-name">${escapeHtml(p.name)} ${formHtml(p.id)}${starsHtml(p.stars)}${act ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
           <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${footHtml(p.foot)}</div>
         </div>
         <div class="roster-row-stats">
@@ -1975,7 +2044,8 @@
 
   function renderAttendees() {
     const sess = activeSession(); if (!sess) return;
-    const active = state.players.filter(p => p.active);
+    frequentSet = computeFrequentSet();
+    const active = state.players.filter(p => effActive(p) || sess.attendees.includes(p.id));
     const grid = document.getElementById('attendee-grid');
     document.getElementById('attendee-count').textContent = `· ${sess.attendees.length} presentes`;
     if (!active.length) { grid.innerHTML = '<div class="empty" style="width:100%;">Sem jogadores ativos. Adicione no Elenco.</div>'; return; }
@@ -1989,7 +2059,8 @@
     grid.querySelectorAll('[data-att]').forEach(chip => chip.addEventListener('click', () => {
       const pid = chip.dataset.att;
       const i = sess.attendees.indexOf(pid);
-      if (i === -1) sess.attendees.push(pid); else sess.attendees.splice(i, 1);
+      if (i === -1) { sess.attendees.push(pid); const pl = playerById(pid); if (pl) pl.active = true; } // quem joga vira ativo
+      else sess.attendees.splice(i, 1);
       save(); renderAttendees(); renderScoring();
     }));
   }
@@ -2226,6 +2297,10 @@
   document.querySelectorAll('#period-picker .period-btn').forEach(btn => btn.addEventListener('click', () => {
     state.ui.statsPeriod = btn.dataset.period; save(); renderStats();
   }));
+  let statsPos = 'all';
+  document.querySelectorAll('#pos-filter .period-btn').forEach(btn => btn.addEventListener('click', () => {
+    statsPos = btn.dataset.pos; renderStats();
+  }));
 
   // ---- Recordes (todo o histórico) ----
   function longestStreak(pid, sessionsByDate) {
@@ -2315,19 +2390,67 @@
     }).join('');
   }
 
+  // ---- Gols por semana — top 7 artilheiros ----
+  function weekStartKey(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const dow = (d.getDay() + 6) % 7; // segunda = 0
+    d.setDate(d.getDate() - dow);
+    return d.toISOString().slice(0, 10); // data da segunda-feira da semana
+  }
+  function renderWeekScorers() {
+    const card = document.getElementById('weekscorers-card');
+    const chart = document.getElementById('weekscorers-chart');
+    const legend = document.getElementById('weekscorers-legend');
+    const totals = {};
+    state.sessions.forEach(s => { const g = s.goals || {}; Object.keys(g).forEach(pid => { if (posMatch(pid)) totals[pid] = (totals[pid] || 0) + (g[pid] || 0); }); });
+    const top = Object.keys(totals).filter(pid => totals[pid] > 0).sort((a, b) => totals[b] - totals[a]).slice(0, 7);
+    if (top.length < 2) { card.style.display = 'none'; return; }
+    const topSet = new Set(top);
+    const byWeek = {};
+    state.sessions.forEach(s => {
+      const g = s.goals || {}; const wk = weekStartKey(s.date);
+      Object.keys(g).forEach(pid => { if (topSet.has(pid) && g[pid]) { (byWeek[wk] = byWeek[wk] || {})[pid] = (byWeek[wk][pid] || 0) + g[pid]; } });
+    });
+    const weeks = Object.keys(byWeek).sort().slice(-12);
+    if (weeks.length < 2) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    const colors = ['#A78BFA', '#22D3EE', '#34D399', '#FB7185', '#FBBF24', '#60A5FA', '#F472B6'];
+    const colorOf = {}; top.forEach((pid, i) => colorOf[pid] = colors[i % colors.length]);
+    const weekTotal = wk => top.reduce((s, pid) => s + ((byWeek[wk] || {})[pid] || 0), 0);
+    const maxTot = Math.max(1, ...weeks.map(weekTotal));
+    const lbl = wk => { const [, m, d] = wk.split('-'); return `${d}/${m}`; };
+    legend.innerHTML = top.map(pid => `<span class="week-key"><span class="week-swatch" style="background:${colorOf[pid]}"></span>${escapeHtml(playerName(pid))} <b>${totals[pid]}</b></span>`).join('');
+    chart.className = 'week-chart';
+    chart.innerHTML = weeks.map(wk => {
+      const segs = top.filter(pid => (byWeek[wk] || {})[pid]).map(pid => {
+        const v = (byWeek[wk] || {})[pid]; const h = Math.round(v / maxTot * 140);
+        return `<div class="week-seg" style="height:${Math.max(4, h)}px;background:${colorOf[pid]};" title="${escapeHtml(playerName(pid))}: ${v} gol(s) — semana de ${lbl(wk)}"></div>`;
+      }).join('');
+      return `<div class="week-col"><div class="week-total">${weekTotal(wk)}</div><div class="week-stack">${segs}</div><div class="week-lbl">${lbl(wk)}</div></div>`;
+    }).join('');
+  }
+
+  function posMatch(pid) {
+    if (statsPos === 'all') return true;
+    const p = playerById(pid); if (!p) return false;
+    return p.primary.position === statsPos || (p.secondary && p.secondary.position === statsPos);
+  }
   function renderStats() {
     const period = state.ui.statsPeriod || 'month';
     document.querySelectorAll('#period-picker .period-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+    document.querySelectorAll('#pos-filter .period-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === statsPos));
     renderRecords();   // recordes são sempre de todo o histórico
     renderEvolution();
+    renderWeekScorers();
     const sessions = state.sessions.filter(s => inPeriod(s.date, period));
     const summary = document.getElementById('stats-summary');
     const grid = document.getElementById('rank-grid');
     if (!sessions.length) { summary.textContent = 'Nenhum fut nesse período (os recordes e a evolução acima consideram todo o histórico).'; grid.innerHTML = ''; return; }
-    summary.textContent = `${sessions.length} fut${sessions.length === 1 ? '' : 's'} no período.`;
+    const posLabel = statsPos === 'all' ? '' : ` · ${POS_LABELS[statsPos]}`;
+    summary.textContent = `${sessions.length} fut${sessions.length === 1 ? '' : 's'} no período${posLabel}.`;
 
     const stats = computeStats(sessions);
-    const rows = Object.keys(stats).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
+    const rows = Object.keys(stats).filter(posMatch).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
 
     const medal = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
     function table(title, sorter, cols, valFn) {
@@ -2716,15 +2839,27 @@
     renderLiveCard();
   }
 
+  function matchPlayers(m) {
+    const t = state.tournament, ids = [];
+    [m.team1, m.team2].forEach(tid => { const tm = (t.teams || []).find(x => x.id === tid); if (tm) tm.players.forEach(pid => ids.push(pid)); });
+    return ids;
+  }
+  function motmRowHtml(m) {
+    if (!m.team1 || !m.team2) return '';
+    const ids = matchPlayers(m); if (!ids.length) return '';
+    return `<div class="motm-row"><span>⭐ Craque da partida:</span>
+      <select class="motm-select" data-motm="${m.id}"><option value="">—</option>
+      ${ids.map(pid => `<option value="${pid}" ${m.motm === pid ? 'selected' : ''}>${escapeHtml(playerName(pid))}</option>`).join('')}</select></div>`;
+  }
   function leagueMatchHtml(m) {
     const played = m.score1 != null && m.score2 != null;
-    return `<div class="match-with-live"><div class="match ${played ? 'played' : ''}"><div class="match-main" style="grid-template-columns:1fr 46px auto 46px 1fr;">
+    return `<div class="match-block"><div class="match-with-live"><div class="match ${played ? 'played' : ''}"><div class="match-main" style="grid-template-columns:1fr 46px auto 46px 1fr;">
       <div class="team-name" style="text-align:left;"><span class="team-swatch" style="background:${tColor(m.team1)};"></span>${escapeHtml(tName(m.team1))}</div>
       <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="1" value="${m.score1 == null ? '' : m.score1}">
       <div class="match-vs">×</div>
       <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="2" value="${m.score2 == null ? '' : m.score2}">
       <div class="team-name" style="text-align:right;">${escapeHtml(tName(m.team2))}<span class="team-swatch" style="background:${tColor(m.team2)}; margin-left:8px; margin-right:0;"></span></div>
-    </div></div><button class="ghost live-btn" data-live="${m.id}" title="Cronometrar e marcar gols ao vivo">▶</button></div>`;
+    </div></div><button class="ghost live-btn" data-live="${m.id}" title="Cronometrar e marcar gols ao vivo">▶</button></div>${motmRowHtml(m)}</div>`;
   }
 
   function bracketMatchHtml(m) {
@@ -2734,12 +2869,16 @@
     const row = (id, side) => `<div class="bracket-team ${cls(id)}">
       <span>${id ? escapeHtml(tName(id)) : 'A definir'}</span>
       <input type="number" class="score-input" min="0" data-tmatch="${m.id}" data-side="${side}" value="${m['score' + side] == null ? '' : m['score' + side]}" ${dis}></div>`;
-    return `<div class="bracket-match">${row(m.team1, 1)}${row(m.team2, 2)}${(m.team1 && m.team2) ? `<button class="ghost live-btn" data-live="${m.id}" style="width:100%; border-top:1px solid var(--border); padding:6px;">▶ ao vivo</button>` : ''}</div>`;
+    return `<div class="bracket-match">${row(m.team1, 1)}${row(m.team2, 2)}${(m.team1 && m.team2) ? `<button class="ghost live-btn" data-live="${m.id}" style="width:100%; border-top:1px solid var(--border); padding:6px;">▶ ao vivo</button>${motmRowHtml(m)}` : ''}</div>`;
   }
 
   function wireTournamentInputs() {
     document.querySelectorAll('#tournament-active input[data-tmatch]').forEach(inp => inp.addEventListener('change', () => updateTournamentScore(inp.dataset.tmatch, inp.dataset.side, inp.value)));
     document.querySelectorAll('#tournament-active [data-live]').forEach(b => b.addEventListener('click', () => setLive(b.dataset.live)));
+    document.querySelectorAll('#tournament-active [data-motm]').forEach(sel => sel.addEventListener('change', () => {
+      const m = findTMatch(sel.dataset.motm); if (!m) return;
+      m.motm = sel.value || null; save(); renderChampScorers();
+    }));
   }
 
   function renderStandings() {
@@ -2838,13 +2977,39 @@
     const ids = new Set([...Object.keys(g), ...Object.keys(a)]);
     return [...ids].map(pid => ({ pid, gols: g[pid] || 0, assist: a[pid] || 0 })).sort((x, y) => y.gols - x.gols || y.assist - x.assist);
   }
+  function champMotmCounts() {
+    const t = state.tournament, c = {};
+    allMatches(t).forEach(m => { if (m.motm) c[m.motm] = (c[m.motm] || 0) + 1; });
+    return c;
+  }
   function renderChampScorers() {
     const card = document.getElementById('champ-scorers-card');
-    const rows = champScorers().filter(r => r.gols || r.assist).slice(0, 10);
-    if (!rows.length) { card.style.display = 'none'; return; }
+    const t = state.tournament; if (!t) { card.style.display = 'none'; return; }
+    const scorers = champScorers();
+    const golRows = scorers.filter(r => r.gols > 0).slice(0, 10);
+    const assRows = scorers.filter(r => r.assist > 0).sort((a, b) => b.assist - a.assist || b.gols - a.gols).slice(0, 10);
+    // gols sofridos por time (com o goleiro), menos vazados primeiro
+    const gc = goalsConcededByTeam();
+    const concRows = Object.keys(gc).map(tid => ({ tid, conc: gc[tid], goalie: teamGoalie(tid) }))
+      .sort((a, b) => a.conc - b.conc);
+    // craque da partida (MOTM)
+    const motm = champMotmCounts();
+    const motmRows = Object.keys(motm).map(pid => ({ pid, n: motm[pid] })).sort((a, b) => b.n - a.n).slice(0, 10);
+
+    const medal = i => i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
+    const rankTable = (title, rows, cols) => !rows.length ? '' : `<div class="rank-block"><div class="rank-sub">${title}</div>
+      <table class="rank-table"><thead><tr><th></th><th>${cols.name}</th>${cols.heads.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map((r, i) => `<tr><td class="rank-medal">${medal(i)}</td><td>${cols.label(r)}</td>${cols.vals(r).map((v, j) => `<td class="${j === 0 ? 'big' : ''}">${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+
+    let html = '';
+    html += rankTable('⚽ Artilharia', golRows, { name: 'Jogador', heads: ['Gols', 'Assist.'], label: r => escapeHtml(playerName(r.pid)), vals: r => [r.gols, r.assist] });
+    html += rankTable('🅰 Assistências', assRows, { name: 'Jogador', heads: ['Assist.', 'Gols'], label: r => escapeHtml(playerName(r.pid)), vals: r => [r.assist, r.gols] });
+    html += rankTable('🧤 Gols sofridos (menos vazados)', concRows, { name: 'Time', heads: ['Sofridos'], label: r => `${escapeHtml(tName(r.tid))}${r.goalie ? ` <span class="rank-goalie">${escapeHtml(playerName(r.goalie))}</span>` : ''}`, vals: r => [r.conc] });
+    html += rankTable('⭐ Craque da partida', motmRows, { name: 'Jogador', heads: ['Vezes'], label: r => escapeHtml(playerName(r.pid)), vals: r => [r.n] });
+
+    if (!html) { card.style.display = 'none'; return; }
     card.style.display = '';
-    document.getElementById('champ-scorers').innerHTML = `<table class="rank-table"><thead><tr><th></th><th>Jogador</th><th>Gols</th><th>Assist.</th></tr></thead>
-      <tbody>${rows.map((r, i) => `<tr><td class="rank-medal">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</td><td>${escapeHtml(playerName(r.pid))}</td><td class="big">${r.gols}</td><td>${r.assist}</td></tr>`).join('')}</tbody></table>`;
+    document.getElementById('champ-scorers').innerHTML = html;
   }
 
   // ---- Campeão, vice, 3º, MVP e Luva de Ouro ----
@@ -3264,6 +3429,7 @@
     if (pass == null) return;
     if (pass !== ADVANCED_PASSWORD) { alert('Senha incorreta.'); return; }
     advancedUnlocked = true; renderAdvancedLock(); renderGhConfig();
+    const fcb = document.getElementById('toggle-fase-last3'); if (fcb) fcb.checked = state.ui.faseMode === 'last3';
   }
   document.getElementById('advanced-toggle').addEventListener('click', toggleAdvanced);
   document.getElementById('advanced-toggle').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAdvanced(); } });
@@ -3278,6 +3444,10 @@
   document.getElementById('toggle-show-ratings').addEventListener('change', e => {
     state.ui.showRatings = e.target.checked;
     save(); applyShowRatings();
+  });
+  document.getElementById('toggle-fase-last3').addEventListener('change', e => {
+    state.ui.faseMode = e.target.checked ? 'last3' : 'month';
+    save(); renderRoster(); if (detailId) renderPlayerDetail(); renderStats();
   });
 
   // ============ Init ============
