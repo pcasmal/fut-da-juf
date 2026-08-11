@@ -679,24 +679,24 @@
   .avatar.big { width: 60px; height: 60px; font-size: 22px; flex-shrink: 0; }
   .detail-id { min-width: 0; }
   .detail-name { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-  .week-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; font-size: 11px; }
-  .week-key { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
-  .week-key b { color: var(--text); }
-  .week-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-  .week-chart { display: flex; align-items: flex-end; gap: 8px; min-height: 175px; overflow-x: auto; padding-top: 6px; }
-  .week-col { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 34px; }
-  .week-total { font-size: 10px; color: var(--muted); font-weight: 700; }
-  .week-stack { display: flex; flex-direction: column-reverse; width: 20px; border-radius: 4px 4px 0 0; overflow: hidden; }
-  .week-seg { width: 100%; }
-  .week-lbl { font-size: 9px; color: var(--muted); white-space: nowrap; }
+  .week-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 11px; }
+  .week-key { display: inline-flex; align-items: center; gap: 5px; color: var(--text); cursor: pointer; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-family: inherit; font-size: 11px; transition: opacity 0.15s; }
+  .week-key b { color: var(--muted); font-weight: 700; }
+  .week-key.off { opacity: 0.45; text-decoration: line-through; }
+  .week-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+  .line-scroll { overflow-x: auto; }
+  .line-svg { display: block; }
+  .line-ylbl { font-size: 9px; fill: var(--muted); }
+  .line-xlbl { font-size: 9px; fill: var(--muted); }
+  .line-endlbl { font-size: 10px; font-weight: 700; }
   .motm-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 12px; color: var(--muted); background: var(--surface-2); border-radius: 0 0 8px 8px; margin-top: -2px; flex-wrap: wrap; }
   .motm-row select { width: auto; flex: 1; min-width: 120px; font-size: 12px; padding: 4px 8px; }
   .match-block { margin-bottom: 12px; }
   .rank-block { margin-bottom: 18px; }
   .rank-sub { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
   .rank-goalie { color: var(--muted); font-size: 12px; font-weight: 400; }
-  .player-card.frequent { border-color: rgba(63,185,80,0.55); box-shadow: 0 0 0 1px rgba(63,185,80,0.25) inset; }
-  .roster-row.frequent { border-left: 3px solid var(--nativo); }
+  .player-card.frequent { border-left: 3px solid var(--accent-solid); }
+  .roster-row.frequent { border-left: 3px solid var(--accent-solid); }
   .form-badge.up { color: #34D399; background: rgba(52,211,153,0.13); }
   .form-badge.down { color: #F85149; background: rgba(248,81,73,0.13); }
   .form-badge.flat { color: var(--muted); background: var(--surface-2); }
@@ -951,7 +951,8 @@
     </div>
     <div id="records-card"></div>
     <div class="card" id="weekscorers-card" style="display:none;">
-      <div class="card-title">Gols por semana — top 7 artilheiros</div>
+      <div class="card-title">Corrida da artilharia (gols acumulados por semana)</div>
+      <p class="hint" style="margin:-4px 0 12px;">Toque num nome na legenda para esconder/mostrar a linha.</p>
       <div id="weekscorers-legend" class="week-legend"></div>
       <div id="weekscorers-chart"></div>
     </div>
@@ -2397,6 +2398,7 @@
     d.setDate(d.getDate() - dow);
     return d.toISOString().slice(0, 10); // data da segunda-feira da semana
   }
+  let hiddenScorers = new Set();
   function renderWeekScorers() {
     const card = document.getElementById('weekscorers-card');
     const chart = document.getElementById('weekscorers-chart');
@@ -2406,28 +2408,56 @@
     const top = Object.keys(totals).filter(pid => totals[pid] > 0).sort((a, b) => totals[b] - totals[a]).slice(0, 7);
     if (top.length < 2) { card.style.display = 'none'; return; }
     const topSet = new Set(top);
-    const byWeek = {};
+    const perWeek = {}, weekSet = new Set();
     state.sessions.forEach(s => {
-      const g = s.goals || {}; const wk = weekStartKey(s.date);
-      Object.keys(g).forEach(pid => { if (topSet.has(pid) && g[pid]) { (byWeek[wk] = byWeek[wk] || {})[pid] = (byWeek[wk][pid] || 0) + g[pid]; } });
+      if (!s.date) return; const wk = weekStartKey(s.date); weekSet.add(wk);
+      const g = s.goals || {}; Object.keys(g).forEach(pid => { if (topSet.has(pid) && g[pid]) (perWeek[wk] = perWeek[wk] || {})[pid] = (perWeek[wk][pid] || 0) + g[pid]; });
     });
-    const weeks = Object.keys(byWeek).sort().slice(-12);
+    const weeks = [...weekSet].sort().slice(-30);
     if (weeks.length < 2) { card.style.display = 'none'; return; }
     card.style.display = '';
     const colors = ['#A78BFA', '#22D3EE', '#34D399', '#FB7185', '#FBBF24', '#60A5FA', '#F472B6'];
     const colorOf = {}; top.forEach((pid, i) => colorOf[pid] = colors[i % colors.length]);
-    const weekTotal = wk => top.reduce((s, pid) => s + ((byWeek[wk] || {})[pid] || 0), 0);
-    const maxTot = Math.max(1, ...weeks.map(weekTotal));
+
+    // acumulado (corrida pela artilharia)
+    const cum = {}, running = {}; top.forEach(pid => { cum[pid] = []; running[pid] = 0; });
+    weeks.forEach(wk => top.forEach(pid => { running[pid] += (perWeek[wk] || {})[pid] || 0; cum[pid].push(running[pid]); }));
+
+    const visible = top.filter(pid => !hiddenScorers.has(pid));
+    const maxY = Math.max(1, ...visible.map(pid => cum[pid][weeks.length - 1] || 0));
+
+    const left = 24, right = 20, padTop = 14, padBot = 24, stepPx = 50, H = 200;
+    const plotH = H - padTop - padBot;
+    const W = left + right + (weeks.length - 1) * stepPx;
+    const x = i => left + i * stepPx;
+    const y = v => padTop + plotH * (1 - v / maxY);
     const lbl = wk => { const [, m, d] = wk.split('-'); return `${d}/${m}`; };
-    legend.innerHTML = top.map(pid => `<span class="week-key"><span class="week-swatch" style="background:${colorOf[pid]}"></span>${escapeHtml(playerName(pid))} <b>${totals[pid]}</b></span>`).join('');
-    chart.className = 'week-chart';
-    chart.innerHTML = weeks.map(wk => {
-      const segs = top.filter(pid => (byWeek[wk] || {})[pid]).map(pid => {
-        const v = (byWeek[wk] || {})[pid]; const h = Math.round(v / maxTot * 140);
-        return `<div class="week-seg" style="height:${Math.max(4, h)}px;background:${colorOf[pid]};" title="${escapeHtml(playerName(pid))}: ${v} gol(s) — semana de ${lbl(wk)}"></div>`;
-      }).join('');
-      return `<div class="week-col"><div class="week-total">${weekTotal(wk)}</div><div class="week-stack">${segs}</div><div class="week-lbl">${lbl(wk)}</div></div>`;
+
+    const ticks = [...new Set([0, Math.round(maxY / 2), maxY])];
+    let svg = `<svg class="line-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+    ticks.forEach(v => { svg += `<line x1="${left}" y1="${y(v)}" x2="${W - right}" y2="${y(v)}" stroke="rgba(255,255,255,0.08)"/><text x="${left - 4}" y="${y(v) + 3}" text-anchor="end" class="line-ylbl">${v}</text>`; });
+    const everyN = Math.ceil(weeks.length / 8);
+    weeks.forEach((wk, i) => { if (i % everyN === 0 || i === weeks.length - 1) svg += `<text x="${x(i)}" y="${H - 7}" text-anchor="middle" class="line-xlbl">${lbl(wk)}</text>`; });
+    visible.forEach(pid => {
+      const pts = cum[pid].map((v, i) => `${x(i)},${y(v)}`).join(' ');
+      svg += `<polyline points="${pts}" fill="none" stroke="${colorOf[pid]}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+      cum[pid].forEach((v, i) => { svg += `<circle cx="${x(i)}" cy="${y(v)}" r="2.4" fill="${colorOf[pid]}"><title>${escapeHtml(playerName(pid))}: ${v} gols acumulados — semana de ${lbl(weeks[i])}</title></circle>`; });
+      const endV = cum[pid][weeks.length - 1];
+      svg += `<text x="${x(weeks.length - 1) + 4}" y="${y(endV) + 3}" class="line-endlbl" fill="${colorOf[pid]}">${endV}</text>`;
+    });
+    svg += `</svg>`;
+    chart.className = '';
+    chart.innerHTML = `<div class="line-scroll">${svg}</div>`;
+
+    legend.innerHTML = top.map(pid => {
+      const off = hiddenScorers.has(pid);
+      return `<button class="week-key ${off ? 'off' : ''}" data-toggle-scorer="${pid}"><span class="week-swatch" style="background:${off ? 'var(--muted)' : colorOf[pid]}"></span>${escapeHtml(playerName(pid))} <b>${totals[pid]}</b></button>`;
     }).join('');
+    legend.querySelectorAll('[data-toggle-scorer]').forEach(b => b.addEventListener('click', () => {
+      const pid = b.dataset.toggleScorer;
+      if (hiddenScorers.has(pid)) hiddenScorers.delete(pid); else hiddenScorers.add(pid);
+      renderWeekScorers();
+    }));
   }
 
   function posMatch(pid) {
