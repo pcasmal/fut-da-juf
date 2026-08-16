@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-15T14:31:15.406Z",
+  "updatedAt": "2026-08-16T16:31:05.449Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -11,7 +11,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "3a6qrb5o",
@@ -25,7 +26,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "ambidestro"
+      "foot": "ambidestro",
+      "since": null
     },
     {
       "id": "3bk2x1ya",
@@ -39,7 +41,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "na3m57u1",
@@ -50,18 +53,20 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "fing6501",
       "name": "Bruninho",
       "primary": {
-        "position": "goleiro",
+        "position": "pivo",
         "level": "nativo"
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "da3pkntb",
@@ -72,7 +77,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "ihjjs7ny",
@@ -86,7 +92,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "och72djy",
@@ -97,7 +104,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "6le274n0",
@@ -111,7 +119,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "vlj130hf",
@@ -125,7 +134,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "v440nyj5",
@@ -139,7 +149,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "canhoto"
+      "foot": "canhoto",
+      "since": null
     },
     {
       "id": "lc7kjr1l",
@@ -150,7 +161,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "4loro9d7",
@@ -161,7 +173,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "4i5e5dnx",
@@ -175,7 +188,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "goexclc7",
@@ -189,7 +203,8 @@
         "level": "nativo"
       },
       "active": true,
-      "foot": "ambidestro"
+      "foot": "ambidestro",
+      "since": null
     },
     {
       "id": "g392acow",
@@ -200,7 +215,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "xc6kxlk5",
@@ -214,7 +230,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "1lo9d7ot",
@@ -228,7 +245,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "q0i74yd7",
@@ -242,7 +260,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "vk6nnhld",
@@ -256,7 +275,8 @@
         "level": "improvisado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "eqklwjq4",
@@ -267,7 +287,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "canhoto"
+      "foot": "canhoto",
+      "since": null
     },
     {
       "id": "5x29v8hn",
@@ -281,7 +302,8 @@
         "level": "improvisado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "pem3iz20",
@@ -295,7 +317,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "dltd4nxp",
@@ -306,7 +329,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "canhoto"
+      "foot": "canhoto",
+      "since": null
     },
     {
       "id": "q62q1pxy",
@@ -317,7 +341,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "au7rynh9",
@@ -328,7 +353,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "splc2r7u2ea",
@@ -339,7 +365,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "jyw3v5fz8gv",
@@ -350,7 +377,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "canhoto"
+      "foot": "canhoto",
+      "since": null
     },
     {
       "id": "w7umlxkw4c7",
@@ -364,7 +392,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "yhzlnt5394m",
@@ -378,7 +407,8 @@
         "level": "nativo"
       },
       "active": true,
-      "foot": "canhoto"
+      "foot": "canhoto",
+      "since": null
     },
     {
       "id": "yz06djbra28",
@@ -392,7 +422,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "rbrvlqb7o4p",
@@ -402,8 +433,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "81mqk6xvbsq",
@@ -414,7 +446,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "wwr8zjrigfx",
@@ -428,7 +461,8 @@
         "level": "adaptado"
       },
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "jh2pwd05lcg",
@@ -438,8 +472,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "8yzg9k8v3xw",
@@ -449,8 +484,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "r1j1etrskwh",
@@ -461,7 +497,8 @@
       },
       "secondary": null,
       "active": true,
-      "foot": "destro"
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "6s8ay1obbz1",
@@ -471,8 +508,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "fye9lipb6z2",
@@ -482,8 +520,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     },
     {
       "id": "eqyikest4uf",
@@ -493,8 +532,9 @@
         "level": "nativo"
       },
       "secondary": null,
-      "active": true,
-      "foot": "destro"
+      "active": false,
+      "foot": "destro",
+      "since": null
     }
   ],
   "sessions": [
@@ -2279,7 +2319,8 @@
         "q62q1pxy": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "40x4ncgdvqc",
@@ -2342,7 +2383,8 @@
         "eqklwjq4": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "murs1k9spjb",
@@ -2374,7 +2416,8 @@
         "eqklwjq4": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "yrwvl6clskv",
@@ -2404,7 +2447,8 @@
         "da3pkntb": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "wkp3ujjcchj",
@@ -2438,7 +2482,8 @@
         "vlj130hf": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "1m5ftd3ds89",
@@ -2468,7 +2513,8 @@
         "vlj130hf": 6
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "dl3gvfjldzr",
@@ -2494,7 +2540,8 @@
         "q62q1pxy": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "gzedbm6vv85",
@@ -2526,7 +2573,8 @@
         "vlj130hf": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "ksw3kgd8qop",
@@ -2556,7 +2604,8 @@
         "c04e4jsc": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "kwj9on6z1yt",
@@ -2582,7 +2631,8 @@
         "goexclc7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "i4rnvbqify9",
@@ -2616,7 +2666,8 @@
         "81mqk6xvbsq": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "8z34a01efbn",
@@ -2640,7 +2691,8 @@
         "ihjjs7ny": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "xe196b8meph",
@@ -2676,7 +2728,8 @@
         "3bk2x1ya": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "raax2raa70b",
@@ -2745,7 +2798,8 @@
         "vlj130hf": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "c9kq4t58pmc",
@@ -2773,7 +2827,8 @@
         "v440nyj5": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "g01kkm366e2",
@@ -2799,7 +2854,8 @@
         "81mqk6xvbsq": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "lf0epgryfv8",
@@ -2827,7 +2883,8 @@
         "ihjjs7ny": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "2p971eet1j1",
@@ -2859,7 +2916,8 @@
         "goexclc7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "4qrwyw113j1",
@@ -2891,7 +2949,8 @@
         "dltd4nxp": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "cex9vgkv3hk",
@@ -2923,7 +2982,8 @@
         "yz06djbra28": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "t304dmja62g",
@@ -2955,7 +3015,8 @@
         "wwr8zjrigfx": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "37to10su6ec",
@@ -2987,7 +3048,8 @@
         "wwr8zjrigfx": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "6ctgjfnnwyi",
@@ -3023,7 +3085,8 @@
         "wwr8zjrigfx": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "k8zeo6ern00",
@@ -3057,7 +3120,8 @@
         "q0i74yd7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "hw9jaju2i70",
@@ -3089,7 +3153,8 @@
         "dltd4nxp": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "xkpglpd9h88",
@@ -3115,7 +3180,8 @@
         "goexclc7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "fl1vb05mz9d",
@@ -3149,7 +3215,8 @@
         "eqklwjq4": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "jye5k99eb63",
@@ -3185,7 +3252,8 @@
         "vlj130hf": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "y7m2026uwnz",
@@ -3221,7 +3289,8 @@
         "wwr8zjrigfx": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "8lpm5350ctj",
@@ -3253,7 +3322,8 @@
         "q62q1pxy": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "in8d0f8bukb",
@@ -3287,7 +3357,8 @@
         "dltd4nxp": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "58v6ozec4bb",
@@ -3315,7 +3386,8 @@
         "eqklwjq4": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "cyl4z66cpkn",
@@ -3351,7 +3423,8 @@
         "dltd4nxp": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "cmjgxzirdzz",
@@ -3383,7 +3456,8 @@
         "na3m57u1": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "7huhm10xyr3",
@@ -3417,7 +3491,8 @@
         "q62q1pxy": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "yq4p0sumx1z",
@@ -3449,7 +3524,8 @@
         "vlj130hf": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "0kudtdukcwl",
@@ -3481,7 +3557,8 @@
         "wwr8zjrigfx": 3
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "wcerw7s29bc",
@@ -3517,7 +3594,8 @@
         "wwr8zjrigfx": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "kjasm8wfqxy",
@@ -3555,7 +3633,8 @@
         "wwr8zjrigfx": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "4l5fl86ozjo",
@@ -3591,7 +3670,8 @@
         "dltd4nxp": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "cbavmoyu9j4",
@@ -3623,7 +3703,8 @@
         "8yzg9k8v3xw": 4
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "px4joejehx4",
@@ -3655,7 +3736,8 @@
         "goexclc7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "86lr7m5s0ws",
@@ -3687,7 +3769,8 @@
         "c04e4jsc": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "2dl9sr8baoy",
@@ -3717,7 +3800,8 @@
         "vlj130hf": 1
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
     },
     {
       "id": "lwnj1u82bdm",
@@ -3747,7 +3831,83 @@
         "goexclc7": 2
       },
       "assists": {},
-      "wins": {}
+      "wins": {},
+      "goalsOnly": false
+    },
+    {
+      "id": "p28dh3yadmc",
+      "date": "2026-08-16",
+      "attendees": [
+        "ihjjs7ny",
+        "eqklwjq4",
+        "c04e4jsc",
+        "3bk2x1ya",
+        "4i5e5dnx",
+        "3a6qrb5o",
+        "pem3iz20",
+        "vk6nnhld",
+        "fing6501",
+        "v440nyj5",
+        "och72djy",
+        "lc7kjr1l"
+      ],
+      "teams": [
+        {
+          "id": "eq4p6ka98sc",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "3bk2x1ya",
+            "ihjjs7ny",
+            "pem3iz20",
+            "c04e4jsc"
+          ]
+        },
+        {
+          "id": "bdp0hx2s8sc",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "lc7kjr1l",
+            "fing6501",
+            "eqklwjq4",
+            "3a6qrb5o"
+          ]
+        },
+        {
+          "id": "s4wdnhr98sc",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "4i5e5dnx",
+            "v440nyj5",
+            "vk6nnhld",
+            "och72djy"
+          ]
+        }
+      ],
+      "numTeams": 3,
+      "goals": {
+        "fing6501": 2,
+        "lc7kjr1l": 2,
+        "c04e4jsc": 2,
+        "och72djy": 3,
+        "3a6qrb5o": 3,
+        "4i5e5dnx": 2,
+        "3bk2x1ya": 2,
+        "ihjjs7ny": 1,
+        "eqklwjq4": 2,
+        "v440nyj5": 1
+      },
+      "assists": {
+        "3a6qrb5o": 1
+      },
+      "wins": {
+        "bdp0hx2s8sc": 3,
+        "eq4p6ka98sc": 3,
+        "s4wdnhr98sc": 3
+      },
+      "goalsOnly": false
     }
   ],
   "tournament": null,
