@@ -128,7 +128,23 @@
   .view-toggle button.active { background: var(--accent); color: #16121F; }
 
   /* Lista view */
-  .roster-list { display: flex; flex-direction: column; gap: 6px; }
+  .roster-list { display: flex; flex-direction: column; gap: 3px; }
+  .roster-row2 { display: grid; grid-template-columns: 26px 1fr auto auto; gap: 8px; align-items: center; padding: 7px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+  .roster-row2:active { transform: scale(0.995); }
+  .roster-row2.inactive { opacity: 0.5; }
+  .rl-num { font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  .rl-name { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rl-med { font-size: 12px; letter-spacing: -1px; }
+  .rl-inactive { font-size: 9px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
+  .rl-pos { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; }
+  .rl-metric { font-size: 14px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rl-metric i { font-size: 9px; font-weight: 600; color: var(--muted); font-style: normal; margin-left: 2px; }
+  .list-sort { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .list-sort label { font-size: 12px; color: var(--muted); }
+  .list-sort select { flex: 0 1 auto; width: auto; padding: 6px 10px; font-size: 13px; }
+  .rev-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .rev-year { font-size: 13px; font-weight: 700; color: var(--accent); width: 42px; }
+  .rev-row select { flex: 1; padding: 7px 10px; font-size: 13px; }
   .roster-row {
     display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
     background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
@@ -400,6 +416,7 @@
     border-radius: 10px; padding: 14px; margin-bottom: 12px;
   }
   .scoring-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .team-note { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-left: 6px; }
   .scoring-cols-head { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 6px 0 2px; }
   .scoring-cols-head span:not(:first-child) { text-align: center; }
   .scoring-row { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; align-items: center; padding: 5px 0; font-size: 13px; border-top: 1px solid var(--border); }
@@ -736,6 +753,8 @@
   .badge.medal2 { border-color: rgba(203,213,225,0.45); background: rgba(203,213,225,0.08); }
   .badge.medal3 { border-color: rgba(217,119,66,0.45); background: rgba(217,119,66,0.10); }
   .badge.home { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.10); }
+  .badge.home.vet { border-color: rgba(251,191,36,0.55); background: rgba(251,191,36,0.12); }
+  .badge.reveal { border-color: rgba(52,211,153,0.55); background: rgba(52,211,153,0.12); }
   .chart-controls .period-picker { margin: 0; }
   .chart-add select { width: auto; font-size: 12px; padding: 6px 10px; }
   .week-x { margin-left: 4px; opacity: 0.7; font-weight: 700; }
@@ -747,6 +766,9 @@
   .rank-sub { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
   .rank-goalie { color: var(--muted); font-size: 12px; font-weight: 400; }
   .player-card.frequent { border-left: 3px solid var(--accent-solid); }
+  .card-medals { position: absolute; top: 8px; right: 10px; display: flex; gap: 3px; font-size: 14px; z-index: 1; }
+  .card-medal { display: inline-flex; align-items: center; }
+  .card-medal b { font-size: 10px; font-weight: 700; color: var(--muted); margin-left: 1px; }
   .roster-row.frequent { border-left: 3px solid var(--accent-solid); }
   .form-badge.up { color: #34D399; background: rgba(52,211,153,0.13); }
   .form-badge.down { color: #F85149; background: rgba(248,81,73,0.13); }
@@ -896,6 +918,16 @@
         <button data-scope="all">Todas as temporadas</button>
       </div>
       <div class="list-search"><input type="text" id="roster-search" placeholder="Filtrar por nome…" autocomplete="off"></div>
+      <div class="list-sort" id="roster-sort-wrap" style="display:none;">
+        <label for="roster-sort">Ordenar por</label>
+        <select id="roster-sort">
+          <option value="alpha">Nome (A–Z)</option>
+          <option value="gols">Gols</option>
+          <option value="assist">Assistências</option>
+          <option value="presencas">Presenças</option>
+          <option value="first">Primeiro fut (mais antigo)</option>
+        </select>
+      </div>
       <div id="roster-container"></div>
       <div class="legend roster-legend">
         <span class="legend-item"><span class="dot nativo"></span>Nativo</span>
@@ -1013,8 +1045,9 @@
     <div class="chart-grid">
       <div class="card"><div class="card-title">Artilharia</div><p class="chart-sub">Total de gols no período (top 12).</p><div id="chart-artilharia" class="svg-box"></div></div>
       <div class="card"><div class="card-title">Gols por jogo × presenças</div><p class="chart-sub">Quem faz gol e quem só aparece muito. Mín. 5 presenças.</p><div id="chart-scatter" class="svg-box"></div></div>
-      <div class="card"><div class="card-title">Presentes por sessão</div><p class="chart-sub">Corte em 10 — abaixo disso não fecha dois times de 5.</p><div id="chart-presences" class="svg-box"></div></div>
+      <div class="card"><div class="card-title">Jogadores diferentes por mês</div><p class="chart-sub">Tamanho real do grupo ativo, não do cadastro.</p><div id="chart-distinct" class="svg-box"></div></div>
       <div class="card"><div class="card-title">Gols por sessão</div><p class="chart-sub">Tracejado marca a média do período.</p><div id="chart-goals-session" class="svg-box"></div></div>
+      <div class="card"><div class="card-title">Artilheiro do mês</div><p class="chart-sub">Quem liderou cada mês e com quantos gols.</p><div id="chart-topscorer-month" class="svg-box"></div></div>
       <div class="card chart-wide"><div class="card-title">Composição do elenco</div><p class="chart-sub">Por posição · a parte cheia são os ativos (jogaram nos últimos 3 meses).</p><div id="chart-composition" class="svg-box tall"></div><div id="composition-legend" class="pie-legend"></div></div>
     </div>
 
@@ -1202,6 +1235,12 @@
           <input type="checkbox" class="check" id="toggle-fase-last3">
         </div>
 
+        <div style="margin-top:18px;">
+          <div class="settings-label" style="margin-bottom:4px;">✨ Revelação do ano</div>
+          <div class="settings-desc" style="margin-bottom:10px;">Escolha o melhor jogador novo de cada ano (quem começou a jogar naquele ano). Vira uma conquista no perfil dele.</div>
+          <div id="revelacao-config"></div>
+        </div>
+
         <div class="gh-box" style="margin-top:16px;">
           <div class="settings-label" style="margin-bottom:8px;">⚡ Publicar em 1 clique (via API do GitHub)</div>
           <div class="gh-fields">
@@ -1315,7 +1354,7 @@
   'use strict';
 
   // ============ State ============
-  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3, koHalfMin: 5 }, showRatings: false } };
+  const DEFAULT_STATE = { v: 4, updatedAt: null, players: [], sessions: [], tournament: null, awards: { revelacao: {} }, ui: { activeSessionId: null, statsPeriod: 'month', estimate: { gameMin: 5, betweenMin: 2, penaltyMin: 3, koHalfMin: 5 }, showRatings: false } };
   let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
   let hadLocalData = false;
 
@@ -1359,6 +1398,7 @@
     }));
     s.sessions = (p.sessions || []).map(migrateSession);
     s.tournament = p.tournament || null;
+    s.awards = { revelacao: (p.awards && p.awards.revelacao) || {} };
     s.ui = Object.assign({ activeSessionId: null, statsPeriod: 'month', showRatings: false }, p.ui || {});
     s.ui.estimate = Object.assign({ gameMin: 5, betweenMin: 2, penaltyMin: 3, koHalfMin: 5 }, (p.ui && p.ui.estimate) || {});
     delete s.ui.hideLevels; delete s.ui.cardFields;
@@ -1395,8 +1435,10 @@
     return s;
   }
 
+  let _yearStatsCache = {};
   function save(opts) {
     if (!opts || opts.bump !== false) state.updatedAt = new Date().toISOString();
+    _yearStatsCache = {};
     try { localStorage.setItem('futdajuf-state', JSON.stringify(state)); } catch (e) {}
     scheduleBackup();
     updatePublishStatus();
@@ -1404,6 +1446,7 @@
 
   // ============ Constants & helpers ============
   const POS_LABELS = { goleiro: 'Goleiro', fixo: 'Fixo', ala: 'Ala', pivo: 'Pivô' };
+  const POS_ABBR = { goleiro: 'GOL', fixo: 'FIX', ala: 'ALA', pivo: 'PIV' };
   const LEVEL_LABELS = { nativo: 'Nativo', adaptado: 'Adaptado', improvisado: 'Improvisado' };
   const LEVEL_RANK = { nativo: 0, adaptado: 1, improvisado: 2 };
   const LEVEL_VAL = { nativo: 3, adaptado: 2, improvisado: 1 };
@@ -1505,35 +1548,44 @@
 
   function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
   function balanceTeams(players, numTeams, balanced) {
+    const primaryGoalies = players.filter(p => p.primary.position === 'goleiro');
+    const separate = primaryGoalies.length >= 1 && primaryGoalies.length < 3;
+    const fieldPlayers = separate ? players.filter(p => p.primary.position !== 'goleiro') : players;
+
     const teams = Array.from({ length: numTeams }, (_, i) => ({
       id: uid(), name: TEAM_NAMES[i] || ('Time ' + (i + 1)),
       color: TEAM_COLORS[i % TEAM_COLORS.length], players: []
     }));
     const idToPlayer = {};
-    players.forEach(p => idToPlayer[p.id] = p);
+    fieldPlayers.forEach(p => idToPlayer[p.id] = p);
+    const fieldTeams = teams; // times de linha (goleiros vão à parte)
+    const appendGoalieTeam = () => {
+      if (separate) teams.push({ id: uid(), name: 'Goleiros', color: '#6B7280', players: primaryGoalies.map(p => p.id), noWins: true });
+    };
 
     if (!balanced) {
-      const sh = shuffle(players.slice());
-      sh.forEach((p, i) => teams[i % numTeams].players.push(p.id));
-      enforceMinSize(teams, idToPlayer, minTeamSize(players));
+      const sh = shuffle(fieldPlayers.slice());
+      sh.forEach((p, i) => fieldTeams[i % numTeams].players.push(p.id));
+      enforceMinSize(fieldTeams, idToPlayer, minTeamSize(fieldPlayers));
+      appendGoalieTeam();
       return teams;
     }
 
     const used = new Set();
     // embaralha antes de ordenar: empates (mesmo nível/força) saem em ordem aleatória,
     // então cada clique em "Gerar balanceado" produz uma combinação diferente e ainda equilibrada.
-    const goalies = shuffle(players.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
-    const teamOrder = shuffle(teams.slice());
+    const goalies = shuffle(fieldPlayers.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
+    const teamOrder = shuffle(fieldTeams.slice());
     for (let i = 0; i < numTeams; i++) {
       const pick = goalies.find(g => !used.has(g.id) && goalieRankOf(g) <= 4);
       if (pick) { teamOrder[i].players.push(pick.id); used.add(pick.id); }
     }
-    const remaining = shuffle(players.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
+    const remaining = shuffle(fieldPlayers.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
     const countPos = (team, pos) => team.players.filter(pid => idToPlayer[pid].primary.position === pos).length;
     const totalScore = team => team.players.reduce((s, pid) => s + playerScore(idToPlayer[pid]), 0);
     const pickTeam = pos => {
-      const minCount = Math.min(...teams.map(t => countPos(t, pos)));
-      let cands = teams.filter(t => countPos(t, pos) === minCount);
+      const minCount = Math.min(...fieldTeams.map(t => countPos(t, pos)));
+      let cands = fieldTeams.filter(t => countPos(t, pos) === minCount);
       const minScore = Math.min(...cands.map(totalScore));
       cands = cands.filter(t => totalScore(t) === minScore);
       return cands[Math.floor(Math.random() * cands.length)];
@@ -1541,7 +1593,8 @@
     const byPos = { fixo: [], ala: [], pivo: [], goleiro: [] };
     remaining.forEach(p => { const pos = byPos[p.primary.position] ? p.primary.position : 'ala'; byPos[pos].push(p); });
     ['fixo', 'pivo', 'ala', 'goleiro'].forEach(pos => byPos[pos].forEach(p => { pickTeam(p.primary.position).players.push(p.id); used.add(p.id); }));
-    enforceMinSize(teams, idToPlayer, minTeamSize(players));
+    enforceMinSize(fieldTeams, idToPlayer, minTeamSize(fieldPlayers));
+    appendGoalieTeam();
     return teams;
   }
 
@@ -1567,7 +1620,7 @@
       const goals = sess.goals || {}, assists = sess.assists || {}, wins = sess.wins || {};
       Object.keys(goals).forEach(pid => { get(pid).gols += goals[pid] || 0; });
       Object.keys(assists).forEach(pid => { get(pid).assist += assists[pid] || 0; });
-      const teams = sess.teams || [];
+      const teams = (sess.teams || []).filter(t => !t.noWins); // time de goleiros não conta vitória
       const dayTotalWins = teams.reduce((sum, t) => sum + (wins[t.id] || 0), 0);
       const K = teams.length;
       // jogos estimados por time no dia ≈ 2 × (total de vitórias do dia) ÷ (nº de times).
@@ -1588,7 +1641,7 @@
     const key = (a, b) => a < b ? a + '|' + b : b + '|' + a;
     sessions.forEach(sess => {
       const wins = sess.wins || {};
-      (sess.teams || []).forEach(t => {
+      (sess.teams || []).filter(t => !t.noWins).forEach(t => {
         const w = wins[t.id] || 0;
         const ps = t.players.slice();
         for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
@@ -1725,6 +1778,7 @@
   function effActive(p) { return p.active || isFrequent(p.id); }
 
   let rosterScope = 'year'; // 'year' = ano atual, 'all' = todas
+  let rosterSort = 'alpha';
   function scopeSessions(scope) {
     if (scope === 'all') return state.sessions;
     const y = String(new Date().getFullYear());
@@ -1750,13 +1804,30 @@
     if (rosterFilter) list = list.filter(p => p.name.toLowerCase().includes(rosterFilter));
     if (!list.length) { cont.innerHTML = '<div class="no-match">Nenhum jogador encontrado.</div>'; return; }
 
+    const sortWrap = document.getElementById('roster-sort-wrap');
+    if (sortWrap) sortWrap.style.display = rosterView === 'list' ? '' : 'none';
+
     if (rosterView === 'cards') cont.innerHTML = rosterCardsHtml(list, stats);
-    else if (rosterView === 'list') cont.innerHTML = rosterListHtml(list, stats);
+    else if (rosterView === 'list') {
+      let sorted = list.slice();
+      const g = pid => (stats[pid] || {});
+      if (rosterSort === 'gols') sorted.sort((a, b) => (g(b.id).gols || 0) - (g(a.id).gols || 0) || a.name.localeCompare(b.name));
+      else if (rosterSort === 'assist') sorted.sort((a, b) => (g(b.id).assist || 0) - (g(a.id).assist || 0) || a.name.localeCompare(b.name));
+      else if (rosterSort === 'presencas') sorted.sort((a, b) => (g(b.id).presencas || 0) - (g(a.id).presencas || 0) || a.name.localeCompare(b.name));
+      else if (rosterSort === 'first') sorted.sort((a, b) => { const fa = firstFutDate(a.id) || '9999', fb = firstFutDate(b.id) || '9999'; return fa.localeCompare(fb) || a.name.localeCompare(b.name); });
+      else sorted.sort((a, b) => a.name.localeCompare(b.name));
+      cont.innerHTML = rosterListHtml(sorted, stats);
+    }
     else cont.innerHTML = rosterKanbanHtml(list, stats);
 
     cont.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => openPlayerDetail(el.dataset.edit)));
   }
+  function firstFutDate(pid) {
+    let d = null; state.sessions.forEach(s => { if ((s.attendees || []).includes(pid)) { if (!d || s.date < d) d = s.date; } });
+    return d;
+  }
   document.querySelectorAll('#roster-scope [data-scope]').forEach(b => b.addEventListener('click', () => { rosterScope = b.dataset.scope; renderRoster(); }));
+  { const ss = document.getElementById('roster-sort'); if (ss) ss.addEventListener('change', () => { rosterSort = ss.value; renderRoster(); }); }
 
   // ============ TELA DE DETALHE DO JOGADOR ============
   let detailId = null;
@@ -1846,15 +1917,36 @@
     const greater = Object.keys(stats).filter(id => ((stats[id] || {})[key] || 0) > mine).length;
     return { pos: greater + 1, val: mine };
   }
+  function yearStats(y) { if (!_yearStatsCache[y]) _yearStatsCache[y] = computeStats(yearSessions(y)); return _yearStatsCache[y]; }
+
+  function anosDeFut(p) { return (p && p.since) ? (new Date().getFullYear() - p.since) : 0; }
+  function tenureBadge(p) {
+    const yrs = anosDeFut(p); if (yrs < 1) return null;
+    const t = yrs >= 10 ? { ic: '🏆', lbl: 'Veterano · 10+ anos de fut', cls: 'home vet' }
+      : yrs >= 7 ? { ic: '🎖️', lbl: '7+ anos de fut', cls: 'home' }
+        : yrs >= 5 ? { ic: '🎖️', lbl: '5+ anos de fut', cls: 'home' }
+          : yrs >= 3 ? { ic: '🎖️', lbl: '3+ anos de fut', cls: 'home' }
+            : { ic: '🏠', lbl: `${yrs} ${yrs === 1 ? 'ano' : 'anos'} de casa`, cls: 'home' };
+    return { icon: t.ic, label: t.lbl, sub: `desde ${p.since} · ${yrs} ${yrs === 1 ? 'ano' : 'anos'}`, cls: t.cls };
+  }
+  // Medalhas de artilharia acumuladas (para o card do elenco): [{ic, n}]
+  function cardArtilhariaBadges(pid) {
+    let g1 = 0, g2 = 0, g3 = 0;
+    pastDataYears().forEach(y => { const g = rankInYear(yearStats(y), pid, 'gols'); if (g) { if (g.pos === 1) g1++; else if (g.pos === 2) g2++; else if (g.pos === 3) g3++; } });
+    const out = [];
+    if (g1) out.push({ ic: '🥇', n: g1, title: `Artilheiro ${g1}×` });
+    if (g2) out.push({ ic: '🥈', n: g2, title: `Vice-artilheiro ${g2}×` });
+    if (g3) out.push({ ic: '🥉', n: g3, title: `3º artilheiro ${g3}×` });
+    return out;
+  }
   function playerBadges(pid) {
     const badges = [];
     const p = playerById(pid);
-    if (p && p.since) {
-      const yrs = new Date().getFullYear() - p.since;
-      if (yrs >= 1) badges.push({ icon: '🏠', label: `${yrs} ${yrs === 1 ? 'ano' : 'anos'} de casa`, sub: `desde ${p.since}`, cls: 'home' });
-    }
+    const tb = tenureBadge(p); if (tb) badges.push(tb);
+    const rev = (state.awards && state.awards.revelacao) || {};
+    Object.keys(rev).sort().forEach(y => { if (rev[y] === pid) badges.push({ icon: '✨', label: `Revelação ${y}`, sub: 'melhor jogador novo do ano', cls: 'reveal' }); });
     pastDataYears().forEach(y => {
-      const stats = computeStats(yearSessions(y));
+      const stats = yearStats(y);
       const g = rankInYear(stats, pid, 'gols');
       if (g && g.pos <= 3) {
         const ic = ['🥇', '🥈', '🥉'][g.pos - 1];
@@ -2010,11 +2102,69 @@
       </div>
 
       ${partHtml}
+
+      <div class="card"><div class="card-title">Gols por sessão</div><p class="chart-sub">Barras = gols dele; linha laranja = média móvel de 5 jogos.</p><div id="detail-gs" class="svg-box"></div></div>
+      <div class="card"><div class="card-title">Presença por mês</div><p class="chart-sub">Barras vazias mostram quando sumiu.</p><div id="detail-pm" class="svg-box"></div></div>
+
       ${evoHtml}
     `;
     document.getElementById('btn-detail-back').addEventListener('click', closePlayerDetail);
     document.getElementById('btn-detail-edit').addEventListener('click', () => openPlayerModal(p.id));
     document.querySelectorAll('#detail-scope [data-dscope]').forEach(b => b.addEventListener('click', () => { detailScope = b.dataset.dscope; renderPlayerDetail(); }));
+    renderDetailGoalsSession(p.id);
+    renderDetailPresenceMonth(p.id);
+  }
+
+  function renderDetailGoalsSession(pid) {
+    const box = document.getElementById('detail-gs'); if (!box) return;
+    const ss = state.sessions.filter(s => (s.attendees || []).includes(pid)).sort((a, b) => a.date.localeCompare(b.date));
+    if (ss.length < 2) { box.innerHTML = '<div class="empty">Poucas sessões.</div>'; return; }
+    const vals = ss.map(s => (s.goals || {})[pid] || 0);
+    const mov = vals.map((_, i) => { const a = vals.slice(Math.max(0, i - 4), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; });
+    const W = 340, H = 200, padL = 20, padR = 8, padT = 12, padB = 24;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const max = Math.max(1, ...vals);
+    const bw = Math.max(2, plotW / ss.length - 2);
+    const x = i => padL + (i + 0.5) * (plotW / ss.length);
+    const y = v => padT + plotH * (1 - v / max);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+    [0, Math.round(max / 2), max].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
+    ss.forEach((s, i) => { const v = vals[i]; if (!v) return; const h = Math.max(1, plotH * (v / max)); svg += `<rect class="cbar" x="${x(i) - bw / 2}" y="${padT + plotH - h}" width="${bw}" height="${h}" rx="2" fill="#A78BFA" data-tip="<b>${formatDate(s.date)}</b><br>${v} gols · média ${mov[i].toFixed(1)}"/>`; });
+    const line = mov.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+    svg += `<polyline points="${line}" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/>`;
+    const everyN = Math.ceil(ss.length / 6);
+    ss.forEach((s, i) => { if (i % everyN === 0 || i === ss.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 7}" text-anchor="middle">${s.date.slice(8, 10)}/${s.date.slice(5, 7)}</text>`; });
+    svg += `</svg>`; box.innerHTML = svg; bindTips(box);
+  }
+  function renderDetailPresenceMonth(pid) {
+    const box = document.getElementById('detail-pm'); if (!box) return;
+    const attended = state.sessions.filter(s => (s.attendees || []).includes(pid)).sort((a, b) => a.date.localeCompare(b.date));
+    if (!attended.length) { box.innerHTML = '<div class="empty">Sem presenças.</div>'; return; }
+    const firstM = attended[0].date.slice(0, 7);
+    const allDates = state.sessions.map(s => s.date).sort();
+    const lastM = allDates[allDates.length - 1].slice(0, 7);
+    const months = []; let yy = +firstM.slice(0, 4), mm = +firstM.slice(5, 7);
+    const ly = +lastM.slice(0, 4), lm = +lastM.slice(5, 7);
+    while ((yy < ly || (yy === ly && mm <= lm)) && months.length < 240) { months.push(`${yy}-${String(mm).padStart(2, '0')}`); mm++; if (mm > 12) { mm = 1; yy++; } }
+    const cnt = {}; months.forEach(m => cnt[m] = 0);
+    attended.forEach(s => { const m = s.date.slice(0, 7); if (m in cnt) cnt[m]++; });
+    const vals = months.map(m => cnt[m]);
+    const max = Math.max(1, ...vals);
+    const W = 340, H = 190, padL = 18, padR = 8, padT = 12, padB = 24;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const bw = Math.max(2, plotW / months.length - 2);
+    const x = i => padL + (i + 0.5) * (plotW / months.length);
+    const y = v => padT + plotH * (1 - v / max);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+    [0, max].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
+    months.forEach((m, i) => {
+      const v = vals[i];
+      if (v > 0) svg += `<rect class="cbar" x="${x(i) - bw / 2}" y="${padT + plotH - plotH * (v / max)}" width="${bw}" height="${Math.max(1, plotH * (v / max))}" rx="2" fill="#34D399" data-tip="<b>${monthLbl(m)}</b><br>${v} ${v === 1 ? 'presença' : 'presenças'}"/>`;
+      else svg += `<rect x="${x(i) - bw / 2}" y="${padT + plotH - 6}" width="${bw}" height="6" rx="2" fill="none" stroke="rgba(255,255,255,0.18)" data-tip="<b>${monthLbl(m)}</b><br>sumiu (0)"/>`;
+    });
+    const everyN = Math.ceil(months.length / 7);
+    months.forEach((m, i) => { if (i % everyN === 0 || i === months.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 7}" text-anchor="middle">${monthLbl(m)}</text>`; });
+    svg += `</svg>`; box.innerHTML = svg; bindTips(box);
   }
 
   function rosterCardsHtml(list, stats) {
@@ -2023,6 +2173,7 @@
       return `
       <div class="player-card ${act ? '' : 'inactive'} ${freq ? 'frequent' : ''}" data-edit="${p.id}">
         ${act ? '' : '<span class="inactive-flag">Inativo</span>'}
+        ${(() => { const b = cardArtilhariaBadges(p.id); return b.length ? `<span class="card-medals">${b.map(m => `<span class="card-medal" title="${m.title}">${m.ic}${m.n > 1 ? `<b>${m.n}×</b>` : ''}</span>`).join('')}</span>` : ''; })()}
         <div class="player-card-top">
           ${avatarHtml(p)}
           <div style="min-width:0;">
@@ -2041,21 +2192,19 @@
   }
 
   function rosterListHtml(list, stats) {
-    return '<div class="roster-list">' + list.map(p => {
-      const st = stats[p.id] || {}; const wp = winPct(st); const freq = isFrequent(p.id); const act = effActive(p);
+    const metricCol = rosterSort === 'assist' ? { key: 'assist', lbl: 'A' } : rosterSort === 'presencas' ? { key: 'presencas', lbl: 'P' } : rosterSort === 'first' ? { key: 'first', lbl: '1º fut' } : { key: 'gols', lbl: 'G' };
+    return '<div class="roster-list">' + list.map((p, i) => {
+      const st = stats[p.id] || {}; const act = effActive(p);
+      let metricVal;
+      if (metricCol.key === 'first') { const d = firstFutDate(p.id); metricVal = d ? d.slice(2).split('-').reverse().slice(0, 2).join('/') : '—'; }
+      else metricVal = st[metricCol.key] || 0;
+      const med = cardArtilhariaBadges(p.id);
       return `
-      <div class="roster-row ${act ? '' : 'inactive'} ${freq ? 'frequent' : ''}" data-edit="${p.id}">
-        ${avatarHtml(p)}
-        <div class="roster-row-main">
-          <div class="roster-row-name">${escapeHtml(p.name)} ${formHtml(p.id)}${starsHtml(p.stars)}${act ? '' : '<span class="inactive-flag" style="position:static;">Inativo</span>'}</div>
-          <div class="roster-row-pos">${posBadge(p.primary)}${p.secondary ? posBadge(p.secondary) : ''}${footHtml(p.foot)}</div>
-        </div>
-        <div class="roster-row-stats">
-          <span>P <b>${st.presencas || 0}</b></span>
-          <span class="g">G <b>${st.gols || 0}</b></span>
-          <span>A <b>${st.assist || 0}</b></span>
-          <span>%V <b>${wp == null ? '—' : wp}</b></span>
-        </div>
+      <div class="roster-row2 ${act ? '' : 'inactive'}" data-edit="${p.id}">
+        <span class="rl-num">${i + 1}</span>
+        <span class="rl-name">${escapeHtml(p.name)}${med.length ? ` <span class="rl-med">${med.map(m => m.ic + (m.n > 1 ? m.n : '')).join('')}</span>` : ''}${act ? '' : ' <span class="rl-inactive">inativo</span>'}</span>
+        <span class="rl-pos">${POS_ABBR[p.primary.position] || ''}</span>
+        <span class="rl-metric">${metricVal}<i>${metricCol.lbl}</i></span>
       </div>`;
     }).join('') + '</div>';
   }
@@ -2237,18 +2386,22 @@
     const hint = document.getElementById('teams-hint');
     const present = sess.attendees.map(playerById).filter(Boolean);
     if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
-    const minSize = minTeamSize(present), maxT = maxTeamsFor(present);
+    const primaryG = present.filter(p => p.primary.position === 'goleiro').length;
+    const sepGoalies = primaryG >= 1 && primaryG < 3;
+    const forMax = sepGoalies ? present.filter(p => p.primary.position !== 'goleiro') : present;
+    const minSize = minTeamSize(forMax), maxT = maxTeamsFor(forMax);
     if (numTeams > maxT) {
-      hint.textContent = `Com ${present.length} presentes e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
+      hint.textContent = `Com ${forMax.length} jogadores de linha e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
       hint.classList.add('error'); return;
     }
     hint.classList.remove('error');
     sess.numTeams = numTeams;
     sess.teams = balanceTeams(present, numTeams, balanced);
     sess.wins = {}; // ids dos times mudaram
-    hint.innerHTML = balanced
+    const goalieNote = sepGoalies ? ' Os goleiros ficam num time à parte (contam só gols e assistências, não vitórias).' : '';
+    hint.innerHTML = (balanced
       ? `Times balanceados (mínimo ${minSize} por time): goleiros primeiro, depois cada jogador vai ao time com menos gente da posição dele.`
-      : `Times sorteados (mínimo ${minSize} por time).`;
+      : `Times sorteados (mínimo ${minSize} por time).`) + goalieNote;
     save(); renderSessionEditor();
   }
 
@@ -2353,7 +2506,7 @@
 
     cont.innerHTML = sess.teams.map(t => `
       <div class="scoring-team" style="--team-color:${t.color};">
-        <div class="scoring-head"><div class="team-name">${escapeHtml(t.name)}</div></div>
+        <div class="scoring-head"><div class="team-name">${escapeHtml(t.name)}${t.noWins ? ' <span class="team-note">só gols/assist.</span>' : ''}</div></div>
         <div class="scoring-cols-head"><span>Jogador</span><span>⚽ Gols</span><span>🅰 Assist.</span></div>
         ${t.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (sess.goals && sess.goals[pid]) || 0, a = (sess.assists && sess.assists[pid]) || 0; return `
           <div class="scoring-row">
@@ -2363,7 +2516,7 @@
           </div>`; }).join('')}
       </div>`).join('');
 
-    winsCont.innerHTML = sess.teams.map(t => { const w = (sess.wins && sess.wins[t.id]) || 0; return `
+    winsCont.innerHTML = sess.teams.filter(t => !t.noWins).map(t => { const w = (sess.wins && sess.wins[t.id]) || 0; return `
       <div class="wins-row">
         <div class="team-name"><span class="team-swatch" style="background:${t.color};"></span>${escapeHtml(t.name)}</div>
         <div class="stepper"><button data-wdec="${t.id}">−</button><span class="val">${w}</span><button data-winc="${t.id}">+</button></div>
@@ -2720,37 +2873,73 @@
     const stats = computeStats(scoped);
     const pts = Object.keys(stats).filter(posMatch).map(pid => { const st = stats[pid]; const pres = st.presencas || 0; return { pid, pres, gpj: pres ? (st.gols || 0) / pres : 0 }; }).filter(p => p.pres >= 5);
     if (pts.length < 2) { box.innerHTML = '<div class="empty">Poucos jogadores com 5+ presenças no período.</div>'; return; }
-    const W = 340, H = 240, padL = 30, padR = 12, padT = 10, padB = 28;
+    const W = 340, H = 210, padL = 34, padR = 14, padT = 14, padB = 30;
     const maxX = Math.max(...pts.map(p => p.pres)), maxY = Math.max(...pts.map(p => p.gpj)) || 1;
     const x = v => padL + (v / maxX) * (W - padL - padR);
     const y = v => H - padB - (v / maxY) * (H - padT - padB);
+    const midY = (padT + (H - padB)) / 2;
     let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-    [0, maxY / 2, maxY].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 4}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(1)}</text>`; });
+    [0, maxY / 2, maxY].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 5}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(1)}</text>`; });
     svg += `<line class="cbaseline" x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}"/>`;
-    svg += `<text class="caxis" x="${(padL + W - padR) / 2}" y="${H - 6}" text-anchor="middle">presenças →</text>`;
-    svg += `<text class="caxis" x="8" y="${padT + 4}" transform="rotate(-90 8 ${padT + 4})" style="font-size:8px">gols/jogo</text>`;
+    svg += `<text class="caxis" x="${(padL + W - padR) / 2}" y="${H - 7}" text-anchor="middle">presenças</text>`;
+    svg += `<text class="caxis" x="10" y="${midY}" text-anchor="middle" transform="rotate(-90 10 ${midY})">gols/jogo</text>`;
     pts.forEach(p => { svg += `<circle class="cdot" cx="${x(p.pres)}" cy="${y(p.gpj)}" r="5" fill="#22D3EE" fill-opacity="0.82" data-tip="<b>${escapeHtml(playerName(p.pid))}</b><br>${p.gpj.toFixed(2)} gols/jogo · ${p.pres} presenças"/>`; });
     svg += `</svg>`; box.innerHTML = svg; bindTips(box);
   }
 
-  function renderPresencesChart(scoped) {
-    const box = document.getElementById('chart-presences'); if (!box) return;
-    const ss = scoped.slice().sort((a, b) => a.date.localeCompare(b.date));
-    if (ss.length < 2) { box.innerHTML = '<div class="empty">Poucas sessões no período.</div>'; return; }
-    const W = 340, H = 190, padL = 20, padR = 6, padT = 8, padB = 22;
+  function monthsInScope(scoped) {
+    const set = new Set(); scoped.forEach(s => { if (s.date) set.add(s.date.slice(0, 7)); });
+    return [...set].sort();
+  }
+  const monthLbl = ym => { const [y, m] = ym.split('-'); return `${m}/${y.slice(2)}`; };
+
+  function renderDistinctChart(scoped) {
+    const box = document.getElementById('chart-distinct'); if (!box) return;
+    const months = monthsInScope(scoped);
+    if (months.length < 2) { box.innerHTML = '<div class="empty">Poucos meses no período.</div>'; return; }
+    const byMonth = {}; months.forEach(m => byMonth[m] = new Set());
+    scoped.forEach(s => { if (!s.date) return; const m = s.date.slice(0, 7); (s.attendees || []).forEach(pid => byMonth[m].add(pid)); });
+    const vals = months.map(m => byMonth[m].size);
+    const W = 340, H = 200, padL = 24, padR = 8, padT = 12, padB = 26;
     const plotW = W - padL - padR, plotH = H - padT - padB;
-    const max = Math.max(10, ...ss.map(s => (s.attendees || []).length));
-    const bw = Math.max(1.5, plotW / ss.length - 1.5);
-    const x = i => padL + (i + 0.5) * (plotW / ss.length);
+    const max = Math.max(5, ...vals);
+    const x = i => padL + (months.length === 1 ? plotW / 2 : (i / (months.length - 1)) * plotW);
     const y = v => padT + plotH * (1 - v / max);
     let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-    [0, 10, max].forEach(v => { svg += `<line class="${v === 10 ? 'cavg' : 'cgrid'}" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
-    ss.forEach((s, i) => {
-      const n = (s.attendees || []).length; const h = Math.max(1, plotH * (n / max));
-      svg += `<rect class="cbar" x="${x(i) - bw / 2}" y="${padT + plotH - h}" width="${bw}" height="${h}" rx="1.5" fill="${n < 10 ? '#F472B6' : '#34D399'}" data-tip="<b>${formatDate(s.date)}</b><br>${n} presentes"/>`;
+    [0, Math.round(max / 2), max].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
+    const line = vals.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+    svg += `<polygon points="${x(0)},${padT + plotH} ${line} ${x(months.length - 1)},${padT + plotH}" fill="#34D399" fill-opacity="0.12"/>`;
+    svg += `<polyline points="${line}" fill="none" stroke="#34D399" stroke-width="2" stroke-linejoin="round"/>`;
+    vals.forEach((v, i) => { svg += `<circle class="cdot" cx="${x(i)}" cy="${y(v)}" r="2.6" fill="#34D399" data-tip="<b>${monthLbl(months[i])}</b><br>${v} jogadores diferentes"/>`; });
+    const everyN = Math.ceil(months.length / 7);
+    months.forEach((m, i) => { if (i % everyN === 0 || i === months.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 7}" text-anchor="middle">${monthLbl(m)}</text>`; });
+    svg += `</svg>`; box.innerHTML = svg; bindTips(box);
+  }
+
+  function renderTopScorerMonthChart(scoped) {
+    const box = document.getElementById('chart-topscorer-month'); if (!box) return;
+    const months = monthsInScope(scoped);
+    if (months.length < 2) { box.innerHTML = '<div class="empty">Poucos meses no período.</div>'; return; }
+    const leaders = months.map(m => {
+      const tot = {};
+      scoped.forEach(s => { if ((s.date || '').slice(0, 7) !== m) return; const g = s.goals || {}; Object.keys(g).forEach(pid => { if (posMatch(pid)) tot[pid] = (tot[pid] || 0) + g[pid]; }); });
+      let bestPid = null, best = 0; Object.keys(tot).forEach(pid => { if (tot[pid] > best) { best = tot[pid]; bestPid = pid; } });
+      return { m, pid: bestPid, gols: best };
     });
-    const everyN = Math.ceil(ss.length / 6);
-    ss.forEach((s, i) => { if (i % everyN === 0 || i === ss.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 6}" text-anchor="middle">${s.date.slice(8, 10)}/${s.date.slice(5, 7)}</text>`; });
+    const max = Math.max(1, ...leaders.map(l => l.gols));
+    const W = 340, H = 200, padL = 20, padR = 6, padT = 12, padB = 26;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const bw = Math.max(2, plotW / months.length - 3);
+    const x = i => padL + (i + 0.5) * (plotW / months.length);
+    const y = v => padT + plotH * (1 - v / max);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+    [0, Math.round(max / 2), max].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
+    leaders.forEach((l, i) => {
+      if (!l.gols) return; const h = Math.max(1, plotH * (l.gols / max));
+      svg += `<rect class="cbar" x="${x(i) - bw / 2}" y="${padT + plotH - h}" width="${bw}" height="${h}" rx="2" fill="#FBBF24" data-tip="<b>${monthLbl(l.m)}</b><br>${escapeHtml(playerName(l.pid))} — ${l.gols} gols"/>`;
+    });
+    const everyN = Math.ceil(months.length / 7);
+    months.forEach((m, i) => { if (i % everyN === 0 || i === months.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 7}" text-anchor="middle">${monthLbl(m)}</text>`; });
     svg += `</svg>`; box.innerHTML = svg; bindTips(box);
   }
 
@@ -2767,10 +2956,11 @@
     const y = v => padT + plotH * (1 - v / max);
     let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
     [0, Math.round(max / 2), max].forEach(v => { svg += `<line class="cgrid" x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/><text class="caxis" x="${padL - 3}" y="${y(v) + 3}" text-anchor="end">${v}</text>`; });
-    svg += `<line class="cavg" x1="${padL}" y1="${y(avg)}" x2="${W - padR}" y2="${y(avg)}"/><text class="caxis" x="${W - padR}" y="${y(avg) - 3}" text-anchor="end">média ${avg.toFixed(1)}</text>`;
     const pts = vals.map((v, i) => `${x(i)},${y(v)}`).join(' ');
     svg += `<polyline points="${pts}" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/>`;
     vals.forEach((v, i) => { svg += `<circle class="cdot" cx="${x(i)}" cy="${y(v)}" r="2.4" fill="#FBBF24" data-tip="<b>${formatDate(ss[i].date)}</b><br>${v} gols"/>`; });
+    // média por cima da linha, bem visível
+    svg += `<line class="cavg" x1="${padL}" y1="${y(avg)}" x2="${W - padR}" y2="${y(avg)}" stroke="#E6EDF3" stroke-width="1.5"/><text class="caxis" x="${W - padR}" y="${y(avg) - 4}" text-anchor="end" style="fill:#E6EDF3">média ${avg.toFixed(1)}</text>`;
     const everyN = Math.ceil(ss.length / 6);
     ss.forEach((s, i) => { if (i % everyN === 0 || i === ss.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 6}" text-anchor="middle">${s.date.slice(8, 10)}/${s.date.slice(5, 7)}</text>`; });
     svg += `</svg>`; box.innerHTML = svg; bindTips(box);
@@ -2842,8 +3032,9 @@
     renderWeekScorers();
     renderArtilhariaChart(scoped);
     renderScatterChart(scoped);
-    renderPresencesChart(scoped);
+    renderDistinctChart(scoped);
     renderGoalsSessionChart(scoped);
+    renderTopScorerMonthChart(scoped);
     renderCompositionChart();
     const summary = document.getElementById('stats-summary');
     const grid = document.getElementById('rank-grid');
@@ -3892,6 +4083,26 @@
   // ---- Configurações avançadas (senha para entrar) ----
   const ADVANCED_PASSWORD = 'erick';
   let advancedUnlocked = false;
+  function firstFutYear(pid) { const d = firstFutDate(pid); return d ? d.slice(0, 4) : null; }
+  function renderRevelacaoConfig() {
+    const host = document.getElementById('revelacao-config'); if (!host) return;
+    const set = new Set(); state.sessions.forEach(s => { const y = (s.date || '').slice(0, 4); if (y) set.add(y); });
+    const yl = [...set].sort();
+    state.awards = state.awards || { revelacao: {} }; state.awards.revelacao = state.awards.revelacao || {};
+    if (!yl.length) { host.innerHTML = '<p class="settings-desc">Sem dados ainda.</p>'; return; }
+    host.innerHTML = yl.map(y => {
+      const cands = state.players.filter(p => firstFutYear(p.id) === y || String(p.since) === y).sort((a, b) => a.name.localeCompare(b.name));
+      const cur = state.awards.revelacao[y] || '';
+      let opts = ['<option value="">— ninguém —</option>'].concat(cands.map(p => `<option value="${p.id}" ${cur === p.id ? 'selected' : ''}>${escapeHtml(p.name)}</option>`));
+      if (cur && !cands.some(p => p.id === cur)) { const pp = playerById(cur); if (pp) opts.push(`<option value="${cur}" selected>${escapeHtml(pp.name)} (fora do ano)</option>`); }
+      return `<div class="rev-row"><span class="rev-year">${y}</span><select data-rev-year="${y}" ${cands.length || cur ? '' : 'disabled'}>${opts.join('')}</select></div>`;
+    }).join('');
+    host.querySelectorAll('[data-rev-year]').forEach(sel => sel.addEventListener('change', () => {
+      const y = sel.dataset.revYear;
+      if (sel.value) state.awards.revelacao[y] = sel.value; else delete state.awards.revelacao[y];
+      save();
+    }));
+  }
   function renderAdvancedLock() {
     const body = document.getElementById('advanced-body');
     const note = document.getElementById('advanced-locked-note');
@@ -3906,7 +4117,7 @@
     const pass = prompt('Senha para abrir as configurações avançadas:');
     if (pass == null) return;
     if (pass !== ADVANCED_PASSWORD) { alert('Senha incorreta.'); return; }
-    advancedUnlocked = true; renderAdvancedLock(); renderGhConfig();
+    advancedUnlocked = true; renderAdvancedLock(); renderGhConfig(); renderRevelacaoConfig();
     const fcb = document.getElementById('toggle-fase-last3'); if (fcb) fcb.checked = state.ui.faseMode === 'last3';
   }
   document.getElementById('advanced-toggle').addEventListener('click', toggleAdvanced);
