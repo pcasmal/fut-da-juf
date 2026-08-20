@@ -584,6 +584,15 @@
   .rival-rec { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .rival-rec .win { color: #34D399; }
   .rival-rec .loss { color: #F85149; }
+  .rate-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .rate-row:last-child { border-bottom: none; }
+  .rate-name { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rate-stars { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .rate-star { font-size: 24px; line-height: 1; color: var(--border); cursor: pointer; transition: color 0.1s, transform 0.1s; }
+  .rate-star.on { color: #FBBF24; }
+  .rate-star:active { transform: scale(1.2); }
+  .rate-zero { margin-left: 6px; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 700; border-radius: 6px; padding: 3px 7px; cursor: pointer; font-family: inherit; }
+  .rate-zero.active { background: var(--accent-solid); color: #fff; border-color: var(--accent-solid); }
   .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
   .rank-table th, .rank-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
   .rank-table th:nth-child(2), .rank-table td:nth-child(2) { text-align: left; width: 100%; }
@@ -858,6 +867,7 @@
     <button class="tab" data-tab="semana">Futs</button>
     <button class="tab" data-tab="stats">Estatísticas</button>
     <button class="tab" data-tab="campeonato">Campeonato</button>
+    <button class="tab" data-tab="avaliar">Avaliar</button>
   </nav>
 
   <!-- ELENCO -->
@@ -1053,11 +1063,6 @@
       <div class="kpis" id="stat-kpis"></div>
     </div>
     <div class="card" id="recent-fut-card" style="display:none;"></div>
-    <div class="card" id="compare-card">
-      <div class="card-title">Comparar jogadores</div>
-      <div class="cmp-heads"><select id="cmp-a"></select><span class="cmp-x">×</span><select id="cmp-b"></select></div>
-      <div id="cmp-body"></div>
-    </div>
     <div id="records-card"></div>
     <div class="card" id="weekscorers-card" style="display:none;">
       <div class="card-title">Corrida da artilharia (gols acumulados por semana)</div>
@@ -1087,6 +1092,12 @@
       <div id="evolution-chart"></div>
     </div>
     <div class="rank-grid" id="rank-grid"></div>
+    <div class="card" id="estimate-since-card" style="display:none;"></div>
+    <div class="card" id="compare-card">
+      <div class="card-title">1×1 — comparar jogadores</div>
+      <div class="cmp-heads"><select id="cmp-a"></select><span class="cmp-x">×</span><select id="cmp-b"></select></div>
+      <div id="cmp-body"></div>
+    </div>
   </section>
 
   <!-- CAMPEONATO -->
@@ -1184,6 +1195,31 @@
         <div class="card-title">Tempo estimado</div>
         <div id="estimate-active"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- AVALIAR (palpite de notas) -->
+  <section class="panel" id="panel-avaliar">
+    <div class="card">
+      <div class="card-title">Palpite de notas ⭐</div>
+      <p class="hint" style="line-height:1.5;">Dê seu palpite de nota (0 a 5 estrelas) pra cada jogador. Serve pra ajudar a <strong>balancear os times</strong>. Suas notas <strong>não substituem</strong> as oficiais e <strong>não são divulgadas</strong> — elas só são enviadas pro Paulinho, que usa tudo junto pra calibrar. Primeiro diga quem é você (pra não avaliar a si mesmo).</p>
+      <div id="avaliar-setup" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <div style="flex:1; min-width:180px;">
+          <label for="avaliador-select">Quem é você?</label>
+          <select id="avaliador-select"></select>
+        </div>
+        <button class="primary" id="btn-avaliar-start">Começar</button>
+      </div>
+    </div>
+    <div id="avaliar-body" style="display:none;">
+      <div class="card">
+        <div class="card-title">Sua avaliação <span class="card-count" id="avaliar-count"></span></div>
+        <div id="avaliar-list"></div>
+        <button class="secondary" id="btn-avaliar-more" style="width:100%; margin-top:10px;">Avaliar mais 5 jogadores</button>
+        <p class="hint" id="avaliar-nomore" style="display:none; text-align:center; margin-top:10px;">Você já avaliou todo mundo! 🎉</p>
+      </div>
+      <button class="primary" id="btn-avaliar-send" style="width:100%;">📲 Enviar pro Paulinho no WhatsApp</button>
+      <button class="ghost neutral" id="btn-avaliar-reset" style="width:100%; margin-top:8px;">Trocar avaliador / recomeçar</button>
     </div>
   </section>
 
@@ -1533,6 +1569,7 @@
       if (tab.dataset.tab === 'semana') { renderSessionEditor(); renderResults(); }
       if (tab.dataset.tab === 'elenco') renderRoster();
       if (tab.dataset.tab === 'campeonato') renderChampTeamPicker();
+      if (tab.dataset.tab === 'avaliar') renderAvaliarSetup();
     });
   });
   document.getElementById('btn-config').addEventListener('click', () => {
@@ -1886,8 +1923,11 @@
     const better = state.players.filter(p => ((stats[p.id] || {})[key] || 0) > mine).length;
     return { pos: better + 1, total: state.players.length };
   }
+  function localToday() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+  function playedSessions() { const t = localToday(); return state.sessions.filter(s => (s.date || '') <= t); }
   function currentStreak(pid) {
-    const desc = state.sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+    const t = localToday();
+    const desc = state.sessions.filter(s => (s.date || '') <= t).sort((a, b) => b.date.localeCompare(a.date));
     let n = 0;
     for (const s of desc) { if ((s.attendees || []).includes(pid)) n++; else break; }
     return n;
@@ -2689,8 +2729,10 @@
     // melhor dupla (mais vitórias juntos; desempate por jogos juntos)
     const pairs = computePairs(all).filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos);
     if (pairs.length) { const d = pairs[0]; items.push({ icon: '🤝', label: 'Melhor dupla', value: `${playerName(d.a)} & ${playerName(d.b)}`, sub: `${d.vitorias} vitórias juntos` }); }
-    // craque do último fut
-    const last = all[all.length - 1];
+    // craque do último fut (já jogado)
+    const today = localToday();
+    const playedAll = all.filter(s => (s.date || '') <= today);
+    const last = playedAll[playedAll.length - 1];
     if (last) {
       const g = last.goals || {}; let bestPid = null, bestG = 0;
       Object.keys(g).forEach(pid => { if (g[pid] > bestG) { bestG = g[pid]; bestPid = pid; } });
@@ -3091,7 +3133,8 @@
   }
   function trailingStreak(pid, ascSessions) { let n = 0; for (let i = ascSessions.length - 1; i >= 0; i--) { if ((ascSessions[i].attendees || []).includes(pid)) n++; else break; } return n; }
   function currentGoalDrought(pid) {
-    const desc = state.sessions.filter(s => (s.attendees || []).includes(pid)).sort((a, b) => b.date.localeCompare(a.date));
+    const t = localToday();
+    const desc = state.sessions.filter(s => (s.date || '') <= t && (s.attendees || []).includes(pid)).sort((a, b) => b.date.localeCompare(a.date));
     let n = 0; for (const s of desc) { if (((s.goals || {})[pid] || 0) === 0) n++; else break; } return n;
   }
   function golRankMap(sessions) {
@@ -3182,9 +3225,40 @@
       return `<div class="cmp-val ${aWin ? 'win' : ''}">${r.a == null ? '—' : r.a}</div><div class="cmp-lbl">${r.l}</div><div class="cmp-val ${bWin ? 'win' : ''}">${r.b == null ? '—' : r.b}</div>`;
     }).join('')}</div>`;
   }
+  function renderEstimateSince() {
+    const host = document.getElementById('estimate-since-card'); if (!host) return;
+    const years = [...new Set(state.sessions.map(s => (s.date || '').slice(0, 4)).filter(Boolean))].sort();
+    if (!years.length) { host.style.display = 'none'; return; }
+    const firstYear = +years[0];
+    const csAll = computeStats(state.sessions);
+    const rows = [];
+    state.players.forEach(p => {
+      if (!p.since || p.since >= firstYear) return;
+      const byYear = {};
+      state.sessions.forEach(s => { const y = (s.date || '').slice(0, 4); if (!y) return; if ((s.attendees || []).includes(p.id)) { (byYear[y] = byYear[y] || { p: 0, g: 0 }).p++; byYear[y].g += (s.goals || {})[p.id] || 0; } });
+      const yrs = Object.keys(byYear); if (yrs.length < 1) return;
+      const presArr = yrs.map(y => byYear[y].p).sort((a, b) => a - b);
+      const median = presArr[Math.floor(presArr.length / 2)] || 0;
+      const kept = yrs.filter(y => byYear[y].p >= 0.5 * median);
+      const use = kept.length ? kept : yrs;
+      const avgPres = use.reduce((s, y) => s + byYear[y].p, 0) / use.length;
+      const avgGols = use.reduce((s, y) => s + byYear[y].g, 0) / use.length;
+      const missing = firstYear - p.since;
+      const extraP = Math.round(missing * avgPres * 0.8), extraG = Math.round(missing * avgGols * 0.8);
+      const realP = (csAll[p.id] || {}).presencas || 0, realG = (csAll[p.id] || {}).gols || 0;
+      rows.push({ pid: p.id, since: p.since, realP, realG, estP: realP + extraP, estG: realG + extraG });
+    });
+    if (!rows.length) { host.style.display = 'none'; return; }
+    host.style.display = '';
+    rows.sort((a, b) => b.estG - a.estG);
+    host.innerHTML = `<div class="card-title">Estimativa desde o início de cada um</div>
+      <p class="chart-sub">Os dados vão de ${firstYear} pra cá. Para quem entrou antes, estimo os anos que faltam pela <strong>média anual de presenças e gols da própria pessoa</strong> (descartando anos atípicos, tipo lesão) <strong>× 0,8</strong>, um fator conservador. Isto <strong>não altera</strong> nenhuma estatística oficial.</p>
+      <table class="rank-table"><thead><tr><th>Jogador</th><th>Desde</th><th>Presenças</th><th>Gols</th></tr></thead>
+      <tbody>${rows.map(r => `<tr><td>${escapeHtml(playerName(r.pid))}</td><td>${r.since}</td><td>${r.realP} → <b class="big">${r.estP}</b></td><td>${r.realG} → <b class="big">${r.estG}</b></td></tr>`).join('')}</tbody></table>`;
+  }
   function renderRecentFut() {
     const host = document.getElementById('recent-fut-card'); if (!host) return;
-    const sorted = state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const sorted = playedSessions().sort((a, b) => a.date.localeCompare(b.date));
     if (!sorted.length) { host.style.display = 'none'; return; }
     host.style.display = '';
     const last = sorted[sorted.length - 1], before = sorted.slice(0, -1);
@@ -3202,6 +3276,7 @@
     document.querySelectorAll('#pos-filter .period-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === statsPos));
     renderRecentFut();
     renderCompare();
+    renderEstimateSince();
     const scoped = statsSessions();
     renderStatKpis(scoped);
     renderRecords(scoped);
@@ -3299,6 +3374,68 @@
       regularityCard() +
       pairCard('Duplas que mais venceram juntas', pairsByWins, 'vit', p => p.vitorias + ' vit', p => `jogaram juntos ${p.juntos}×`) +
       pairCard('Duplas que mais jogaram juntas', pairsByTogether, 'jogos', p => p.juntos + '×', p => `${p.vitorias} vitórias juntos`);
+  }
+
+  // ============ AVALIAR (palpite de notas — não persiste, só exporta) ============
+  let palpite = { evaluator: null, shown: [], ratings: {} };
+  function renderAvaliarSetup() {
+    const sel = document.getElementById('avaliador-select'); if (!sel) return;
+    const players = state.players.slice().sort((a, b) => a.name.localeCompare(b.name));
+    sel.innerHTML = '<option value="">— selecione seu nome —</option>' + players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+  }
+  function avaliarPool() { return state.players.filter(p => p.id !== palpite.evaluator && !palpite.shown.includes(p.id)); }
+  function avaliarAddBatch(n) { shuffle(avaliarPool()).slice(0, n).forEach(p => palpite.shown.push(p.id)); renderAvaliarList(); }
+  function renderAvaliarList() {
+    const host = document.getElementById('avaliar-list'); if (!host) return;
+    host.innerHTML = palpite.shown.map(pid => {
+      const rv = palpite.ratings[pid]; const r = (rv == null ? -1 : rv);
+      return `<div class="rate-row">
+        <span class="rate-name">${escapeHtml(playerName(pid))}</span>
+        <span class="rate-stars" data-rate-pid="${pid}">
+          ${[1, 2, 3, 4, 5].map(i => `<span class="rate-star ${i <= r ? 'on' : ''}" data-star="${i}">★</span>`).join('')}
+          <button class="rate-zero ${rv === 0 ? 'active' : ''}" data-star="0" title="Nota zero">0</button>
+        </span>
+      </div>`;
+    }).join('');
+    host.querySelectorAll('[data-rate-pid]').forEach(row => row.querySelectorAll('[data-star]').forEach(st => st.addEventListener('click', () => {
+      palpite.ratings[row.dataset.ratePid] = +st.dataset.star; renderAvaliarList();
+    })));
+    const rated = Object.keys(palpite.ratings).length;
+    const cnt = document.getElementById('avaliar-count'); if (cnt) cnt.textContent = `${rated} de ${palpite.shown.length} avaliados`;
+    const noMore = avaliarPool().length === 0;
+    const moreBtn = document.getElementById('btn-avaliar-more'); if (moreBtn) moreBtn.style.display = noMore ? 'none' : '';
+    const noMoreMsg = document.getElementById('avaliar-nomore'); if (noMoreMsg) noMoreMsg.style.display = noMore ? '' : 'none';
+  }
+  function avaliarText() {
+    const L = [`📋 *Palpite de notas — Fut da JUF*`, `De: ${playerName(palpite.evaluator)}`, ''];
+    palpite.shown.forEach(pid => { if (palpite.ratings[pid] != null) L.push(`⭐ ${playerName(pid)}: ${palpite.ratings[pid]}`); });
+    L.push('', '(palpite de 0 a 5 estrelas, pra ajudar a balancear os times)');
+    return L.join('\n');
+  }
+  {
+    const start = document.getElementById('btn-avaliar-start');
+    if (start) start.addEventListener('click', () => {
+      const sel = document.getElementById('avaliador-select'); const id = sel.value;
+      if (!id) { alert('Escolha o seu nome primeiro.'); return; }
+      palpite = { evaluator: id, shown: [], ratings: {} };
+      document.getElementById('avaliar-setup').style.display = 'none';
+      document.getElementById('avaliar-body').style.display = '';
+      avaliarAddBatch(10);
+    });
+    const more = document.getElementById('btn-avaliar-more');
+    if (more) more.addEventListener('click', () => avaliarAddBatch(5));
+    const send = document.getElementById('btn-avaliar-send');
+    if (send) send.addEventListener('click', () => {
+      if (!Object.keys(palpite.ratings).length) { alert('Avalie pelo menos um jogador antes de enviar.'); return; }
+      shareText('Palpite de notas — Fut da JUF', avaliarText());
+    });
+    const reset = document.getElementById('btn-avaliar-reset');
+    if (reset) reset.addEventListener('click', () => {
+      palpite = { evaluator: null, shown: [], ratings: {} };
+      document.getElementById('avaliar-setup').style.display = 'flex';
+      document.getElementById('avaliar-body').style.display = 'none';
+      renderAvaliarSetup();
+    });
   }
 
   // ============ CAMPEONATO ============
