@@ -1587,16 +1587,14 @@
 
   // ============ Balancing (pure) ============
   function playerScore(p) {
-    // combina nível por função + nota geral em estrelas
-    let s = (LEVEL_VAL[p.primary.level] || 2) * 1.5;
-    if (p.secondary) s += (LEVEL_VAL[p.secondary.level] || 2) * 0.5;
-    s += (p.stars || 0);
-    return s;
+    // A força pro balanceamento vem SÓ da nota em estrelas (0–5).
+    // A interface continua falando em "nível" de propósito.
+    return (p.stars || 0);
   }
   function goalieRankOf(p) {
-    // menor = melhor goleiro; por função (nível), com a nota geral como desempate
-    if (p.primary.position === 'goleiro') return LEVEL_RANK[p.primary.level] - (p.stars || 0) * 0.1;
-    if (p.secondary && p.secondary.position === 'goleiro') return 3 + LEVEL_RANK[p.secondary.level] - (p.stars || 0) * 0.1;
+    // melhor goleiro = mais estrelas (menor rank = melhor). Secundário sempre atrás dos primários.
+    if (p.primary.position === 'goleiro') return -(p.stars || 0);
+    if (p.secondary && p.secondary.position === 'goleiro') return 10 - (p.stars || 0);
     return Infinity;
   }
   function countGoalies(players) { return players.filter(p => p.primary.position === 'goleiro').length; }
@@ -1619,44 +1617,34 @@
 
   function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
   function balanceTeams(players, numTeams, balanced) {
-    const primaryGoalies = players.filter(p => p.primary.position === 'goleiro');
-    const separate = primaryGoalies.length >= 1 && primaryGoalies.length < 3;
-    const fieldPlayers = separate ? players.filter(p => p.primary.position !== 'goleiro') : players;
-
     const teams = Array.from({ length: numTeams }, (_, i) => ({
       id: uid(), name: TEAM_NAMES[i] || ('Time ' + (i + 1)),
       color: TEAM_COLORS[i % TEAM_COLORS.length], players: []
     }));
     const idToPlayer = {};
-    fieldPlayers.forEach(p => idToPlayer[p.id] = p);
-    const fieldTeams = teams; // times de linha (goleiros vão à parte)
-    const appendGoalieTeam = () => {
-      if (separate) teams.push({ id: uid(), name: 'Goleiros', color: '#6B7280', players: primaryGoalies.map(p => p.id), noWins: true });
-    };
+    players.forEach(p => idToPlayer[p.id] = p);
 
     if (!balanced) {
-      const sh = shuffle(fieldPlayers.slice());
-      sh.forEach((p, i) => fieldTeams[i % numTeams].players.push(p.id));
-      enforceMinSize(fieldTeams, idToPlayer, minTeamSize(fieldPlayers));
-      appendGoalieTeam();
+      shuffle(players.slice()).forEach((p, i) => teams[i % numTeams].players.push(p.id));
+      enforceMinSize(teams, idToPlayer, minTeamSize(players));
       return teams;
     }
 
     const used = new Set();
-    // embaralha antes de ordenar: empates (mesmo nível/força) saem em ordem aleatória,
+    // embaralha antes de ordenar: empates (mesma nota) saem em ordem aleatória,
     // então cada clique em "Gerar balanceado" produz uma combinação diferente e ainda equilibrada.
-    const goalies = shuffle(fieldPlayers.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
-    const teamOrder = shuffle(fieldTeams.slice());
+    const goalies = shuffle(players.filter(p => goalieRankOf(p) < Infinity)).sort((a, b) => goalieRankOf(a) - goalieRankOf(b));
+    const teamOrder = shuffle(teams.slice());
     for (let i = 0; i < numTeams; i++) {
       const pick = goalies.find(g => !used.has(g.id) && goalieRankOf(g) <= 4);
       if (pick) { teamOrder[i].players.push(pick.id); used.add(pick.id); }
     }
-    const remaining = shuffle(fieldPlayers.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
+    const remaining = shuffle(players.filter(p => !used.has(p.id))).sort((a, b) => playerScore(b) - playerScore(a));
     const countPos = (team, pos) => team.players.filter(pid => idToPlayer[pid].primary.position === pos).length;
     const totalScore = team => team.players.reduce((s, pid) => s + playerScore(idToPlayer[pid]), 0);
     const pickTeam = pos => {
-      const minCount = Math.min(...fieldTeams.map(t => countPos(t, pos)));
-      let cands = fieldTeams.filter(t => countPos(t, pos) === minCount);
+      const minCount = Math.min(...teams.map(t => countPos(t, pos)));
+      let cands = teams.filter(t => countPos(t, pos) === minCount);
       const minScore = Math.min(...cands.map(totalScore));
       cands = cands.filter(t => totalScore(t) === minScore);
       return cands[Math.floor(Math.random() * cands.length)];
@@ -1664,8 +1652,7 @@
     const byPos = { fixo: [], ala: [], pivo: [], goleiro: [] };
     remaining.forEach(p => { const pos = byPos[p.primary.position] ? p.primary.position : 'ala'; byPos[pos].push(p); });
     ['fixo', 'pivo', 'ala', 'goleiro'].forEach(pos => byPos[pos].forEach(p => { pickTeam(p.primary.position).players.push(p.id); used.add(p.id); }));
-    enforceMinSize(fieldTeams, idToPlayer, minTeamSize(fieldPlayers));
-    appendGoalieTeam();
+    enforceMinSize(teams, idToPlayer, minTeamSize(players));
     return teams;
   }
 
@@ -2474,22 +2461,18 @@
     const hint = document.getElementById('teams-hint');
     const present = sess.attendees.map(playerById).filter(Boolean);
     if (isNaN(numTeams) || numTeams < 2) { hint.textContent = 'Escolha pelo menos 2 times.'; hint.classList.add('error'); return; }
-    const primaryG = present.filter(p => p.primary.position === 'goleiro').length;
-    const sepGoalies = primaryG >= 1 && primaryG < 3;
-    const forMax = sepGoalies ? present.filter(p => p.primary.position !== 'goleiro') : present;
-    const minSize = minTeamSize(forMax), maxT = maxTeamsFor(forMax);
+    const minSize = minTeamSize(present), maxT = maxTeamsFor(present);
     if (numTeams > maxT) {
-      hint.textContent = `Com ${forMax.length} jogadores de linha e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
+      hint.textContent = `Com ${present.length} presentes e mínimo de ${minSize} por time${minSize === 5 ? ' (há 3+ goleiros)' : ''}, dá no máximo ${maxT} time(s).`;
       hint.classList.add('error'); return;
     }
     hint.classList.remove('error');
     sess.numTeams = numTeams;
     sess.teams = balanceTeams(present, numTeams, balanced);
     sess.wins = {}; // ids dos times mudaram
-    const goalieNote = sepGoalies ? ' Os goleiros ficam num time à parte (contam só gols e assistências, não vitórias).' : '';
-    hint.innerHTML = (balanced
+    hint.innerHTML = balanced
       ? `Times balanceados (mínimo ${minSize} por time): goleiros primeiro, depois cada jogador vai ao time com menos gente da posição dele.`
-      : `Times sorteados (mínimo ${minSize} por time).`) + goalieNote;
+      : `Times sorteados (mínimo ${minSize} por time).`;
     save(); renderSessionEditor();
   }
 
