@@ -455,6 +455,11 @@
   .rod-winner-pick button { flex: 1; }
   .rod-summary { margin-top: 14px; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); }
   .rod-summary-head { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+  .rod-sum-wins { font-size: 13px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .rod-sum-wins b { color: var(--accent); }
+  .metric-toggle { display: inline-flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .metric-toggle button { background: none; border: none; color: var(--muted); font-family: inherit; font-size: 11px; font-weight: 600; padding: 5px 9px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .metric-toggle button.active { background: var(--accent-solid); color: #fff; }
   .rod-summary-list { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
   .rod-sum-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 2px 0; }
   .rod-sum-nums { color: var(--muted); font-weight: 600; white-space: nowrap; }
@@ -610,6 +615,11 @@
   .mv.new { color: var(--accent); font-size: 9px; text-transform: uppercase; }
   .mv.same { color: var(--muted); }
   .hl-list { list-style: none; padding: 0; margin: 4px 0 14px; display: flex; flex-direction: column; gap: 7px; }
+  .rf-tallies { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 10px 0 4px; font-size: 13px; }
+  .rf-tallies b { color: var(--accent); }
+  .rf-tallies i { font-style: normal; font-weight: 700; }
+  .rf-tallies i.up { color: #34D399; }
+  .rf-tallies i.down { color: #F85149; }
   .hl-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; line-height: 1.35; }
   .hl-ic { flex-shrink: 0; }
   .cmp-heads { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 12px; }
@@ -1123,14 +1133,18 @@
     <div class="card" id="recent-fut-card" style="display:none;"></div>
     <div id="records-card"></div>
     <div class="card" id="weekscorers-card" style="display:none;">
-      <div class="card-title">Corrida da artilharia (gols acumulados por semana)</div>
+      <div class="card-title" id="weekscorers-title">Corrida da artilharia (gols acumulados por semana)</div>
       <div class="chart-controls">
         <div class="period-picker" id="chart-range"></div>
+        <div class="metric-toggle" id="chart-metric">
+          <button data-metric="gols" class="active">⚽ Gols</button>
+          <button data-metric="assist">🅰 Assist.</button>
+        </div>
         <div class="chart-add">
           <select id="chart-add-select"><option value="">＋ Adicionar jogador…</option></select>
         </div>
       </div>
-      <p class="hint" style="margin:2px 0 12px;">Base: os 5 artilheiros do ano do gráfico. Toque na legenda para esconder/mostrar; adicione quem quiser acima.</p>
+      <p class="hint" id="weekscorers-hint" style="margin:2px 0 12px;">Base: os 5 artilheiros do ano do gráfico. Toque na legenda para esconder/mostrar; adicione quem quiser acima.</p>
       <div id="weekscorers-legend" class="week-legend"></div>
       <div id="weekscorers-chart"></div>
     </div>
@@ -1551,6 +1565,7 @@
       goalsOnly: !!sess.goalsOnly
     };
     if (sess.rodizio) out.rodizio = sess.rodizio;
+    if (sess.conceded) out.conceded = sess.conceded;
     if (sess.matches && sess.matches.length) {
       sess.matches.forEach(m => {
         const g = m.goals || {};
@@ -2844,8 +2859,11 @@
       .map(p => ({ p, g: (sess.goals && sess.goals[p.id]) || 0, a: (sess.assists && sess.assists[p.id]) || 0 }))
       .filter(x => x.g || x.a)
       .sort((x, y) => y.g - x.g || y.a - x.a || x.p.name.localeCompare(y.p.name));
+    const winRows = sess.teams.filter(t => !t.noWins).map(t => ({ name: t.name, w: (sess.wins && sess.wins[t.id]) || 0 })).sort((a, b) => b.w - a.w);
+    const winsLine = winRows.some(w => w.w > 0) ? `<div class="rod-sum-wins">🏆 ${winRows.map(w => `${escapeHtml(w.name)}: <b>${w.w}</b>`).join(' · ')}</div>` : '';
     const summaryHtml = `<div class="rod-summary">
       <div class="rod-summary-head">Resumo do dia até agora <span class="card-count">salvo automaticamente</span></div>
+      ${winsLine}
       ${summaryRows.length ? `<div class="rod-summary-list">${summaryRows.map(x => `<div class="rod-sum-row"><span>${escapeHtml(x.p.name)}</span><span class="rod-sum-nums">${x.g ? `${x.g}⚽` : ''}${x.g && x.a ? ' · ' : ''}${x.a ? `${x.a}🅰` : ''}</span></div>`).join('')}</div>` : '<p class="hint" style="margin:6px 0 0;">Ainda sem gols ou assistências.</p>'}
     </div>`;
 
@@ -2877,9 +2895,9 @@
       const field = inc ? b.dataset.rinc : b.dataset.rdec;
       const pid = b.dataset.p;
       if (field === 'gols') {
-        r.mg = r.mg || {};
-        if (inc) { r.mg[pid] = (r.mg[pid] || 0) + 1; sess.goals = sess.goals || {}; sess.goals[pid] = (sess.goals[pid] || 0) + 1; }
-        else if ((r.mg[pid] || 0) > 0) { r.mg[pid]--; sess.goals[pid] = Math.max(0, (sess.goals[pid] || 0) - 1); if (!sess.goals[pid]) delete sess.goals[pid]; if (!r.mg[pid]) delete r.mg[pid]; }
+        r.mg = r.mg || {}; r.events = r.events || [];
+        if (inc) { r.mg[pid] = (r.mg[pid] || 0) + 1; sess.goals = sess.goals || {}; sess.goals[pid] = (sess.goals[pid] || 0) + 1; r.events.push({ pid, at: 300 - _rodTimer.remaining }); }
+        else if ((r.mg[pid] || 0) > 0) { r.mg[pid]--; sess.goals[pid] = Math.max(0, (sess.goals[pid] || 0) - 1); if (!sess.goals[pid]) delete sess.goals[pid]; if (!r.mg[pid]) delete r.mg[pid]; for (let i = r.events.length - 1; i >= 0; i--) { if (r.events[i].pid === pid) { r.events.splice(i, 1); break; } } }
       } else {
         r.ma = r.ma || {};
         if (inc) { r.ma[pid] = (r.ma[pid] || 0) + 1; sess.assists = sess.assists || {}; sess.assists[pid] = (sess.assists[pid] || 0) + 1; }
@@ -2910,20 +2928,37 @@
       sess.rodizio = null; _rodPicks = []; rodTimerReset(); save(); renderScoring();
     });
   }
+  function rodSideGoalie(sess, r, side) {
+    const teamId = side === 'A' ? r.sideA : r.sideB;
+    const bucket = side === 'A' ? r.gkA : r.gkB;
+    if (bucket) return bucket;
+    const team = sess.teams.find(t => t.id === teamId);
+    if (!team) return null;
+    return team.players.find(pid => { const p = playerById(pid); return p && p.primary.position === 'goleiro'; }) || null;
+  }
   function rodizioConfirm(sess, winnerId, byTime) {
     const r = sess.rodizio; if (!r) return;
     if (r.homeId && !r.sideA) { r.sideA = r.homeId; r.sideB = r.awayId; }
+    const teamA = sess.teams.find(t => t.id === r.sideA), teamB = sess.teams.find(t => t.id === r.sideB);
+    const sideGoals = (team, gk) => (team ? team.players.reduce((s, pid) => s + ((r.mg && r.mg[pid]) || 0), 0) : 0) + (gk ? ((r.mg && r.mg[gk]) || 0) : 0);
+    const gA = sideGoals(teamA, r.gkA), gB = sideGoals(teamB, r.gkB);
+    // gols sofridos por goleiro (para "goleiro menos vazado" e gráficos futuros)
+    sess.conceded = sess.conceded || {};
+    const gkA = rodSideGoalie(sess, r, 'A'), gkB = rodSideGoalie(sess, r, 'B');
+    if (gkA) sess.conceded[gkA] = (sess.conceded[gkA] || 0) + gB;
+    if (gkB) sess.conceded[gkB] = (sess.conceded[gkB] || 0) + gA;
+    const durationSec = 300 - _rodTimer.remaining; // tempo jogado, se usaram o cronômetro
     const loserId = winnerId === r.sideA ? r.sideB : r.sideA;
     sess.wins = sess.wins || {};
     sess.wins[winnerId] = (sess.wins[winnerId] || 0) + 1;
     r.log = r.log || [];
-    r.log.push({ a: r.sideA, b: r.sideB, winnerId, byTime: !!byTime });
+    r.log.push({ a: r.sideA, b: r.sideB, winnerId, byTime: !!byTime, scoreA: gA, scoreB: gB, durationSec, events: (r.events || []).slice() });
     r.queue = r.queue || [];
     r.queue.push(loserId);
     const nextId = r.queue.shift();
     if (winnerId === r.sideA) r.sideB = nextId; else r.sideA = nextId; // vencedor mantém o lado (goleiro fixo)
     r.kingId = winnerId;
-    r.mg = {}; r.ma = {};
+    r.mg = {}; r.ma = {}; r.events = [];
     r.byTimePending = false; r.timeWinnerId = null;
     rodTimerReset();
     save(); renderScoring();
@@ -3016,6 +3051,9 @@
     if (e.target.value) { chartExtra.add(e.target.value); hiddenScorers.delete(e.target.value); renderWeekScorers(); }
     e.target.value = '';
   });
+  document.querySelectorAll('#chart-metric [data-metric]').forEach(b => b.addEventListener('click', () => {
+    weekMetric = b.dataset.metric; chartExtra = new Set(); hiddenScorers = new Set(); renderWeekScorers();
+  }));
 
   // ---- Recordes (todo o histórico) ----
   function longestStreak(pid, sessionsByDate) {
@@ -3133,11 +3171,18 @@
       `<button class="period-btn ${chartYear === 'all' ? 'active' : ''}" data-cyear="all">Desde o início</button>`;
     cont.querySelectorAll('[data-cyear]').forEach(b => b.addEventListener('click', () => { chartYear = b.dataset.cyear; renderWeekScorers(); }));
   }
+  let weekMetric = 'gols';
   function renderWeekScorers() {
     const card = document.getElementById('weekscorers-card');
     const chart = document.getElementById('weekscorers-chart');
     const legend = document.getElementById('weekscorers-legend');
     renderChartYears();
+    const isA = weekMetric === 'assist';
+    const titleEl = document.getElementById('weekscorers-title');
+    if (titleEl) titleEl.textContent = isA ? 'Corrida das assistências (acumuladas por semana)' : 'Corrida da artilharia (gols acumulados por semana)';
+    const hintEl = document.getElementById('weekscorers-hint');
+    if (hintEl) hintEl.textContent = `Base: os 5 ${isA ? 'maiores garçons' : 'artilheiros'} do ano do gráfico. Toque na legenda para esconder/mostrar; adicione quem quiser acima.`;
+    document.querySelectorAll('#chart-metric [data-metric]').forEach(b => b.classList.toggle('active', b.dataset.metric === weekMetric));
 
     const inChartYear = s => chartYear === 'all' || (s.date || '').slice(0, 4) === chartYear;
     // semanas com futs dentro do ano escolhido
@@ -3147,17 +3192,17 @@
     if (weeks.length < 2) { card.style.display = 'none'; return; }
     const weekWindow = new Set(weeks);
 
-    // gols por semana (dentro da janela) e totais no período do gráfico
+    // acumulado por semana (gols ou assistências) e totais no período do gráfico
     const perWeek = {}, totalsInRange = {};
     state.sessions.forEach(s => {
       if (!s.date || !inChartYear(s)) return; const wk = weekStartKey(s.date); if (!weekWindow.has(wk)) return;
-      const g = s.goals || {}; Object.keys(g).forEach(pid => {
+      const g = (isA ? s.assists : s.goals) || {}; Object.keys(g).forEach(pid => {
         if (!posMatch(pid) || !g[pid]) return;
         (perWeek[wk] = perWeek[wk] || {})[pid] = (perWeek[wk][pid] || 0) + g[pid];
         totalsInRange[pid] = (totalsInRange[pid] || 0) + g[pid];
       });
     });
-    // base: top 5 artilheiros do período do gráfico + quem foi adicionado
+    // base: top 5 do período do gráfico + quem foi adicionado
     const baseTop = Object.keys(totalsInRange).filter(pid => totalsInRange[pid] > 0).sort((a, b) => totalsInRange[b] - totalsInRange[a]).slice(0, 5);
     const series = [...new Set([...baseTop, ...[...chartExtra].filter(pid => posMatch(pid))])];
     if (series.length < 1) { card.style.display = 'none'; return; }
@@ -3186,7 +3231,7 @@
     visible.forEach(pid => {
       const pts = cum[pid].map((v, i) => `${x(i)},${y(v)}`).join(' ');
       svg += `<polyline points="${pts}" fill="none" stroke="${colorOf[pid]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-      cum[pid].forEach((v, i) => { svg += `<circle class="cdot" cx="${x(i)}" cy="${y(v)}" r="2.2" fill="${colorOf[pid]}" data-tip="<b>${escapeHtml(playerName(pid))}</b><br>${v} gols acumulados<br>semana de ${lbl(weeks[i])}"/>`; });
+      cum[pid].forEach((v, i) => { svg += `<circle class="cdot" cx="${x(i)}" cy="${y(v)}" r="2.2" fill="${colorOf[pid]}" data-tip="<b>${escapeHtml(playerName(pid))}</b><br>${v} ${isA ? 'assist. acumuladas' : 'gols acumulados'}<br>semana de ${lbl(weeks[i])}"/>`; });
       const endV = cum[pid][weeks.length - 1];
       svg += `<text x="${x(weeks.length - 1) + 3}" y="${y(endV) + 3}" class="line-endlbl" fill="${colorOf[pid]}">${endV}</text>`;
     });
@@ -3358,8 +3403,9 @@
     const pts = vals.map((v, i) => `${x(i)},${y(v)}`).join(' ');
     svg += `<polyline points="${pts}" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/>`;
     vals.forEach((v, i) => { svg += `<circle class="cdot" cx="${x(i)}" cy="${y(v)}" r="2.4" fill="#FBBF24" data-tip="<b>${formatDate(ss[i].date)}</b><br>${v} gols"/>`; });
-    // média por cima da linha, bem visível
-    svg += `<line class="cavg" x1="${padL}" y1="${y(avg)}" x2="${W - padR}" y2="${y(avg)}" stroke="#E6EDF3" stroke-width="1.5"/><text class="caxis" x="${W - padR}" y="${y(avg) - 4}" text-anchor="end" style="fill:#E6EDF3">média ${avg.toFixed(1)}</text>`;
+    // linha da média (tracejada, discreta) + rótulo no canto superior, em amarelo (cor da linha)
+    svg += `<line class="cavg" x1="${padL}" y1="${y(avg)}" x2="${W - padR}" y2="${y(avg)}" stroke="#FBBF24" stroke-opacity="0.55" stroke-width="1"/>`;
+    svg += `<text x="${W - padR}" y="${padT + 2}" text-anchor="end" style="fill:#FBBF24;font-size:11px;font-weight:700">média ${avg.toFixed(1)}</text>`;
     const everyN = Math.ceil(ss.length / 6);
     ss.forEach((s, i) => { if (i % everyN === 0 || i === ss.length - 1) svg += `<text class="caxis" x="${x(i)}" y="${H - 6}" text-anchor="middle">${s.date.slice(8, 10)}/${s.date.slice(5, 7)}</text>`; });
     svg += `</svg>`; box.innerHTML = svg; bindTips(box);
@@ -3473,6 +3519,10 @@
     // artilheiro do dia
     let topPid = null, topG = 0; Object.keys(g).forEach(pid => { if (g[pid] > topG) { topG = g[pid]; topPid = pid; } });
     if (topPid) hl.push({ icon: '⚽', text: `Artilheiro do dia: ${playerName(topPid)} (${topG} ${topG === 1 ? 'gol' : 'gols'})` });
+    // garçom do dia
+    const asg = last.assists || {};
+    let topA = null, topAv = 0; Object.keys(asg).forEach(pid => { if (asg[pid] > topAv) { topAv = asg[pid]; topA = pid; } });
+    if (topA) hl.push({ icon: '🅰', text: `Garçom do dia: ${playerName(topA)} (${topAv} ${topAv === 1 ? 'assistência' : 'assistências'})` });
     // recorde pessoal de gols num dia + hat-trick
     const beforeMax = {}; before.forEach(s => { const gg = s.goals || {}; Object.keys(gg).forEach(pid => { beforeMax[pid] = Math.max(beforeMax[pid] || 0, gg[pid]); }); });
     Object.keys(g).forEach(pid => { if (before.length && g[pid] > (beforeMax[pid] || 0) && g[pid] >= 2) hl.push({ icon: '🏅', text: `Recorde pessoal: ${playerName(pid)} fez ${g[pid]} gols num fut` }); });
@@ -3500,10 +3550,40 @@
     // jejum
     let worst = { n: 0 }; state.players.forEach(p => { const d = currentGoalDrought(p.id); if (d > worst.n) worst = { pid: p.id, n: d }; });
     if (worst.n >= 4) hl.push({ icon: '🥶', text: `Jejum: ${playerName(worst.pid)} há ${worst.n} futs sem marcar` });
-    return { hl, resultText, presencas: (last.attendees || []).length };
+    // bagre do dia (de linha) — quem jogou e não fez nada; entre os zerados, o mais assíduo (o "veterano" que apagou)
+    const outfield = (last.attendees || []).map(playerById).filter(p => p && p.primary.position !== 'goleiro');
+    const partic = p => (g[p.id] || 0) + (asg[p.id] || 0);
+    const zeros = outfield.filter(p => partic(p) === 0);
+    if (outfield.length >= 4 && zeros.length) {
+      const presCount = pid => state.sessions.reduce((n, s) => n + ((s.attendees || []).includes(pid) ? 1 : 0), 0);
+      const bagre = zeros.slice().sort((a, b) => presCount(b.id) - presCount(a.id) || a.name.localeCompare(b.name))[0];
+      hl.push({ icon: '🦆', text: `Bagre do dia: ${playerName(bagre.id)} (0 gol e 0 assist.)` });
+    }
+    // goleiro menos vazado
+    const conc = last.conceded || {};
+    const goalieAtt = (last.attendees || []).map(playerById).filter(p => p && p.primary.position === 'goleiro' && conc[p.id] != null);
+    if (goalieAtt.length) {
+      const minC = Math.min(...goalieAtt.map(p => conc[p.id]));
+      const bestGk = goalieAtt.filter(p => conc[p.id] === minC).sort((a, b) => a.name.localeCompare(b.name))[0];
+      hl.push({ icon: '🧤', text: `Goleiro menos vazado: ${playerName(bestGk.id)} (${minC} ${minC === 1 ? 'gol sofrido' : 'gols sofridos'})` });
+    }
+    // totais do dia e impacto na média do ano
+    const golsDia = Object.values(g).reduce((x, y) => x + y, 0);
+    const assistsDia = Object.values(asg).reduce((x, y) => x + y, 0);
+    let avgInfo = null;
+    const yr2 = String(new Date().getFullYear());
+    if ((last.date || '').slice(0, 4) === yr2) {
+      const yrAll = state.sessions.filter(s => (s.date || '').slice(0, 4) === yr2);
+      const totG = s => Object.values(s.goals || {}).reduce((x, y) => x + y, 0);
+      const after = yrAll.reduce((x, s) => x + totG(s), 0) / yrAll.length;
+      const yrBefore = yrAll.filter(s => s.date !== last.date);
+      const before2 = yrBefore.length ? yrBefore.reduce((x, s) => x + totG(s), 0) / yrBefore.length : after;
+      avgInfo = { after, delta: after - before2 };
+    }
+    return { hl, resultText, presencas: (last.attendees || []).length, golsDia, assistsDia, avgInfo };
   }
   function recentFutText(info, last) {
-    const L = [`⚽ *Fut da JUF* — ${formatDate(last.date)}`, `👥 ${info.presencas} presentes · ${info.resultText}`, ''];
+    const L = [`⚽ *Fut da JUF* — ${formatDate(last.date)}`, `👥 ${info.presencas} presentes · ${info.resultText}`, `⚽ ${info.golsDia} gols · 🅰 ${info.assistsDia} assistências`, ''];
     info.hl.forEach(h => L.push(`${h.icon} ${h.text}`));
     return L.join('\n');
   }
@@ -3579,6 +3659,11 @@
     host.innerHTML = `
       <div class="card-title">📣 Resumo do último fut · ${formatDate(last.date)}</div>
       <p class="chart-sub">${info.presencas} presentes · ${escapeHtml(info.resultText)}</p>
+      <div class="rf-tallies">
+        <span>⚽ <b>${info.golsDia}</b> gols</span>
+        <span>🅰 <b>${info.assistsDia}</b> assist.</span>
+        ${info.avgInfo ? `<span>📊 média do ano: <b>${info.avgInfo.after.toFixed(1)}</b> <i class="${info.avgInfo.delta >= 0 ? 'up' : 'down'}">${info.avgInfo.delta >= 0 ? '▲' : '▼'}${Math.abs(info.avgInfo.delta).toFixed(2)}</i></span>` : ''}
+      </div>
       <ul class="hl-list">${info.hl.map(h => `<li><span class="hl-ic">${h.icon}</span>${escapeHtml(h.text)}</li>`).join('')}</ul>
       <button class="secondary" id="btn-share-recent" style="width:100%;">📲 Compartilhar resumo no WhatsApp</button>`;
     document.getElementById('btn-share-recent').addEventListener('click', () => shareText(`Fut da JUF — ${formatDate(last.date)}`, recentFutText(info, last)));
@@ -3675,7 +3760,7 @@
       return `<div class="card"><div class="card-title">Regularidade (gols por jogo)</div>
         <p class="chart-sub">Quem "sempre entrega": média alta e pouca variação (mín. 5 futs).</p>
         <table class="rank-table"><thead><tr><th></th><th>Jogador</th><th>Média</th><th>Varia ±</th></tr></thead>
-        <tbody>${rr.map((r, i) => `<tr><td class="rank-medal">${medal(i)}</td><td>${escapeHtml(r.name)}</td><td class="big">${r.mean.toFixed(1)}</td><td>${r.sd.toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`;
+        <tbody>${rr.map((r, i) => `<tr><td class="rank-medal">${medal(i)}</td><td>${escapeHtml(playerName(r.pid))}</td><td class="big">${r.mean.toFixed(1)}</td><td>${r.sd.toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`;
     }
 
     grid.innerHTML =
