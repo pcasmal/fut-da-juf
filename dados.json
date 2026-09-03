@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-08-16T16:31:05.449Z",
+  "updatedAt": "2026-09-03T00:16:18.265Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -60,7 +60,7 @@
       "id": "fing6501",
       "name": "Bruninho",
       "primary": {
-        "position": "pivo",
+        "position": "goleiro",
         "level": "nativo"
       },
       "secondary": null,
@@ -162,7 +162,7 @@
       "secondary": null,
       "active": true,
       "foot": "destro",
-      "since": null
+      "since": 2011
     },
     {
       "id": "4loro9d7",
@@ -3908,13 +3908,207 @@
         "s4wdnhr98sc": 3
       },
       "goalsOnly": false
+    },
+    {
+      "id": "q2g7i2dh8ok",
+      "date": "2026-08-23",
+      "attendees": [
+        "na3m57u1",
+        "4loro9d7",
+        "lc7kjr1l",
+        "och72djy",
+        "c04e4jsc",
+        "3a6qrb5o",
+        "6le274n0",
+        "goexclc7",
+        "v440nyj5",
+        "fing6501",
+        "eqklwjq4",
+        "3bk2x1ya",
+        "4i5e5dnx",
+        "ihjjs7ny"
+      ],
+      "teams": [
+        {
+          "id": "5jzju78cyyu",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "goexclc7",
+            "6le274n0",
+            "3a6qrb5o",
+            "lc7kjr1l"
+          ]
+        },
+        {
+          "id": "u9ij2d10yyu",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "c04e4jsc",
+            "eqklwjq4",
+            "4i5e5dnx",
+            "ihjjs7ny"
+          ]
+        },
+        {
+          "id": "4ry0v5h1yyu",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "och72djy",
+            "3bk2x1ya",
+            "fing6501",
+            "v440nyj5"
+          ]
+        },
+        {
+          "id": "fhbe30rgyyv",
+          "name": "Goleiros",
+          "color": "#6B7280",
+          "players": [
+            "na3m57u1",
+            "4loro9d7"
+          ],
+          "noWins": true
+        }
+      ],
+      "numTeams": 3,
+      "goals": {
+        "eqklwjq4": 3,
+        "4i5e5dnx": 4,
+        "fing6501": 2,
+        "6le274n0": 4,
+        "lc7kjr1l": 2,
+        "v440nyj5": 3,
+        "c04e4jsc": 4,
+        "ihjjs7ny": 2,
+        "3bk2x1ya": 2,
+        "3a6qrb5o": 1
+      },
+      "assists": {
+        "ihjjs7ny": 1,
+        "3bk2x1ya": 1,
+        "lc7kjr1l": 3,
+        "6le274n0": 1,
+        "goexclc7": 1,
+        "3a6qrb5o": 1,
+        "c04e4jsc": 1,
+        "4i5e5dnx": 3,
+        "och72djy": 1
+      },
+      "wins": {
+        "u9ij2d10yyu": 3,
+        "5jzju78cyyu": 3,
+        "4ry0v5h1yyu": 1
+      },
+      "goalsOnly": false
+    },
+    {
+      "id": "2p4db7di9wb",
+      "date": "2026-08-30",
+      "attendees": [
+        "3bk2x1ya",
+        "fing6501",
+        "4i5e5dnx",
+        "6le274n0",
+        "ihjjs7ny",
+        "v440nyj5",
+        "lc7kjr1l",
+        "3a6qrb5o",
+        "w7umlxkw4c7",
+        "pem3iz20",
+        "c04e4jsc",
+        "eqklwjq4",
+        "goexclc7",
+        "na3m57u1"
+      ],
+      "teams": [
+        {
+          "id": "fts8pc2x4yc",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "goexclc7",
+            "w7umlxkw4c7",
+            "pem3iz20",
+            "ihjjs7ny"
+          ]
+        },
+        {
+          "id": "bcqem1pa4yc",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "3a6qrb5o",
+            "v440nyj5",
+            "3bk2x1ya",
+            "6le274n0"
+          ]
+        },
+        {
+          "id": "jadl372k4yc",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "lc7kjr1l",
+            "eqklwjq4",
+            "c04e4jsc",
+            "4i5e5dnx"
+          ]
+        },
+        {
+          "id": "alxaxts84yd",
+          "name": "Goleiros",
+          "color": "#6B7280",
+          "players": [
+            "fing6501",
+            "na3m57u1"
+          ],
+          "noWins": true
+        }
+      ],
+      "numTeams": 3,
+      "goals": {
+        "3a6qrb5o": 4,
+        "v440nyj5": 2,
+        "pem3iz20": 1,
+        "na3m57u1": 1,
+        "fing6501": 1,
+        "lc7kjr1l": 1,
+        "c04e4jsc": 3,
+        "goexclc7": 3,
+        "6le274n0": 4,
+        "4i5e5dnx": 2,
+        "w7umlxkw4c7": 2
+      },
+      "assists": {
+        "6le274n0": 2,
+        "3a6qrb5o": 3,
+        "eqklwjq4": 2,
+        "3bk2x1ya": 1,
+        "na3m57u1": 1
+      },
+      "wins": {
+        "jadl372k4yc": 3,
+        "bcqem1pa4yc": 6,
+        "fts8pc2x4yc": 3
+      },
+      "goalsOnly": false
     }
   ],
   "tournament": null,
+  "awards": {
+    "revelacao": {
+      "2025": "dltd4nxp",
+      "2026": "4loro9d7"
+    }
+  },
   "ui": {
     "activeSessionId": null,
     "statsPeriod": "year",
     "showRatings": true,
+    "futMode": "B",
     "estimate": {
       "gameMin": 12,
       "betweenMin": 2,
