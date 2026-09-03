@@ -435,16 +435,30 @@
   .rod-queue { text-align: center; margin: 0 0 12px; }
   .rod-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .rod-col { border: 1px solid var(--border); border-radius: 12px; padding: 10px; border-top: 3px solid var(--team-color); background: var(--surface-2); }
-  .rod-col-head { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
-  .rod-player { padding: 6px 0; border-bottom: 1px solid var(--border); }
-  .rod-player:last-child { border-bottom: none; }
-  .rod-pname { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; }
-  .rod-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .rod-col-head { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .rod-col-cols { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 5px; border-bottom: 1px solid var(--border); }
+  .rod-col-cols span:not(:first-child) { text-align: center; min-width: 74px; }
+  .rod-prow { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .rod-prow:last-child { border-bottom: none; }
+  .rod-pname { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rod-timer { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
+  .rod-timer-display { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .rod-timer-display.low { color: #FBBF24; }
+  .rod-timer-display.zero { color: #F85149; }
+  .rod-timer-btns { display: flex; gap: 6px; }
+  .rod-timer-btns button { padding: 8px 12px; font-size: 13px; }
   .rod-confirm { margin-top: 12px; padding: 14px; border: 1.5px solid var(--accent-solid); border-radius: 12px; background: rgba(139,92,246,0.08); }
-  .rod-confirm-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .rod-confirm.by-goals { border-color: #34D399; background: rgba(52,211,153,0.10); }
+  .rod-confirm.by-goals .primary { background: #34D399; }
+  .rod-confirm-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
   .rod-winner-pick { display: flex; gap: 8px; margin-top: 8px; }
   .rod-winner-pick button { flex: 1; }
-  @media (max-width: 420px) { .rod-teams { grid-template-columns: 1fr; } .rod-actions { justify-content: space-between; } }
+  .rod-summary { margin-top: 14px; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); }
+  .rod-summary-head { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+  .rod-summary-list { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+  .rod-sum-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 2px 0; }
+  .rod-sum-nums { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  @media (max-width: 420px) { .rod-teams, .rod-summary-list { grid-template-columns: 1fr; } }
   .scoring-cols-head { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 6px 0 2px; }
   .scoring-cols-head span:not(:first-child) { text-align: center; }
   .scoring-row { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; align-items: center; padding: 5px 0; font-size: 13px; border-top: 1px solid var(--border); }
@@ -1079,11 +1093,17 @@
       <button class="primary" id="btn-save-close" style="width:100%; padding:13px;">Salvar e fechar o fut</button>
     </div>
 
-    <div class="card" id="results-card">
-      <div class="card-title">Histórico de futs <span class="card-count" id="results-count"></span></div>
-      <div id="results-list"></div>
+    <div class="card collapsible collapsed" id="results-card">
+      <div class="card-title collapse-head" id="results-toggle" role="button" tabindex="0">
+        <span>Histórico de futs <span class="card-count" id="results-count"></span></span>
+        <span class="collapse-arrow">▸</span>
+      </div>
+      <div class="collapse-body"><div id="results-list"></div></div>
     </div>
+
+    <button class="ghost neutral" id="btn-refresh-tab" style="width:100%; margin-top:4px; font-size:13px;">🔄 Atualizar aba (recarrega e recupera o que foi salvo)</button>
   </section>
+
 
   <!-- ESTATÍSTICAS -->
   <section class="panel" id="panel-stats">
@@ -1799,6 +1819,13 @@
   function toggleAddCard() { addCard.classList.toggle('collapsed'); if (!addCard.classList.contains('collapsed')) nameInput.focus(); }
   document.getElementById('add-player-toggle').addEventListener('click', toggleAddCard);
   document.getElementById('add-player-toggle').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAddCard(); } });
+  {
+    const rc = document.getElementById('results-card'), rt = document.getElementById('results-toggle');
+    const tgl = () => rc.classList.toggle('collapsed');
+    if (rt) { rt.addEventListener('click', tgl); rt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tgl(); } }); }
+    const rb = document.getElementById('btn-refresh-tab');
+    if (rb) rb.addEventListener('click', () => { save(); location.reload(); });
+  }
 
   function addPlayer() {
     const name = nameInput.value.trim();
@@ -2697,17 +2724,47 @@
   }
 
   // ============ MODO B: rodízio (rei da quadra) ============
+  // Cronômetro da partida (5 min) — vive fora do re-render pra não zerar
+  let _rodTimer = { remaining: 300, running: false };
+  let _rodTimerInterval = null;
+  function rodClock(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}`; }
+  function updateRodTimerUI() {
+    const d = document.getElementById('rod-timer-display');
+    if (d) { d.textContent = rodClock(_rodTimer.remaining); d.classList.toggle('low', _rodTimer.remaining <= 30 && _rodTimer.remaining > 0); d.classList.toggle('zero', _rodTimer.remaining === 0); }
+    const t = document.getElementById('rod-timer-toggle');
+    if (t) t.textContent = _rodTimer.running ? '⏸ Pausar' : (_rodTimer.remaining < 300 && _rodTimer.remaining > 0 ? '▶ Retomar' : '▶ Iniciar');
+  }
+  function ensureRodTimerInterval() {
+    if (_rodTimerInterval) return;
+    _rodTimerInterval = setInterval(() => {
+      if (!_rodTimer.running) return;
+      _rodTimer.remaining = Math.max(0, _rodTimer.remaining - 1);
+      updateRodTimerUI();
+      if (_rodTimer.remaining === 0) { _rodTimer.running = false; onRodTimeUp(); }
+    }, 1000);
+  }
+  function rodTimerReset() { _rodTimer.running = false; _rodTimer.remaining = 300; updateRodTimerUI(); }
+  function onRodTimeUp() {
+    const sess = activeSession(); if (!sess || !sess.rodizio || !sess.rodizio.active) return;
+    const r = sess.rodizio; if (r.byTimePending) return;
+    r.byTimePending = true;
+    r.timeWinnerId = r.kingId ? (r.kingId === r.sideA ? r.sideB : r.sideA) : null; // por tempo: o rei perde
+    save(); renderScoring();
+  }
+
   function renderRodizio(cont, sess) {
     const r = sess.rodizio;
     const tById = id => sess.teams.find(t => t.id === id);
-    const teamMatchGoals = t => (t ? t.players.reduce((s, pid) => s + ((r && r.mg && r.mg[pid]) || 0), 0) : 0);
+    const gkBucket = sess.teams.find(t => t.noWins);
+    const bucketGoalies = gkBucket ? gkBucket.players.slice() : [];
+    ensureRodTimerInterval();
 
     if (!r || !r.active) {
       const teams = sess.teams.filter(t => !t.noWins);
       if (teams.length < 2) { cont.innerHTML = '<div class="empty">Monte pelo menos 2 times acima para iniciar o rodízio.</div>'; return; }
       cont.innerHTML = `
         <div class="rod-setup">
-          <p class="hint">Confira os times acima. Depois escolha os <strong>dois times que começam</strong> jogando — o resto espera a vez.</p>
+          <p class="hint">Confira os times acima. Depois escolha os <strong>dois times que começam</strong> jogando — o resto espera a vez.${bucketGoalies.length ? ' Os goleiros ficam um de cada lado, fixos, durante todo o fut.' : ''}</p>
           <div class="rod-pick" id="rod-pick">
             ${teams.map(t => `<button class="rod-team-btn ${_rodPicks.includes(t.id) ? 'sel' : ''}" data-pick="${t.id}" style="--team-color:${t.color};">${escapeHtml(t.name)}</button>`).join('')}
           </div>
@@ -2723,32 +2780,40 @@
       if (start) start.addEventListener('click', () => {
         if (_rodPicks.length !== 2) return;
         const others = teams.filter(t => !_rodPicks.includes(t.id)).map(t => t.id);
-        sess.rodizio = { active: true, homeId: _rodPicks[0], awayId: _rodPicks[1], kingId: null, queue: others, mg: {}, ma: {}, byTimePending: false, timeWinnerId: null, log: [] };
-        _rodPicks = [];
+        sess.rodizio = { active: true, sideA: _rodPicks[0], sideB: _rodPicks[1], kingId: null, queue: others, gkA: bucketGoalies[0] || null, gkB: bucketGoalies[1] || null, mg: {}, ma: {}, byTimePending: false, timeWinnerId: null, log: [] };
+        _rodPicks = []; rodTimerReset();
         save(); renderScoring();
       });
       return;
     }
 
-    const home = tById(r.homeId), away = tById(r.awayId);
-    const gh = teamMatchGoals(home), ga = teamMatchGoals(away);
-    const winnerByGoals = gh >= 2 ? r.homeId : ga >= 2 ? r.awayId : null;
+    if (r.homeId && !r.sideA) { r.sideA = r.homeId; r.sideB = r.awayId; } // compat versão antiga
+
+    const teamA = tById(r.sideA), teamB = tById(r.sideB);
+    const sideGoals = (team, gk) => (team ? team.players.reduce((s, pid) => s + ((r.mg && r.mg[pid]) || 0), 0) : 0) + (gk ? ((r.mg && r.mg[gk]) || 0) : 0);
+    const gA = sideGoals(teamA, r.gkA), gB = sideGoals(teamB, r.gkB);
+    const winnerByGoals = gA >= 2 ? r.sideA : gB >= 2 ? r.sideB : null;
     const pendingWinner = r.byTimePending ? r.timeWinnerId : winnerByGoals;
     const showConfirm = !!winnerByGoals || r.byTimePending;
     const resting = (r.queue || []).map(tById).filter(Boolean);
 
-    const col = t => {
-      if (!t) return '';
-      return `<div class="rod-col" style="--team-color:${t.color};">
-        <div class="rod-col-head">${escapeHtml(t.name)} · ${teamMatchGoals(t)} gol${teamMatchGoals(t) === 1 ? '' : 's'}</div>
-        ${t.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (r.mg && r.mg[pid]) || 0, a = (r.ma && r.ma[pid]) || 0; return `
-          <div class="rod-player">
-            <span class="rod-pname">${escapeHtml(p.name)}</span>
-            <div class="rod-actions">
-              <div class="stepper small"><button data-rdec="gols" data-p="${pid}" data-rteam="${t.id}">−</button><span class="val">${g}<i>⚽</i></span><button data-rinc="gols" data-p="${pid}" data-rteam="${t.id}">+</button></div>
-              <div class="stepper small"><button data-rdec="assist" data-p="${pid}">−</button><span class="val">${a}<i>🅰</i></span><button data-rinc="assist" data-p="${pid}">+</button></div>
-            </div>
-          </div>`; }).join('')}
+    const playerRow = (pid, name, isGk) => {
+      const g = (r.mg && r.mg[pid]) || 0, a = (r.ma && r.ma[pid]) || 0;
+      return `<div class="rod-prow">
+        <span class="rod-pname">${isGk ? '🧤 ' : ''}${escapeHtml(name)}</span>
+        <div class="stepper small"><button data-rdec="gols" data-p="${pid}">−</button><span class="val">${g}</span><button data-rinc="gols" data-p="${pid}">+</button></div>
+        <div class="stepper small"><button data-rdec="assist" data-p="${pid}">−</button><span class="val">${a}</span><button data-rinc="assist" data-p="${pid}">+</button></div>
+      </div>`;
+    };
+    const col = (team, gk) => {
+      if (!team) return '';
+      const rows = [];
+      if (gk) { const p = playerById(gk); if (p) rows.push(playerRow(gk, p.name, true)); }
+      team.players.forEach(pid => { const p = playerById(pid); if (p) rows.push(playerRow(pid, p.name, false)); });
+      return `<div class="rod-col" style="--team-color:${team.color};">
+        <div class="rod-col-head">${escapeHtml(team.name)} · ${sideGoals(team, gk)} gol${sideGoals(team, gk) === 1 ? '' : 's'}</div>
+        <div class="rod-col-cols"><span>Jogador</span><span>⚽</span><span>🅰</span></div>
+        ${rows.join('')}
       </div>`;
     };
 
@@ -2757,37 +2822,56 @@
       if (r.byTimePending && !pendingWinner) {
         confirmHtml = `<div class="rod-confirm">
           <div class="rod-confirm-title">⏱ Encerrado por tempo — quem venceu?</div>
-          <p class="hint">É o 1º jogo (ninguém era o "rei"): decidam no par ou ímpar e marquem aqui.</p>
+          <p class="hint">É o 1º jogo (ninguém era o rei): decidam no par ou ímpar e marquem aqui.</p>
           <div class="rod-winner-pick">
-            <button class="secondary" data-rwin="${r.homeId}">${escapeHtml(home.name)}</button>
-            <button class="secondary" data-rwin="${r.awayId}">${escapeHtml(away.name)}</button>
+            <button class="secondary" data-rwin="${r.sideA}">${escapeHtml(teamA.name)}</button>
+            <button class="secondary" data-rwin="${r.sideB}">${escapeHtml(teamB.name)}</button>
           </div>
           <button class="ghost neutral" id="btn-rod-cancel" style="width:100%;margin-top:8px;">Voltar</button>
         </div>`;
       } else {
         const wname = escapeHtml(tById(pendingWinner).name);
-        confirmHtml = `<div class="rod-confirm">
-          <div class="rod-confirm-title">🏆 ${wname} venceu ${r.byTimePending ? '(por tempo)' : '(2 gols)'}</div>
-          <p class="hint">Confira os gols e assistências acima — dá pra ajustar se esqueceram algo. Depois confirme.</p>
-          <button class="primary" id="btn-rod-confirm" data-winner="${pendingWinner}" data-bytime="${r.byTimePending ? 1 : 0}" style="width:100%;">Confirmar e trocar times</button>
+        confirmHtml = `<div class="rod-confirm ${r.byTimePending ? '' : 'by-goals'}">
+          <div class="rod-confirm-title">🏁 ${wname} venceu ${r.byTimePending ? '(por tempo)' : '(2 gols)'}!</div>
+          <p class="hint">Confira os gols e assistências acima e ajuste se faltou algo. Depois:</p>
+          <button class="primary" id="btn-rod-confirm" data-winner="${pendingWinner}" data-bytime="${r.byTimePending ? 1 : 0}" style="width:100%;padding:13px;font-size:15px;">Encerrar partida e trocar times</button>
           ${r.byTimePending ? `<button class="ghost neutral" id="btn-rod-cancel" style="width:100%;margin-top:8px;">Voltar</button>` : ''}
         </div>`;
       }
     }
 
+    const summaryRows = sess.attendees.map(playerById).filter(Boolean)
+      .map(p => ({ p, g: (sess.goals && sess.goals[p.id]) || 0, a: (sess.assists && sess.assists[p.id]) || 0 }))
+      .filter(x => x.g || x.a)
+      .sort((x, y) => y.g - x.g || y.a - x.a || x.p.name.localeCompare(y.p.name));
+    const summaryHtml = `<div class="rod-summary">
+      <div class="rod-summary-head">Resumo do dia até agora <span class="card-count">salvo automaticamente</span></div>
+      ${summaryRows.length ? `<div class="rod-summary-list">${summaryRows.map(x => `<div class="rod-sum-row"><span>${escapeHtml(x.p.name)}</span><span class="rod-sum-nums">${x.g ? `${x.g}⚽` : ''}${x.g && x.a ? ' · ' : ''}${x.a ? `${x.a}🅰` : ''}</span></div>`).join('')}</div>` : '<p class="hint" style="margin:6px 0 0;">Ainda sem gols ou assistências.</p>'}
+    </div>`;
+
     cont.innerHTML = `
+      <div class="rod-timer">
+        <span class="rod-timer-display" id="rod-timer-display">${rodClock(_rodTimer.remaining)}</span>
+        <div class="rod-timer-btns">
+          <button class="secondary" id="rod-timer-toggle">${_rodTimer.running ? '⏸ Pausar' : (_rodTimer.remaining < 300 && _rodTimer.remaining > 0 ? '▶ Retomar' : '▶ Iniciar')}</button>
+          <button class="ghost neutral" id="rod-timer-reset">↺ 5:00</button>
+        </div>
+      </div>
       <div class="rod-scoreboard">
-        <div class="rod-side ${winnerByGoals === r.homeId ? 'lead' : ''}">${escapeHtml(home.name)} <b>${gh}</b>${r.kingId === r.homeId ? ' <span class="rod-king">👑</span>' : ''}</div>
+        <div class="rod-side ${winnerByGoals === r.sideA ? 'lead' : ''}">${escapeHtml(teamA.name)} <b>${gA}</b>${r.kingId === r.sideA ? ' <span class="rod-king">👑</span>' : ''}</div>
         <span class="rod-vs">×</span>
-        <div class="rod-side ${winnerByGoals === r.awayId ? 'lead' : ''}"><b>${ga}</b> ${escapeHtml(away.name)}${r.kingId === r.awayId ? ' <span class="rod-king">👑</span>' : ''}</div>
+        <div class="rod-side ${winnerByGoals === r.sideB ? 'lead' : ''}"><b>${gB}</b> ${escapeHtml(teamB.name)}${r.kingId === r.sideB ? ' <span class="rod-king">👑</span>' : ''}</div>
       </div>
       ${resting.length ? `<p class="hint rod-queue">⏳ Esperando: ${resting.map(t => escapeHtml(t.name)).join(' → ')}</p>` : ''}
-      <div class="rod-teams">${col(home)}${col(away)}</div>
-      ${!r.byTimePending && !winnerByGoals ? `<button class="ghost neutral" id="btn-rod-time" style="width:100%;margin-top:8px;">⏱ Encerrar por tempo</button>` : ''}
+      ${bucketGoalies.length === 2 ? `<button class="ghost neutral" id="btn-gk-swap" style="width:100%;margin-bottom:8px;font-size:12px;">🧤 Trocar goleiros de lado</button>` : ''}
+      <div class="rod-teams">${col(teamA, r.gkA)}${col(teamB, r.gkB)}</div>
+      ${!r.byTimePending && !winnerByGoals ? `<button class="secondary" id="btn-rod-time" style="width:100%;margin-top:8px;">⏱ Encerrar por tempo</button>` : ''}
       ${confirmHtml}
+      ${summaryHtml}
       <button class="ghost neutral" id="btn-rod-reset" style="width:100%;margin-top:14px;font-size:12px;">↺ Refazer times / recomeçar rodízio</button>`;
 
-    // goals/assists steppers
+    updateRodTimerUI();
+
     cont.querySelectorAll('[data-rinc], [data-rdec]').forEach(b => b.addEventListener('click', () => {
       const inc = b.hasAttribute('data-rinc');
       const field = inc ? b.dataset.rinc : b.dataset.rdec;
@@ -2803,10 +2887,16 @@
       }
       save(); renderScoring();
     }));
+    const tgl = document.getElementById('rod-timer-toggle');
+    if (tgl) tgl.addEventListener('click', () => { _rodTimer.running = !_rodTimer.running; updateRodTimerUI(); });
+    const trst = document.getElementById('rod-timer-reset');
+    if (trst) trst.addEventListener('click', () => rodTimerReset());
+    const swap = document.getElementById('btn-gk-swap');
+    if (swap) swap.addEventListener('click', () => { const t = r.gkA; r.gkA = r.gkB; r.gkB = t; save(); renderScoring(); });
     const timeBtn = document.getElementById('btn-rod-time');
     if (timeBtn) timeBtn.addEventListener('click', () => {
       r.byTimePending = true;
-      r.timeWinnerId = r.kingId ? (r.kingId === r.homeId ? r.awayId : r.homeId) : null; // por tempo: o "rei" perde
+      r.timeWinnerId = r.kingId ? (r.kingId === r.sideA ? r.sideB : r.sideA) : null;
       save(); renderScoring();
     });
     cont.querySelectorAll('[data-rwin]').forEach(b => b.addEventListener('click', () => { r.timeWinnerId = b.dataset.rwin; save(); renderScoring(); }));
@@ -2817,24 +2907,25 @@
     const resetBtn = document.getElementById('btn-rod-reset');
     if (resetBtn) resetBtn.addEventListener('click', () => {
       if (!confirm('Recomeçar o rodízio? Isso apaga as partidas já jogadas hoje (os gols e assistências continuam). Você poderá escolher os times de novo.')) return;
-      sess.rodizio = null; _rodPicks = []; save(); renderScoring();
+      sess.rodizio = null; _rodPicks = []; rodTimerReset(); save(); renderScoring();
     });
   }
   function rodizioConfirm(sess, winnerId, byTime) {
     const r = sess.rodizio; if (!r) return;
-    const loserId = winnerId === r.homeId ? r.awayId : r.homeId;
+    if (r.homeId && !r.sideA) { r.sideA = r.homeId; r.sideB = r.awayId; }
+    const loserId = winnerId === r.sideA ? r.sideB : r.sideA;
     sess.wins = sess.wins || {};
     sess.wins[winnerId] = (sess.wins[winnerId] || 0) + 1;
     r.log = r.log || [];
-    r.log.push({ homeId: r.homeId, awayId: r.awayId, winnerId, byTime: !!byTime });
+    r.log.push({ a: r.sideA, b: r.sideB, winnerId, byTime: !!byTime });
     r.queue = r.queue || [];
     r.queue.push(loserId);
     const nextId = r.queue.shift();
-    r.homeId = winnerId;
-    r.awayId = nextId;
+    if (winnerId === r.sideA) r.sideB = nextId; else r.sideA = nextId; // vencedor mantém o lado (goleiro fixo)
     r.kingId = winnerId;
     r.mg = {}; r.ma = {};
     r.byTimePending = false; r.timeWinnerId = null;
+    rodTimerReset();
     save(); renderScoring();
   }
   function wireScoringSteppers(cont, sess) {
