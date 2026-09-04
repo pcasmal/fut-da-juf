@@ -1347,6 +1347,15 @@
       </div>
       <div class="settings-row">
         <div>
+          <div class="settings-label">Importar histórico (mesclar) 🗂️</div>
+          <div class="settings-desc">Adiciona futs antigos (arquivo <code>historico-juf.json</code>) <strong>sem apagar</strong> nada do que já existe. Casa os nomes com o elenco atual e cria como <strong>inativos</strong> quem não existe. Pode reimportar quantas vezes quiser — ele substitui só o bloco histórico.</div>
+        </div>
+        <div class="settings-actions">
+          <button class="secondary" id="btn-import-historico">Importar histórico</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
           <div class="settings-label">Planilhas CSV (para análise)</div>
           <div class="settings-desc">Baixa três CSVs: <code>elenco</code>, <code>futs</code> (formato longo: uma linha por jogador em cada fut, com gols/assistências/vitórias) e <code>campeonato</code>. Ótimos para abrir no Excel/Sheets. A importação por CSV cobre só o elenco.</div>
         </div>
@@ -1566,6 +1575,7 @@
     };
     if (sess.rodizio) out.rodizio = sess.rodizio;
     if (sess.conceded) out.conceded = sess.conceded;
+    if (sess.hist) out.hist = true;
     if (sess.matches && sess.matches.length) {
       sess.matches.forEach(m => {
         const g = m.goals || {};
@@ -3461,8 +3471,11 @@
   }
   function renderYearFilter() {
     const cont = document.getElementById('year-filter'); if (!cont) return;
-    const years = []; const cur = new Date().getFullYear();
-    for (let y = cur; y >= 2022; y--) years.push(String(y));
+    const cur = new Date().getFullYear();
+    let earliest = cur;
+    state.sessions.forEach(s => { const y = parseInt((s.date || '').slice(0, 4), 10); if (y && y < earliest) earliest = y; });
+    const years = [];
+    for (let y = cur; y >= earliest; y--) years.push(String(y));
     cont.innerHTML = `<button class="period-btn ${statsYear === 'all' ? 'active' : ''}" data-year="all">Tudo</button>` +
       years.map(y => `<button class="period-btn ${statsYear === y ? 'active' : ''}" data-year="${y}">${y}</button>`).join('');
     cont.querySelectorAll('[data-year]').forEach(b => b.addEventListener('click', () => { statsYear = b.dataset.year; renderStats(); }));
@@ -4805,6 +4818,41 @@
     if (!imported.length) { alert('Nenhum jogador válido no CSV.'); return; }
     if (confirm(`Importar ${imported.length} jogador(es)? Isso substitui o elenco atual (o histórico de futs é mantido).`)) { state.players = imported; save(); renderRoster(); }
   }));
+  // ---- Importar histórico (mescla, sem apagar) ----
+  function normName(s) { return unicodedataNorm(String(s)).toLowerCase().trim(); }
+  function unicodedataNorm(s) { return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, ''); }
+  function importHistorico(data) {
+    if (!data || !Array.isArray(data.sessions)) { alert('Arquivo de histórico inválido.'); return; }
+    // índice de jogadores atuais por nome normalizado
+    const byName = {}; state.players.forEach(p => { byName[normName(p.name)] = p; });
+    const ensurePlayer = name => {
+      const key = normName(name);
+      if (byName[key]) return byName[key].id;
+      const np = { id: uid(), name: String(name), active: false, primary: { position: 'ala', level: 'adaptado' }, secondary: null, stars: 0, foot: 'destro', since: null };
+      state.players.push(np); byName[key] = np; return np.id;
+    };
+    // remove bloco histórico anterior (idempotente)
+    state.sessions = state.sessions.filter(s => !s.hist);
+    let novos = 0; const before = state.players.length;
+    data.sessions.forEach(hs => {
+      const goals = {}, assists = {}, att = new Set();
+      const addTo = (obj, name, n) => { const pid = ensurePlayer(name); obj[pid] = (obj[pid] || 0) + n; att.add(pid); };
+      Object.keys(hs.goals || {}).forEach(name => addTo(goals, name, hs.goals[name]));
+      Object.keys(hs.assists || {}).forEach(name => addTo(assists, name, hs.assists[name]));
+      (hs.attendees || []).forEach(name => att.add(ensurePlayer(name)));
+      state.sessions.push({ id: uid(), date: hs.date, attendees: [...att], teams: [], numTeams: 0, goals, assists, wins: {}, goalsOnly: true, hist: true });
+    });
+    novos = state.players.length - before;
+    state.sessions.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    save(); renderAll();
+    alert(`Histórico importado! ${data.sessions.length} futs antigos adicionados, ${novos} jogador(es) novo(s) criado(s) como inativos. Nada do que já existia foi apagado.`);
+  }
+  document.getElementById('btn-import-historico').addEventListener('click', () => pickFile('.json,application/json', text => {
+    let parsed; try { parsed = JSON.parse(text); } catch (e) { alert('JSON inválido.'); return; }
+    if (parsed.kind !== 'fut-historico-juf') { alert('Este arquivo não é um histórico do Fut da JUF (historico-juf.json).'); return; }
+    if (confirm(`Importar ${(parsed.sessions || []).length} futs antigos e mesclar com a base atual? Nada será apagado. (Se já importou antes, o bloco histórico é substituído, sem duplicar.)`)) importHistorico(parsed);
+  }));
+
   function overlayLocalStars(newState, oldPlayers) {
     const m = {}; (oldPlayers || []).forEach(p => { if (p && (p.stars === 0 || p.stars)) m[p.id] = p.stars; });
     (newState.players || []).forEach(p => { if (m[p.id] === 0 || m[p.id]) p.stars = m[p.id]; });
