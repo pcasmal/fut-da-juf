@@ -753,6 +753,21 @@
     max-height: 90vh; overflow-y: auto;
   }
   .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .modal-head .modal-title { margin-bottom: 0; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px 8px; }
+  .info-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 14px; overflow-x: auto; }
+  .info-tab { background: none; border: none; color: var(--muted); font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 10px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .info-tab.active { color: var(--accent); border-color: var(--accent-solid); }
+  .info-pane { display: none; }
+  .info-pane.active { display: block; }
+  .info-lead { font-size: 13.5px; color: var(--muted); margin: 0 0 12px; line-height: 1.5; }
+  .info-log { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .info-log li { font-size: 13px; line-height: 1.45; padding-left: 20px; position: relative; }
+  .info-log li::before { content: '⚽'; position: absolute; left: 0; top: 0; font-size: 12px; }
+  .info-log b { color: var(--text); }
+  .info-steps { margin: 0 0 14px; padding-left: 20px; font-size: 13.5px; line-height: 1.6; }
+  .info-steps b { color: var(--accent); }
   .notas-row { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; opacity: 0.6; }
   .collapse-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; user-select: none; margin-bottom: 0; }
   .collapse-arrow { color: var(--muted); transition: transform 0.2s; font-size: 13px; }
@@ -837,6 +852,10 @@
   .badge-icon { font-size: 20px; line-height: 1; }
   .badge-label { font-size: 12.5px; font-weight: 700; }
   .badge-sub { font-size: 11px; color: var(--muted); }
+  .badge-rarity { font-size: 10px; font-weight: 700; color: var(--accent); margin-top: 2px; }
+  .kanban-stars { display: none; margin-top: 3px; line-height: 1; }
+  body.ratings-on .kanban-stars { display: block; }
+  .kanban-stars .stars-view { font-size: 11px; }
   .badge.medal1 { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.10); }
   .badge.medal2 { border-color: rgba(203,213,225,0.45); background: rgba(203,213,225,0.08); }
   .badge.medal3 { border-color: rgba(217,119,66,0.45); background: rgba(217,119,66,0.10); }
@@ -920,9 +939,54 @@
         <div class="brand-title">Fut da JUF</div>
         <div class="brand-subtitle">Elenco, futs semanais, estatísticas e campeonato</div>
       </div>
+      <button class="gear-btn" id="btn-info" title="Novidades e ajuda" aria-label="Novidades e ajuda" style="margin-right:8px;">?</button>
       <button class="gear-btn" id="btn-config" title="Configurações" aria-label="Configurações">⚙</button>
     </div>
   </header>
+
+  <div class="modal-backdrop" id="info-backdrop">
+    <div class="modal info-modal">
+      <div class="modal-head">
+        <div class="modal-title">Fut da JUF</div>
+        <button class="modal-close" id="info-close" aria-label="Fechar">✕</button>
+      </div>
+      <div class="info-tabs">
+        <button class="info-tab active" data-info="novidades">✨ Novidades</button>
+        <button class="info-tab" data-info="enviar">📤 Enviar meus dados</button>
+        <button class="info-tab" data-info="sugestoes">💡 Sugestões</button>
+      </div>
+      <div class="info-body">
+        <div class="info-pane active" data-pane="novidades">
+          <p class="info-lead">O que rolou de novo no app nas últimas atualizações:</p>
+          <ul class="info-log">
+            <li><b>Fut no modo Rodízio (rei da quadra):</b> escolhe os 2 times que começam, partida vai até 2 gols, quem ganha fica e entra o próximo — com cronômetro de 5 min e resumo do dia.</li>
+            <li><b>Resumo do último fut:</b> artilheiro, garçom, goleiro menos vazado, sequências e recordes do dia, prontos pra compartilhar no grupo.</li>
+            <li><b>Histórico completo desde 2019:</b> os futs antigos foram integrados — dá pra ver a artilharia e os recordes de todos esses anos.</li>
+            <li><b>Estatísticas turbinadas:</b> corrida da artilharia (e das assistências), gols por jogo × presenças, jogadores por mês, artilheiro do mês, projeção do ano, regularidade e comparação 1×1 entre jogadores.</li>
+            <li><b>Conquistas e medalhas:</b> artilheiro/vice de cada ano, marcos de gols e presenças, hat-tricks, tempo de casa e a "revelação do ano".</li>
+            <li><b>Perfil de cada jogador:</b> gols por sessão, presença por mês, rivais e parcerias.</li>
+            <li><b>Campeonato:</b> chaveamento com semifinais e disputa de 3º configuráveis, e súmula de cada partida pra compartilhar.</li>
+            <li><b>Times sempre do mesmo tamanho</b> no sorteio, e goleiros tratados certinho.</li>
+          </ul>
+        </div>
+        <div class="info-pane" data-pane="enviar">
+          <p class="info-lead">Jogou e anotou no seu aparelho? Manda os dados pro Paulinho juntar tudo:</p>
+          <ol class="info-steps">
+            <li>Toque em <b>Baixar meus dados</b> abaixo (vai gerar um arquivo <code>dados.json</code>).</li>
+            <li>No WhatsApp, envie esse arquivo pro <b>Paulinho</b> (como documento/anexo).</li>
+            <li>Pronto — ele junta com a base geral e republica pra todo mundo.</li>
+          </ol>
+          <button class="primary" id="info-download" style="width:100%;">📥 Baixar meus dados (dados.json)</button>
+          <p class="hint" style="margin-top:10px;">Dica: se aparecer só pra copiar, salve como arquivo e anexe no WhatsApp.</p>
+        </div>
+        <div class="info-pane" data-pane="sugestoes">
+          <p class="info-lead">Tem uma ideia pra melhorar o app? Manda pro Paulinho:</p>
+          <textarea id="info-suggestion" rows="5" placeholder="Escreva sua sugestão aqui…" style="width:100%; resize:vertical;"></textarea>
+          <button class="primary" id="info-send-suggestion" style="width:100%; margin-top:10px;">📲 Enviar sugestão no WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <nav class="tabs">
     <button class="tab active" data-tab="elenco">Elenco</button>
@@ -1169,6 +1233,12 @@
       <div class="card-title">1×1 — comparar jogadores</div>
       <div class="cmp-heads"><select id="cmp-a"></select><span class="cmp-x">×</span><select id="cmp-b"></select></div>
       <div id="cmp-body"></div>
+    </div>
+    <div class="card" id="report-card">
+      <div class="card-title">Report mensal 📸</div>
+      <p class="chart-sub">Gera uma imagem (paisagem) com o resumo do <strong>mês passado</strong>, pronta pra postar no grupo do WhatsApp.</p>
+      <button class="primary" id="btn-gen-report" style="width:100%;">📸 Gerar report do mês passado</button>
+      <div id="report-preview" style="margin-top:12px;"></div>
     </div>
   </section>
 
@@ -1670,6 +1740,25 @@
       if (tab.dataset.tab === 'avaliar') renderAvaliarSetup();
     });
   });
+  {
+    const back = document.getElementById('info-backdrop');
+    const open = () => back.classList.add('show');
+    const close = () => back.classList.remove('show');
+    document.getElementById('btn-info').addEventListener('click', open);
+    document.getElementById('info-close').addEventListener('click', close);
+    back.addEventListener('click', e => { if (e.target === back) close(); });
+    document.querySelectorAll('.info-tab').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.info-tab').forEach(x => x.classList.toggle('active', x === t));
+      document.querySelectorAll('.info-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === t.dataset.info));
+    }));
+    document.getElementById('info-download').addEventListener('click', () => downloadBlob(JSON.stringify(stripStars(state), null, 2), 'dados.json', 'application/json'));
+    document.getElementById('info-send-suggestion').addEventListener('click', () => {
+      const txt = (document.getElementById('info-suggestion').value || '').trim();
+      if (!txt) { alert('Escreva sua sugestão primeiro.'); return; }
+      shareText('Sugestão — Fut da JUF', `💡 *Sugestão pro Fut da JUF*\n\n${txt}`);
+    });
+  }
+
   document.getElementById('btn-config').addEventListener('click', () => {
     const gear = document.getElementById('btn-config');
     const on = gear.classList.toggle('active');
@@ -2107,12 +2196,15 @@
   function anosDeFut(p) { return (p && p.since) ? (new Date().getFullYear() - p.since) : 0; }
   function tenureBadge(p) {
     const yrs = anosDeFut(p); if (yrs < 1) return null;
+    const tier = yrs >= 10 ? 10 : yrs >= 7 ? 7 : yrs >= 5 ? 5 : yrs >= 3 ? 3 : 0;
     const t = yrs >= 10 ? { ic: '🏆', lbl: 'Veterano · 10+ anos de fut', cls: 'home vet' }
       : yrs >= 7 ? { ic: '🎖️', lbl: '7+ anos de fut', cls: 'home' }
         : yrs >= 5 ? { ic: '🎖️', lbl: '5+ anos de fut', cls: 'home' }
           : yrs >= 3 ? { ic: '🎖️', lbl: '3+ anos de fut', cls: 'home' }
             : { ic: '🏠', lbl: `${yrs} ${yrs === 1 ? 'ano' : 'anos'} de casa`, cls: 'home' };
-    return { icon: t.ic, label: t.lbl, sub: `desde ${p.since} · ${yrs} ${yrs === 1 ? 'ano' : 'anos'}`, cls: t.cls };
+    const b = { icon: t.ic, label: t.lbl, sub: `desde ${p.since} · ${yrs} ${yrs === 1 ? 'ano' : 'anos'}`, cls: t.cls };
+    if (tier >= 3) { const c = state.players.filter(x => anosDeFut(x) >= tier).length; b.rarity = c <= 1 ? 'conquista única 🏅' : `${c} jogadores têm`; }
+    return b;
   }
   // Medalhas de artilharia acumuladas (para o card do elenco): [{ic, n}]
   function cardArtilhariaBadges(pid) {
@@ -2131,15 +2223,23 @@
     const rev = (state.awards && state.awards.revelacao) || {};
     Object.keys(rev).sort().forEach(y => { if (rev[y] === pid) badges.push({ icon: '✨', label: `Revelação ${y}`, sub: 'melhor jogador novo do ano', cls: 'reveal' }); });
     // marcos de carreira
-    const cs = computeStats(state.sessions)[pid] || {};
-    const golMil = [200, 150, 100, 50].find(m => (cs.gols || 0) >= m);
-    if (golMil) badges.push({ icon: '💯', label: `${golMil} gols na carreira`, sub: `${cs.gols} no total`, cls: 'career' });
-    const presMil = [200, 150, 100, 50].find(m => (cs.presencas || 0) >= m);
-    if (presMil) badges.push({ icon: '📆', label: `${presMil} futs na carreira`, sub: `${cs.presencas} presenças`, cls: 'career' });
+    const csAll = computeStats(state.sessions);
+    const cs = csAll[pid] || {};
+    const countGe = (key, T) => state.players.filter(p2 => ((csAll[p2.id] || {})[key] || 0) >= T).length;
+    const rarityNote = c => c <= 1 ? 'conquista única 🏅' : `${c} jogadores têm`;
+    const golTiers = [800, 700, 600, 500, 400, 300, 250, 200, 150, 100, 50];
+    const golMil = golTiers.find(m => (cs.gols || 0) >= m);
+    if (golMil) badges.push({ icon: '💯', label: `${golMil} gols na carreira`, sub: `${cs.gols} no total`, cls: 'career', rarity: rarityNote(countGe('gols', golMil)) });
+    const presTiers = [600, 500, 400, 300, 250, 200, 150, 100, 50];
+    const presMil = presTiers.find(m => (cs.presencas || 0) >= m);
+    if (presMil) badges.push({ icon: '📆', label: `${presMil} futs na carreira`, sub: `${cs.presencas} presenças`, cls: 'career', rarity: rarityNote(countGe('presencas', presMil)) });
     let hats = 0, firstGoalDate = null;
     state.sessions.slice().sort((a, b) => a.date.localeCompare(b.date)).forEach(s => { const g = (s.goals || {})[pid] || 0; if (g >= 3) hats++; if (g > 0 && !firstGoalDate) firstGoalDate = s.date; });
     if (firstGoalDate) badges.push({ icon: '⚽', label: 'Primeiro gol', sub: formatDate(firstGoalDate), cls: 'career' });
-    if (hats) badges.push({ icon: '🎩', label: `Hat-trick${hats > 1 ? ` ×${hats}` : ''}`, sub: '3+ gols num fut', cls: 'career' });
+    if (hats) {
+      const hatSet = {}; state.sessions.forEach(s => { const g = s.goals || {}; Object.keys(g).forEach(id => { if (g[id] >= 3) hatSet[id] = 1; }); });
+      badges.push({ icon: '🎩', label: `Hat-trick${hats > 1 ? ` ×${hats}` : ''}`, sub: '3+ gols num fut', cls: 'career', rarity: rarityNote(Object.keys(hatSet).length) });
+    }
     pastDataYears().forEach(y => {
       const stats = yearStats(y);
       const g = rankInYear(stats, pid, 'gols');
@@ -2239,7 +2339,7 @@
       </div>
 
       ${badges.length ? `<div class="card"><div class="card-title">Conquistas 🏆</div>
-        <div class="badge-grid">${badges.map(b => `<div class="badge ${b.cls || ''}"><span class="badge-icon">${b.icon}</span><div class="badge-txt"><div class="badge-label">${escapeHtml(b.label)}</div><div class="badge-sub">${escapeHtml(b.sub || '')}</div></div></div>`).join('')}</div>
+        <div class="badge-grid">${badges.map(b => `<div class="badge ${b.cls || ''}"><span class="badge-icon">${b.icon}</span><div class="badge-txt"><div class="badge-label">${escapeHtml(b.label)}</div><div class="badge-sub">${escapeHtml(b.sub || '')}</div>${b.rarity ? `<div class="badge-rarity">${escapeHtml(b.rarity)}</div>` : ''}</div></div>`).join('')}</div>
       </div>` : ''}
 
       <div class="card"><div class="card-title">Resumo <span class="card-count">· ${scopeLabel}</span></div>
@@ -2413,7 +2513,8 @@
         <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
         ${inCol.length ? inCol.map(p => { const st = stats[p.id] || {}; return `
           <div class="kanban-card ${p.active ? '' : 'inactive'}" data-edit="${p.id}">
-            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)} ${starsHtml(p.stars)}</div>
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)}</div>
+            <div class="kanban-stars">${starsHtml(p.stars)}</div>
             <div class="kanban-sub">${st.gols || 0}⚽ · ${st.assist || 0}🅰 · ${st.presencas || 0}P</div>
           </div>`; }).join('') : '<div class="kanban-empty">—</div>'}
       </div>`;
@@ -3077,7 +3178,7 @@
     const all = src.slice().sort((a, b) => a.date.localeCompare(b.date));
     if (!all.length) { host.innerHTML = ''; return; }
     const stats = computeStats(all);
-    const rows = Object.keys(stats).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
+    const rows = Object.keys(stats).filter(pid => { const p = playerById(pid); return p && effActive(p); }).map(pid => ({ pid, name: playerName(pid), ...stats[pid] }));
     const top = (key) => rows.filter(r => r[key] > 0).sort((a, b) => b[key] - a[key])[0];
     const items = [];
     const artil = top('gols'); if (artil) items.push({ icon: '⚽', label: 'Artilheiro geral', value: artil.name, sub: `${artil.gols} gols` });
@@ -3088,7 +3189,7 @@
     rows.forEach(r => { const st = longestStreak(r.pid, all); if (st > bestStreak.streak) bestStreak = { name: r.name, streak: st }; });
     if (bestStreak.streak > 1) items.push({ icon: '🔥', label: 'Maior sequência', value: bestStreak.name, sub: `${bestStreak.streak} futs seguidos` });
     // melhor dupla (mais vitórias juntos; desempate por jogos juntos)
-    const pairs = computePairs(all).filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos);
+    const pairs = computePairs(all).filter(p => { const a = playerById(p.a), b = playerById(p.b); return a && b && effActive(a) && effActive(b); }).filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos);
     if (pairs.length) { const d = pairs[0]; items.push({ icon: '🤝', label: 'Melhor dupla', value: `${playerName(d.a)} & ${playerName(d.b)}`, sub: `${d.vitorias} vitórias juntos` }); }
     // craque do último fut (já jogado)
     const today = localToday();
@@ -3430,8 +3531,9 @@
     const activeSet = new Set();
     state.sessions.forEach(s => { if ((s.date || '') >= cutStr) (s.attendees || []).forEach(pid => activeSet.add(pid)); });
     const order = ['goleiro', 'fixo', 'ala', 'pivo'];
+    const roster = state.players.filter(p => effActive(p));
     const comp = order.map(pos => {
-      const inPos = state.players.filter(p => p.primary.position === pos);
+      const inPos = roster.filter(p => p.primary.position === pos);
       const act = inPos.filter(p => activeSet.has(p.id)).length;
       return { pos, total: inPos.length, act };
     }).filter(c => c.total > 0);
@@ -3461,8 +3563,9 @@
   }
 
   function posMatch(pid) {
-    if (statsPos === 'all') return true;
     const p = playerById(pid); if (!p) return false;
+    if (!effActive(p)) return false; // inativos só aparecem na aba Elenco
+    if (statsPos === 'all') return true;
     return p.primary.position === statsPos || (p.secondary && p.secondary.position === statsPos);
   }
   function statsSessions() {
@@ -3553,15 +3656,15 @@
       }
     }
     // mais ativo (maior sequência atual)
-    let bestStreak = { n: 0 }; state.players.forEach(p => { const n = currentStreak(p.id); if (n > bestStreak.n) bestStreak = { pid: p.id, n }; });
+    let bestStreak = { n: 0 }; state.players.forEach(p => { if (!effActive(p)) return; const n = currentStreak(p.id); if (n > bestStreak.n) bestStreak = { pid: p.id, n }; });
     if (bestStreak.n >= 3) hl.push({ icon: '🔥', text: `Mais ativo: ${playerName(bestStreak.pid)} em ${bestStreak.n} futs seguidos` });
     // quebrou sequência
     if (before.length) state.players.forEach(p => {
-      if ((last.attendees || []).includes(p.id)) return;
+      if (!effActive(p) || (last.attendees || []).includes(p.id)) return;
       const sb = trailingStreak(p.id, before); if (sb >= 3) hl.push({ icon: '💔', text: `${playerName(p.id)} quebrou sequência de ${sb} futs` });
     });
     // jejum
-    let worst = { n: 0 }; state.players.forEach(p => { const d = currentGoalDrought(p.id); if (d > worst.n) worst = { pid: p.id, n: d }; });
+    let worst = { n: 0 }; state.players.forEach(p => { if (!effActive(p)) return; const d = currentGoalDrought(p.id); if (d > worst.n) worst = { pid: p.id, n: d }; });
     if (worst.n >= 4) hl.push({ icon: '🥶', text: `Jejum: ${playerName(worst.pid)} há ${worst.n} futs sem marcar` });
     // bagre do dia (de linha) — quem jogou e não fez nada; entre os zerados, o mais assíduo (o "veterano" que apagou)
     const outfield = (last.attendees || []).map(playerById).filter(p => p && p.primary.position !== 'goleiro');
@@ -3604,9 +3707,9 @@
   function bestDayGoals(pid) { let m = 0; state.sessions.forEach(s => { const g = (s.goals || {})[pid] || 0; if (g > m) m = g; }); return m; }
   function renderCompare() {
     const selA = document.getElementById('cmp-a'), selB = document.getElementById('cmp-b'); if (!selA) return;
-    const players = state.players.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const players = state.players.filter(p => effActive(p)).slice().sort((a, b) => a.name.localeCompare(b.name));
     const body = document.getElementById('cmp-body');
-    if (players.length < 2) { body.innerHTML = '<div class="empty">Cadastre pelo menos 2 jogadores.</div>'; return; }
+    if (players.length < 2) { body.innerHTML = '<div class="empty">Cadastre pelo menos 2 jogadores ativos.</div>'; return; }
     if (!_cmpA || !playerById(_cmpA)) _cmpA = players[0].id;
     if (!_cmpB || !playerById(_cmpB)) _cmpB = players[1].id;
     const opt = sel => players.map(x => `<option value="${x.id}" ${sel === x.id ? 'selected' : ''}>${escapeHtml(x.name)}</option>`).join('');
@@ -3718,7 +3821,8 @@
         <tbody>${sorted.map((r, i) => `<tr><td class="rank-medal">${medal(i)}</td><td>${escapeHtml(r.name)}</td>${cols.map(c => `<td class="${c.big ? 'big' : ''}">${c.f(r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     }
 
-    const pairs = computePairs(scoped);
+    const bothActive = p => { const a = playerById(p.a), b = playerById(p.b); return a && b && effActive(a) && effActive(b); };
+    const pairs = computePairs(scoped).filter(bothActive);
     const pairsByWins = pairs.filter(p => p.vitorias > 0).sort((a, b) => b.vitorias - a.vitorias || b.juntos - a.juntos).slice(0, 8);
     const pairsByTogether = pairs.filter(p => p.juntos > 1).sort((a, b) => b.juntos - a.juntos).slice(0, 8);
     function pairCard(title, arr, valLabel, valFn, subFn) {
@@ -3791,10 +3895,10 @@
   let palpite = { evaluator: null, shown: [], ratings: {} };
   function renderAvaliarSetup() {
     const sel = document.getElementById('avaliador-select'); if (!sel) return;
-    const players = state.players.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const players = state.players.filter(p => effActive(p)).slice().sort((a, b) => a.name.localeCompare(b.name));
     sel.innerHTML = '<option value="">— selecione seu nome —</option>' + players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
   }
-  function avaliarPool() { return state.players.filter(p => p.id !== palpite.evaluator && !palpite.shown.includes(p.id)); }
+  function avaliarPool() { return state.players.filter(p => effActive(p) && p.id !== palpite.evaluator && !palpite.shown.includes(p.id)); }
   function avaliarAddBatch(n) { shuffle(avaliarPool()).slice(0, n).forEach(p => palpite.shown.push(p.id)); renderAvaliarList(); }
   function renderAvaliarList() {
     const host = document.getElementById('avaliar-list'); if (!host) return;
@@ -3897,7 +4001,8 @@
         <div class="kanban-col-head"><span>${POS_LABELS[pos]}</span><span>${inCol.length}</span></div>
         ${inCol.length ? inCol.map(p => `
           <div class="kanban-card selectable ${champSelected.has(p.id) ? 'on' : ''}" data-champ-att="${p.id}">
-            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)} ${starsHtml(p.stars)}</div>
+            <div class="kanban-name"><span class="dot ${p.primary.level}"></span>${escapeHtml(p.name)}</div>
+            <div class="kanban-stars">${starsHtml(p.stars)}</div>
             <div class="kanban-sub">${POS_LABELS[p.primary.position]}</div>
           </div>`).join('') : '<div class="kanban-empty">—</div>'}
       </div>`;
