@@ -2099,6 +2099,7 @@
   { const a = document.getElementById('cmp-a'), b = document.getElementById('cmp-b');
     if (a) a.addEventListener('change', () => { _cmpA = a.value; renderCompare(); });
     if (b) b.addEventListener('change', () => { _cmpB = b.value; renderCompare(); }); }
+  { const rb = document.getElementById('btn-gen-report'); if (rb) rb.addEventListener('click', renderMonthReport); }
 
   // ============ TELA DE DETALHE DO JOGADOR ============
   let detailId = null;
@@ -3704,6 +3705,123 @@
     return L.join('\n');
   }
   let _cmpA = null, _cmpB = null;
+  const MESES_REPORT = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  function monthReportData(y, m) {
+    const pref = `${y}-${String(m).padStart(2, '0')}`;
+    const ss = state.sessions.filter(s => (s.date || '').slice(0, 7) === pref);
+    if (!ss.length) return null;
+    const stats = computeStats(ss);
+    const isAct = pid => { const p = playerById(pid); return p && effActive(p); };
+    let gols = 0; ss.forEach(s => { const g = s.goals || {}; Object.keys(g).forEach(pid => gols += g[pid] || 0); });
+    const jset = new Set(); ss.forEach(s => (s.attendees || []).forEach(p => jset.add(p)));
+    const rank = key => Object.keys(stats).filter(isAct).map(pid => ({ pid, v: stats[pid][key] || 0 })).filter(r => r.v > 0).sort((a, b) => b.v - a.v);
+    const artil = rank('gols'), assist = rank('assist'), pres = rank('presencas');
+    const asc = ss.slice().sort((a, b) => a.date.localeCompare(b.date));
+    let maiorSeq = { n: 0 }; state.players.forEach(p => { if (!effActive(p)) return; const n = longestStreak(p.id, asc); if (n > maiorSeq.n) maiorSeq = { pid: p.id, n }; });
+    const conc = {}; ss.forEach(s => { const c = s.conceded || {}; Object.keys(c).forEach(pid => conc[pid] = (conc[pid] || 0) + c[pid]); });
+    let goleiro = null; Object.keys(conc).filter(isAct).forEach(pid => { if (!goleiro || conc[pid] < goleiro.v) goleiro = { pid, v: conc[pid] }; });
+    let goleada = { v: 0 }; ss.forEach(s => { const g = s.goals || {}; Object.keys(g).forEach(pid => { if (isAct(pid) && (g[pid] || 0) > goleada.v) goleada = { pid, v: g[pid] }; }); });
+    const series = asc.map(s => { const g = s.goals || {}; return { date: s.date, total: Object.keys(g).reduce((t, pid) => t + (g[pid] || 0), 0) }; });
+    return {
+      label: `${MESES_REPORT[m - 1]} de ${y}`, pref,
+      futs: ss.length, gols, golsPorFut: ss.length ? gols / ss.length : 0, jogadores: jset.size,
+      artilheiro: artil[0], garcom: assist[0], maisPresente: pres[0], maiorSeq: maiorSeq.n >= 2 ? maiorSeq : null,
+      goleiro, goleada: goleada.v ? goleada : null,
+      artilhariaTop5: artil.slice(0, 5), presencasTop5: pres.slice(0, 5), series
+    };
+  }
+  function drawMonthReport(canvas, d) {
+    const W = 1600, H = 900; canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d'); if (!ctx) return false;
+    const nm = pid => playerName(pid);
+    const C = { bg: '#0F0D15', card: '#1A1622', card2: '#221C2E', border: '#2E2740', text: '#EDE9F5', muted: '#9A8FB5', accent: '#A78BFA', green: '#34D399', amber: '#FBBF24', cyan: '#22D3EE', pink: '#F472B6' };
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+    const rr = (x, y, w, h, r, fill, stroke) => { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); } };
+    const txt = (s, x, y, size, color, weight, align) => { ctx.fillStyle = color; ctx.font = `${weight || 600} ${size}px Inter, Arial, sans-serif`; ctx.textAlign = align || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); };
+    const clip = (s, max, size, weight) => { ctx.font = `${weight || 600} ${size}px Inter, Arial, sans-serif`; let t = String(s); while (ctx.measureText(t).width > max && t.length > 1) t = t.slice(0, -1); return t === String(s) ? t : t.slice(0, -1) + '…'; };
+    txt('FUT DA JUF', 60, 78, 40, C.text, 800);
+    txt('Report do mês', 60, 116, 24, C.accent, 700);
+    txt(d.label, W - 60, 78, 34, C.text, 800, 'right');
+    txt('resumo pra galera', W - 60, 112, 18, C.muted, 600, 'right');
+    const pills = [[d.futs, 'futs'], [d.gols, 'gols'], [d.golsPorFut.toFixed(1), 'gols/fut'], [d.jogadores, 'jogadores']];
+    let px = 60; const py = 145, pw = 340, ph = 78;
+    pills.forEach(([v, l]) => { rr(px, py, pw, ph, 14, C.card, C.border); txt(String(v), px + 24, py + 46, 40, C.accent, 800); txt(l, px + 24, py + 68, 17, C.muted, 600); px += pw + 20; });
+    const col1x = 60, colTop = 265, colW = 480;
+    txt('DESTAQUES DO MÊS', col1x, colTop - 6, 18, C.muted, 700);
+    const highs = [];
+    if (d.artilheiro) highs.push(['🥇', 'Artilheiro', nm(d.artilheiro.pid), `${d.artilheiro.v} gols`, C.amber]);
+    if (d.garcom) highs.push(['🅰', 'Garçom', nm(d.garcom.pid), `${d.garcom.v} assist.`, C.cyan]);
+    if (d.maisPresente) highs.push(['📅', 'Mais presente', nm(d.maisPresente.pid), `${d.maisPresente.v} futs`, C.green]);
+    if (d.maiorSeq) highs.push(['🔥', 'Maior sequência', nm(d.maiorSeq.pid), `${d.maiorSeq.n} seguidos`, C.pink]);
+    if (d.goleiro) highs.push(['🧤', 'Goleiro menos vazado', nm(d.goleiro.pid), `${d.goleiro.v} sofridos`, C.accent]);
+    if (d.goleada) highs.push(['🎯', 'Maior goleada', nm(d.goleada.pid), `${d.goleada.v} num dia`, C.amber]);
+    let hy = colTop + 14;
+    highs.forEach(([ic, lbl, name, val, col]) => {
+      const hh = 66; rr(col1x, hy, colW, hh, 12, C.card, C.border);
+      txt(ic, col1x + 18, hy + 43, 30, C.text, 400);
+      txt(lbl.toUpperCase(), col1x + 66, hy + 26, 13, C.muted, 700);
+      txt(clip(name, 250, 22, 800), col1x + 66, hy + 50, 22, C.text, 800);
+      txt(val, col1x + colW - 18, hy + 42, 20, col, 800, 'right');
+      hy += hh + 10;
+    });
+    const col2x = 580, col2W = 440;
+    const drawRank = (title, arr, y, color) => {
+      txt(title, col2x, y, 18, C.muted, 700);
+      const max = Math.max(1, ...arr.map(r => r.v)); let ry = y + 20;
+      arr.forEach((r, i) => {
+        const bh = 40; rr(col2x, ry, col2W, bh, 10, C.card, null);
+        const bw = Math.max(30, (r.v / max) * col2W);
+        rr(col2x, ry, bw, bh, 10, i === 0 ? color : C.card2, null);
+        txt(`${i + 1}`, col2x + 14, ry + 26, 16, i === 0 ? '#1A1622' : C.muted, 800);
+        txt(clip(nm(r.pid), 230, 17, 700), col2x + 40, ry + 26, 17, i === 0 ? '#1A1622' : C.text, 700);
+        txt(`${r.v}`, col2x + col2W - 14, ry + 26, 18, i === 0 ? '#1A1622' : color, 800, 'right');
+        ry += bh + 8;
+      });
+      return ry;
+    };
+    let ry = drawRank('ARTILHARIA (TOP 5)', d.artilhariaTop5, colTop, C.amber);
+    drawRank('PRESENÇAS (TOP 5)', d.presencasTop5, ry + 24, C.green);
+    const gx = 1060, gy = colTop + 20, gw = 480, gh = 470;
+    txt('GOLS POR FUT NO MÊS', gx, colTop, 18, C.muted, 700);
+    rr(gx, gy, gw, gh, 14, C.card, C.border);
+    const s = d.series; const pad = 44;
+    if (s.length >= 2) {
+      const maxV = Math.max(1, ...s.map(p => p.total)); const avg = s.reduce((t, p) => t + p.total, 0) / s.length;
+      const X = i => gx + pad + (i / (s.length - 1)) * (gw - pad * 1.4);
+      const Y = v => gy + gh - pad - (v / maxV) * (gh - pad * 1.8);
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+      [0, Math.round(maxV / 2), maxV].forEach(v => { ctx.beginPath(); ctx.moveTo(gx + pad, Y(v)); ctx.lineTo(gx + gw - pad * 0.4, Y(v)); ctx.stroke(); txt(String(v), gx + pad - 8, Y(v) + 5, 13, C.muted, 600, 'right'); });
+      ctx.strokeStyle = C.amber; ctx.globalAlpha = 0.5; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(gx + pad, Y(avg)); ctx.lineTo(gx + gw - pad * 0.4, Y(avg)); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+      txt(`média ${avg.toFixed(1)}`, gx + gw - pad * 0.4, Y(avg) - 8, 14, C.amber, 700, 'right');
+      ctx.strokeStyle = C.amber; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.beginPath(); s.forEach((p, i) => { const x = X(i), y = Y(p.total); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke();
+      ctx.fillStyle = C.amber; s.forEach((p, i) => { ctx.beginPath(); ctx.arc(X(i), Y(p.total), 4, 0, 7); ctx.fill(); });
+      [0, Math.floor(s.length / 2), s.length - 1].forEach(i => { const dt = s[i].date; txt(`${dt.slice(8, 10)}/${dt.slice(5, 7)}`, X(i), gy + gh - 14, 13, C.muted, 600, 'center'); });
+    } else {
+      txt('poucos futs no mês', gx + gw / 2, gy + gh / 2, 18, C.muted, 600, 'center');
+    }
+    txt('Gerado pelo app do Fut da JUF · ' + formatDate(localToday()), 60, H - 34, 16, C.muted, 600);
+    return true;
+  }
+  function renderMonthReport() {
+    const prev = document.getElementById('report-preview'); if (!prev) return;
+    const now = new Date(); let y = now.getFullYear(), m = now.getMonth(); // getMonth() 0-based = mês anterior (1-based)
+    if (m === 0) { m = 12; y -= 1; }
+    const data = monthReportData(y, m);
+    if (!data) { prev.innerHTML = `<div class="empty">Sem dados de ${MESES_REPORT[m - 1]}/${y} ainda.</div>`; return; }
+    const canvas = document.createElement('canvas');
+    if (!drawMonthReport(canvas, data)) { prev.innerHTML = '<div class="empty">Seu navegador não conseguiu gerar a imagem.</div>'; return; }
+    prev.innerHTML = '';
+    const img = document.createElement('img'); img.style.width = '100%'; img.style.borderRadius = '10px'; img.style.border = '1px solid var(--border)';
+    try { img.src = canvas.toDataURL('image/png'); } catch (e) { }
+    prev.appendChild(img);
+    const dl = document.createElement('button'); dl.className = 'primary'; dl.style.width = '100%'; dl.style.marginTop = '10px'; dl.textContent = '📥 Baixar imagem';
+    dl.addEventListener('click', () => {
+      const finish = url => { const a = document.createElement('a'); a.href = url; a.download = `fut-report-${data.pref}.png`; a.click(); };
+      if (canvas.toBlob) canvas.toBlob(b => { b ? finish(URL.createObjectURL(b)) : finish(canvas.toDataURL('image/png')); }, 'image/png');
+      else finish(canvas.toDataURL('image/png'));
+    });
+    prev.appendChild(dl);
+  }
   function bestDayGoals(pid) { let m = 0; state.sessions.forEach(s => { const g = (s.goals || {})[pid] || 0; if (g > m) m = g; }); return m; }
   function renderCompare() {
     const selA = document.getElementById('cmp-a'), selB = document.getElementById('cmp-b'); if (!selA) return;
