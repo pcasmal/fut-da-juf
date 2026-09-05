@@ -3727,7 +3727,7 @@
       futs: ss.length, gols, golsPorFut: ss.length ? gols / ss.length : 0, jogadores: jset.size,
       artilheiro: artil[0], garcom: assist[0], maisPresente: pres[0], maiorSeq: maiorSeq.n >= 2 ? maiorSeq : null,
       goleiro, goleada: goleada.v ? goleada : null,
-      artilhariaTop5: artil.slice(0, 5), presencasTop5: pres.slice(0, 5), series
+      artilhariaTop5: artil.slice(0, 5), presencasTop5: pres.slice(0, 5), assistTop5: assist.slice(0, 5), series
     };
   }
   function drawMonthReport(canvas, d) {
@@ -3780,7 +3780,7 @@
       return ry;
     };
     let ry = drawRank('ARTILHARIA (TOP 5)', d.artilhariaTop5, colTop, C.amber);
-    drawRank('PRESENÇAS (TOP 5)', d.presencasTop5, ry + 24, C.green);
+    drawRank('ASSISTÊNCIAS (TOP 5)', d.assistTop5, ry + 24, C.cyan);
     const gx = 1060, gy = colTop + 20, gw = 480, gh = 470;
     txt('GOLS POR FUT NO MÊS', gx, colTop, 18, C.muted, 700);
     rr(gx, gy, gw, gh, 14, C.card, C.border);
