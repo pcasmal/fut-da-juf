@@ -1,6 +1,6 @@
 {
   "v": 4,
-  "updatedAt": "2026-09-04T18:59:26.647761Z",
+  "updatedAt": "2026-09-14T01:26:39.767Z",
   "players": [
     {
       "id": "c04e4jsc",
@@ -60,7 +60,7 @@
       "id": "fing6501",
       "name": "Bruninho",
       "primary": {
-        "position": "goleiro",
+        "position": "pivo",
         "level": "nativo"
       },
       "secondary": null,
@@ -1111,6 +1111,42 @@
       "active": false,
       "foot": "destro",
       "since": null
+    },
+    {
+      "id": "s8dn7y616lj",
+      "name": "Pedrinho",
+      "primary": {
+        "position": "fixo",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "foot": "destro",
+      "since": null
+    },
+    {
+      "id": "iqewmmnfyxs",
+      "name": "Vinícius",
+      "primary": {
+        "position": "pivo",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "foot": "destro",
+      "since": null
+    },
+    {
+      "id": "yedxcojvsyl",
+      "name": "Bruninho - Gol",
+      "primary": {
+        "position": "goleiro",
+        "level": "nativo"
+      },
+      "secondary": null,
+      "active": true,
+      "foot": "destro",
+      "since": null
     }
   ],
   "sessions": [
@@ -1128,7 +1164,7 @@
         "q0i74yd7"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 1,
         "eqklwjq4": 4,
@@ -1158,7 +1194,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6op8nqtu": 2,
         "woq19rjl": 3,
@@ -1190,7 +1226,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 1,
         "3a6qrb5o": 5,
@@ -1222,7 +1258,7 @@
         "s0e390nr"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 2,
         "3k23o4qz": 5,
@@ -1254,7 +1290,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "i4xpc75p": 2,
@@ -1288,7 +1324,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "1lo9d7ot": 3,
         "lc7kjr1l": 3,
@@ -1324,7 +1360,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 1,
         "3a6qrb5o": 2,
@@ -1359,7 +1395,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 7,
         "4i5e5dnx": 5,
@@ -1392,7 +1428,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "5u3yevxh": 2,
         "eqklwjq4": 2,
@@ -1428,7 +1464,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 4,
         "yz06djbra28": 3,
@@ -1464,7 +1500,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "vlj130hf": 1,
@@ -1495,7 +1531,7 @@
         "ll47hh3b"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 7,
         "eqklwjq4": 3,
@@ -1526,7 +1562,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 5,
         "ihjjs7ny": 8,
@@ -1560,7 +1596,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "d4d0vko7": 1,
         "ll47hh3b": 6,
@@ -1595,7 +1631,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 5,
         "och72djy": 3,
@@ -1632,7 +1668,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 4,
         "ll47hh3b": 4,
@@ -1667,7 +1703,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 4,
         "ll47hh3b": 5,
@@ -1699,7 +1735,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "4i5e5dnx": 2,
@@ -1729,7 +1765,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 3,
         "3bk2x1ya": 2,
@@ -1761,7 +1797,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6op8nqtu": 3,
         "lc7kjr1l": 5,
@@ -1794,7 +1830,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 5,
         "woq19rjl": 3,
@@ -1824,7 +1860,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v8cj09a6": 12,
         "ll47hh3b": 4,
@@ -1856,7 +1892,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 5,
         "ihjjs7ny": 5,
@@ -1890,7 +1926,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6op8nqtu": 2,
         "woq19rjl": 2,
@@ -1924,7 +1960,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "woq19rjl": 2,
         "vlj130hf": 2,
@@ -1957,7 +1993,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ll47hh3b": 5,
         "vlj130hf": 5,
@@ -1989,7 +2025,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "jh2pwd05lcg": 2,
@@ -2022,7 +2058,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "och72djy": 1,
         "ihjjs7ny": 7,
@@ -2056,7 +2092,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 4,
         "9irrozj5": 2,
@@ -2093,7 +2129,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 3,
         "d4d0vko7": 1,
@@ -2128,7 +2164,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 4,
         "wwr8zjrigfx": 4,
@@ -2161,7 +2197,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 4,
         "3a6qrb5o": 9,
@@ -2197,7 +2233,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 4,
         "yz06djbra28": 4,
@@ -2230,7 +2266,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "d4d0vko7": 3,
         "ll47hh3b": 1,
@@ -2261,7 +2297,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 2,
         "3a6qrb5o": 2,
@@ -2293,7 +2329,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 2,
         "woq19rjl": 3,
@@ -2323,7 +2359,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 6,
         "ll47hh3b": 9,
@@ -2355,7 +2391,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "woq19rjl": 1,
         "eqklwjq4": 3,
@@ -2390,7 +2426,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "5u3yevxh": 3,
         "ihjjs7ny": 5,
@@ -2428,7 +2464,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jh2pwd05lcg": 1,
         "yz06djbra28": 3,
@@ -2462,7 +2498,7 @@
         "q0i74yd7"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ll47hh3b": 6,
         "6op8nqtu": 2,
@@ -2492,7 +2528,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "1lo9d7ot": 6,
         "lc7kjr1l": 3,
@@ -2526,7 +2562,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "yz06djbra28": 3,
         "3k23o4qz": 3,
@@ -2563,7 +2599,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "yz06djbra28": 3,
         "jh2pwd05lcg": 2,
@@ -2598,7 +2634,7 @@
         "q0i74yd7"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "a33ibztu": 5,
         "3a6qrb5o": 8,
@@ -2631,7 +2667,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 4,
         "d4d0vko7": 1,
@@ -2666,7 +2702,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vk6nnhld": 2,
         "yz06djbra28": 2,
@@ -2699,7 +2735,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 4,
         "ll47hh3b": 3,
@@ -2733,7 +2769,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 4,
         "och72djy": 1,
@@ -2769,7 +2805,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 1,
         "yz06djbra28": 3,
@@ -2801,7 +2837,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 8,
         "vk6nnhld": 4,
@@ -2831,7 +2867,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 6,
         "yz06djbra28": 4,
@@ -2864,7 +2900,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 2,
         "yz06djbra28": 3,
@@ -2901,7 +2937,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vk6nnhld": 1,
         "4i5e5dnx": 4,
@@ -2937,7 +2973,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "lc7kjr1l": 3,
@@ -2970,7 +3006,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "jyw3v5fz8gv": 1,
@@ -3004,7 +3040,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 3,
         "ihjjs7ny": 6,
@@ -3036,7 +3072,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 5,
         "q0i74yd7": 3,
@@ -3068,7 +3104,7 @@
         "vk6nnhld"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "3bk2x1ya": 2,
@@ -3110,7 +3146,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 2,
         "jyw3v5fz8gv": 4,
@@ -3153,7 +3189,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 1,
         "5u3yevxh": 1,
@@ -3198,7 +3234,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 1,
         "3bk2x1ya": 4,
@@ -3248,7 +3284,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 3,
         "5u3yevxh": 3,
@@ -3296,7 +3332,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "3bk2x1ya": 2,
@@ -3343,7 +3379,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "3bk2x1ya": 1,
@@ -3394,7 +3430,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 4,
         "5u3yevxh": 4,
@@ -3439,7 +3475,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 6,
         "ihjjs7ny": 5,
@@ -3479,7 +3515,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 6,
         "ihjjs7ny": 7,
@@ -3528,7 +3564,7 @@
         "vk6nnhld"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "5u3yevxh": 2,
         "ll47hh3b": 6,
@@ -3573,7 +3609,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 3,
         "3k23o4qz": 4,
@@ -3617,7 +3653,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "1lo9d7ot": 4,
         "lc7kjr1l": 3,
@@ -3659,7 +3695,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "splc2r7u2ea": 2,
         "ll47hh3b": 7,
@@ -3705,7 +3741,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 3,
         "ll47hh3b": 3,
@@ -3742,7 +3778,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "xc6kxlk5": 7,
         "3a6qrb5o": 2,
@@ -3775,7 +3811,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ll47hh3b": 3,
         "lc7kjr1l": 2,
@@ -3816,7 +3852,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "splc2r7u2ea": 4,
@@ -3855,7 +3891,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 3,
         "5u3yevxh": 2,
@@ -3893,7 +3929,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 4,
         "d4d0vko7": 3,
@@ -3930,7 +3966,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 3,
         "d4d0vko7": 2,
@@ -3967,7 +4003,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "splc2r7u2ea": 4,
         "d4d0vko7": 1,
@@ -4001,7 +4037,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 4,
         "jyw3v5fz8gv": 2,
@@ -4039,7 +4075,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "jh2pwd05lcg": 2,
@@ -4075,7 +4111,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 2,
         "3a6qrb5o": 3,
@@ -4110,7 +4146,7 @@
         "q0i74yd7"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "d4d0vko7": 2,
         "eqklwjq4": 4,
@@ -4145,7 +4181,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jh2pwd05lcg": 2,
         "lc7kjr1l": 2,
@@ -4181,7 +4217,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 2,
         "4i5e5dnx": 2,
@@ -4216,7 +4252,7 @@
         "splc2r7u2ea"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "5u3yevxh": 1,
@@ -4248,7 +4284,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 3,
         "splc2r7u2ea": 4,
@@ -4282,7 +4318,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 4,
         "splc2r7u2ea": 4,
@@ -4318,7 +4354,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jh2pwd05lcg": 2,
         "xc6kxlk5": 4,
@@ -4354,7 +4390,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "xc6kxlk5": 1,
         "eqklwjq4": 3,
@@ -4388,7 +4424,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 6,
         "ihjjs7ny": 5,
@@ -4420,7 +4456,7 @@
         "och72djy"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ll47hh3b": 6,
         "3a6qrb5o": 2,
@@ -4454,7 +4490,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 3,
         "ll47hh3b": 2,
@@ -4493,7 +4529,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 3,
         "lc7kjr1l": 2,
@@ -4527,7 +4563,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 2,
         "ihjjs7ny": 3,
@@ -4554,7 +4590,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 4,
         "4i5e5dnx": 2,
@@ -4584,7 +4620,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "jyw3v5fz8gv": 3,
         "lc7kjr1l": 1,
@@ -4616,7 +4652,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "d4d0vko7": 1,
@@ -4649,7 +4685,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "81mqk6xvbsq": 2,
         "d4d0vko7": 3,
@@ -4682,7 +4718,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "ll47hh3b": 3,
@@ -4716,7 +4752,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ll47hh3b": 5,
         "3z04yumv": 2,
@@ -4748,7 +4784,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 3,
         "d4d0vko7": 3,
@@ -4778,7 +4814,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3z04yumv": 1,
         "q0i74yd7": 1,
@@ -4811,7 +4847,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6op8nqtu": 3,
         "4i5e5dnx": 3,
@@ -4845,7 +4881,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 6,
         "vlj130hf": 2,
@@ -4876,7 +4912,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 4,
         "vlj130hf": 4,
@@ -4906,7 +4942,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 1,
         "lc7kjr1l": 4,
@@ -4939,7 +4975,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "4i5e5dnx": 4,
@@ -4971,7 +5007,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "3a6qrb5o": 2,
@@ -5005,7 +5041,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q0i74yd7": 2,
         "q62q1pxy": 2,
@@ -5040,7 +5076,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "pem3iz20": 1,
         "d4d0vko7": 2,
@@ -5074,7 +5110,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 2,
         "yz06djbra28": 3,
@@ -5109,7 +5145,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 4,
         "3bk2x1ya": 3,
@@ -5142,7 +5178,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 2,
         "q0i74yd7": 1,
@@ -5177,7 +5213,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 6,
         "v440nyj5": 8,
@@ -5214,7 +5250,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 4,
         "jh2pwd05lcg": 5,
@@ -5249,7 +5285,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "4i5e5dnx": 3,
@@ -5285,7 +5321,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 4,
         "q0i74yd7": 1,
@@ -5321,7 +5357,7 @@
         "vk6nnhld"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 5,
         "vk6nnhld": 2,
@@ -5353,7 +5389,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "81mqk6xvbsq": 1,
         "eqklwjq4": 7,
@@ -5380,7 +5416,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "54ngrczm": 1,
         "eqklwjq4": 4,
@@ -5407,7 +5443,7 @@
         "vk6nnhld"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "ihjjs7ny": 4,
@@ -5439,7 +5475,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 3,
         "lc7kjr1l": 2,
@@ -5473,7 +5509,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "gah46ywg": 2,
         "v440nyj5": 6,
@@ -5508,7 +5544,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "4i5e5dnx": 2,
@@ -5542,7 +5578,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "d4d0vko7": 1,
         "q0i74yd7": 2,
@@ -5576,7 +5612,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 3,
         "q62q1pxy": 2,
@@ -5612,7 +5648,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 3,
         "d4d0vko7": 2,
@@ -5647,7 +5683,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "81mqk6xvbsq": 1,
@@ -5679,7 +5715,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 4,
         "q0i74yd7": 2,
@@ -5708,7 +5744,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "wwr8zjrigfx": 2,
@@ -5740,7 +5776,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "ihjjs7ny": 5,
@@ -5773,7 +5809,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 2,
         "3a6qrb5o": 2,
@@ -5805,7 +5841,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "8yzg9k8v3xw": 6,
@@ -5840,7 +5876,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 1,
         "4i5e5dnx": 3,
@@ -5873,7 +5909,7 @@
         "lc7kjr1l"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 2,
         "4i5e5dnx": 2,
@@ -5907,7 +5943,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "8yzg9k8v3xw": 2,
         "4i5e5dnx": 3,
@@ -5943,7 +5979,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "6le274n0": 2,
@@ -5977,7 +6013,7 @@
         "u2d5gfeq"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "u2d5gfeq": 3,
         "4i5e5dnx": 2,
@@ -6010,7 +6046,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 2,
         "3bk2x1ya": 5,
@@ -6042,7 +6078,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "xc6kxlk5": 2,
         "v440nyj5": 3,
@@ -6075,7 +6111,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "och72djy": 1,
         "wwr8zjrigfx": 4,
@@ -6109,7 +6145,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "woq19rjl": 4,
         "u2d5gfeq": 3,
@@ -6140,7 +6176,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 1,
         "7fdtl01p": 2,
@@ -6171,7 +6207,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 4,
         "lc7kjr1l": 3,
@@ -6205,7 +6241,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 2,
         "woq19rjl": 3,
@@ -6238,7 +6274,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q62q1pxy": 1,
         "d4d0vko7": 1,
@@ -6271,7 +6307,7 @@
         "y4ulpeul"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "och72djy": 1,
         "q62q1pxy": 2,
@@ -6306,7 +6342,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 2,
         "v440nyj5": 1,
@@ -6341,7 +6377,7 @@
         "y4cph18e"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "fye9lipb6z2": 4,
         "xc6kxlk5": 2,
@@ -6373,7 +6409,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 1,
         "5u3yevxh": 1,
@@ -6405,7 +6441,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "d4d0vko7": 4,
         "ihjjs7ny": 1,
@@ -6439,7 +6475,7 @@
         "yuk2jb63"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 9,
         "vk6nnhld": 1,
@@ -6473,7 +6509,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 2,
         "goexclc7": 1,
@@ -6507,7 +6543,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 4,
         "eqklwjq4": 1,
@@ -6541,7 +6577,7 @@
         "woq19rjl"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ln5xzbbm": 5,
         "v440nyj5": 3,
@@ -6576,7 +6612,7 @@
         "y6gzwre6"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "y6gzwre6": 3,
@@ -6611,7 +6647,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "goexclc7": 5,
@@ -6643,7 +6679,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 2,
         "goexclc7": 2,
@@ -6674,7 +6710,7 @@
         "vk6nnhld"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "4i5e5dnx": 1,
@@ -6707,7 +6743,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 3,
         "ihjjs7ny": 4,
@@ -6742,7 +6778,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q62q1pxy": 3,
         "xc6kxlk5": 1,
@@ -6777,7 +6813,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 3,
         "goexclc7": 9,
@@ -6811,7 +6847,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "goexclc7": 5,
         "lc7kjr1l": 2,
@@ -6843,7 +6879,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 3,
         "goexclc7": 2,
@@ -6874,7 +6910,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "v440nyj5": 2,
         "ihjjs7ny": 7,
@@ -6908,7 +6944,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 3,
         "q62q1pxy": 1,
@@ -6942,7 +6978,7 @@
         "splc2r7u2ea"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 1,
         "8yzg9k8v3xw": 5,
@@ -6975,7 +7011,7 @@
         "zx65671a"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q62q1pxy": 3,
         "zx65671a": 1,
@@ -7009,7 +7045,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "eqklwjq4": 2,
@@ -7044,7 +7080,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 3,
         "6s8ay1obbz1": 2,
@@ -7079,7 +7115,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 5,
         "v440nyj5": 2,
@@ -7114,7 +7150,7 @@
         "q62q1pxy"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 4,
         "6le274n0": 4,
@@ -7151,7 +7187,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "goexclc7": 5,
         "lc7kjr1l": 3,
@@ -7187,7 +7223,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 2,
         "1lo9d7ot": 3,
@@ -7224,7 +7260,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 2,
         "3bk2x1ya": 1,
@@ -7262,7 +7298,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 6,
         "c04e4jsc": 2,
@@ -7299,7 +7335,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "wwr8zjrigfx": 1,
         "lc7kjr1l": 5,
@@ -7334,7 +7370,7 @@
         "yz06djbra28"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 4,
         "ihjjs7ny": 4,
@@ -7369,7 +7405,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 2,
         "54ngrczm": 3,
@@ -7405,7 +7441,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "goexclc7": 3,
         "wwr8zjrigfx": 2,
@@ -7440,7 +7476,7 @@
         "w8zkdwa3"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "6s8ay1obbz1": 2,
@@ -7473,7 +7509,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 1,
         "8yzg9k8v3xw": 1,
@@ -7506,7 +7542,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 4,
         "v440nyj5": 2,
@@ -7543,7 +7579,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "goexclc7": 3,
         "c04e4jsc": 2,
@@ -7581,7 +7617,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 2,
         "v440nyj5": 2,
@@ -7617,7 +7653,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 2,
         "ihjjs7ny": 5,
@@ -7654,7 +7690,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 1,
         "wwr8zjrigfx": 2,
@@ -7690,7 +7726,7 @@
         "q0i74yd7"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "goexclc7": 2,
         "c04e4jsc": 3,
@@ -7723,7 +7759,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6s8ay1obbz1": 4,
         "v440nyj5": 2,
@@ -7753,7 +7789,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 2,
         "lc7kjr1l": 4,
@@ -7785,7 +7821,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "ihjjs7ny": 3,
         "6le274n0": 3,
@@ -7821,7 +7857,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "pem3iz20": 1,
         "3a6qrb5o": 1,
@@ -7854,7 +7890,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q62q1pxy": 3,
         "eqklwjq4": 2,
@@ -7889,7 +7925,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 3,
         "c04e4jsc": 5,
@@ -7926,7 +7962,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 7,
         "6s8ay1obbz1": 1,
@@ -7962,7 +7998,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "pem3iz20": 2,
         "4i5e5dnx": 1,
@@ -7995,7 +8031,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q0i74yd7": 1,
         "4i5e5dnx": 1,
@@ -8026,7 +8062,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 5,
         "4i5e5dnx": 3,
@@ -8057,7 +8093,7 @@
         "och72djy"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "och72djy": 3,
         "4i5e5dnx": 2,
@@ -8089,7 +8125,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "qzm148lt": 1,
         "och72djy": 1,
@@ -8126,7 +8162,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "8yzg9k8v3xw": 6,
         "c04e4jsc": 6,
@@ -8163,7 +8199,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 5,
         "och72djy": 1,
@@ -8198,7 +8234,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "wwr8zjrigfx": 4,
         "eqklwjq4": 1,
@@ -8235,7 +8271,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "eqklwjq4": 6,
         "3a6qrb5o": 3,
@@ -8270,7 +8306,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 5,
         "4i5e5dnx": 2,
@@ -8304,7 +8340,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "q0i74yd7": 1,
         "c04e4jsc": 5,
@@ -8339,7 +8375,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "lc7kjr1l": 5,
         "eqklwjq4": 5,
@@ -8373,7 +8409,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "c04e4jsc": 1,
         "goexclc7": 2,
@@ -8407,7 +8443,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vk6nnhld": 1,
         "q0i74yd7": 2,
@@ -8442,7 +8478,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3bk2x1ya": 3,
         "6s8ay1obbz1": 2,
@@ -8476,7 +8512,7 @@
         "xc6kxlk5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 4,
         "splc2r7u2ea": 2,
@@ -8509,7 +8545,7 @@
         "w8zkdwa3"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "vlj130hf": 4,
         "v440nyj5": 5,
@@ -8543,7 +8579,7 @@
         "v440nyj5"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 2,
         "eqklwjq4": 3,
@@ -8575,7 +8611,7 @@
         "och72djy"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "80g1si1i": 1,
         "6s8ay1obbz1": 5,
@@ -8608,7 +8644,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "3a6qrb5o": 2,
         "vlj130hf": 1,
@@ -8642,7 +8678,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "6le274n0": 2,
         "6s8ay1obbz1": 2,
@@ -8674,7 +8710,7 @@
         "wwr8zjrigfx"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "4i5e5dnx": 3,
         "ihjjs7ny": 2,
@@ -8707,7 +8743,7 @@
         "vlj130hf"
       ],
       "teams": [],
-      "numTeams": 0,
+      "numTeams": 2,
       "goals": {
         "och72djy": 4,
         "vlj130hf": 5,
@@ -12282,19 +12318,438 @@
         "fts8pc2x4yc": 3
       },
       "goalsOnly": false
+    },
+    {
+      "id": "ip7zpxinimh",
+      "date": "2026-09-06",
+      "attendees": [
+        "na3m57u1",
+        "4loro9d7",
+        "fing6501",
+        "iqewmmnfyxs",
+        "c04e4jsc",
+        "och72djy",
+        "5x29v8hn",
+        "ihjjs7ny",
+        "vlj130hf",
+        "v440nyj5",
+        "g392acow",
+        "4i5e5dnx",
+        "3a6qrb5o"
+      ],
+      "teams": [],
+      "numTeams": 3,
+      "goals": {
+        "wwr8zjrigfx": 2,
+        "c04e4jsc": 2,
+        "fing6501": 1,
+        "4i5e5dnx": 2,
+        "g392acow": 2,
+        "ihjjs7ny": 4,
+        "3a6qrb5o": 2,
+        "v440nyj5": 4,
+        "och72djy": 3,
+        "na3m57u1": 1,
+        "iqewmmnfyxs": 1
+      },
+      "assists": {
+        "au7rynh9": 2,
+        "g392acow": 2,
+        "c04e4jsc": 1,
+        "ihjjs7ny": 3,
+        "4i5e5dnx": 1,
+        "v440nyj5": 1,
+        "iqewmmnfyxs": 1
+      },
+      "wins": {},
+      "goalsOnly": true,
+      "conceded": {
+        "dltd4nxp": 2,
+        "au7rynh9": 4
+      }
+    },
+    {
+      "id": "1ca6t68fy8z",
+      "date": "2026-09-13",
+      "attendees": [
+        "3bk2x1ya",
+        "c04e4jsc",
+        "pem3iz20",
+        "4i5e5dnx",
+        "ihjjs7ny",
+        "goexclc7",
+        "3a6qrb5o",
+        "eqklwjq4",
+        "v440nyj5",
+        "lc7kjr1l",
+        "81mqk6xvbsq",
+        "na3m57u1",
+        "da3pkntb",
+        "yedxcojvsyl",
+        "och72djy"
+      ],
+      "teams": [
+        {
+          "id": "gc1winfpbok",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "da3pkntb",
+            "3a6qrb5o",
+            "ihjjs7ny",
+            "c04e4jsc",
+            "pem3iz20"
+          ]
+        },
+        {
+          "id": "wnvwc9pvbok",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "yedxcojvsyl",
+            "goexclc7",
+            "lc7kjr1l",
+            "eqklwjq4",
+            "81mqk6xvbsq"
+          ]
+        },
+        {
+          "id": "utngrxiqbok",
+          "name": "Time C",
+          "color": "#34D399",
+          "players": [
+            "na3m57u1",
+            "och72djy",
+            "3bk2x1ya",
+            "4i5e5dnx",
+            "v440nyj5"
+          ]
+        }
+      ],
+      "numTeams": 3,
+      "goals": {
+        "och72djy": 2,
+        "3a6qrb5o": 2,
+        "lc7kjr1l": 2,
+        "v440nyj5": 4,
+        "ihjjs7ny": 3,
+        "eqklwjq4": 1,
+        "na3m57u1": 1,
+        "4i5e5dnx": 3,
+        "c04e4jsc": 1,
+        "yedxcojvsyl": 1
+      },
+      "assists": {
+        "3a6qrb5o": 2,
+        "v440nyj5": 2,
+        "goexclc7": 1,
+        "pem3iz20": 1,
+        "4i5e5dnx": 1
+      },
+      "wins": {
+        "gc1winfpbok": 3,
+        "utngrxiqbok": 6,
+        "wnvwc9pvbok": 2
+      },
+      "goalsOnly": false,
+      "rodizio": {
+        "active": true,
+        "sideA": "gc1winfpbok",
+        "sideB": "utngrxiqbok",
+        "kingId": "utngrxiqbok",
+        "queue": [
+          "wnvwc9pvbok"
+        ],
+        "gkA": null,
+        "gkB": null,
+        "mg": {},
+        "ma": {},
+        "byTimePending": false,
+        "timeWinnerId": null,
+        "log": [
+          {
+            "a": "gc1winfpbok",
+            "b": "wnvwc9pvbok",
+            "winnerId": "gc1winfpbok",
+            "byTime": true,
+            "scoreA": 0,
+            "scoreB": 0,
+            "durationSec": 0,
+            "events": []
+          },
+          {
+            "a": "gc1winfpbok",
+            "b": "utngrxiqbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": true,
+            "scoreA": 1,
+            "scoreB": 1,
+            "durationSec": 0,
+            "events": [
+              {
+                "pid": "och72djy",
+                "at": 0
+              },
+              {
+                "pid": "3a6qrb5o",
+                "at": 0
+              }
+            ]
+          },
+          {
+            "a": "wnvwc9pvbok",
+            "b": "utngrxiqbok",
+            "winnerId": "wnvwc9pvbok",
+            "byTime": true,
+            "scoreA": 1,
+            "scoreB": 1,
+            "durationSec": 300,
+            "events": [
+              {
+                "pid": "lc7kjr1l",
+                "at": 225
+              },
+              {
+                "pid": "v440nyj5",
+                "at": 282
+              }
+            ]
+          },
+          {
+            "a": "wnvwc9pvbok",
+            "b": "gc1winfpbok",
+            "winnerId": "gc1winfpbok",
+            "byTime": true,
+            "scoreA": 1,
+            "scoreB": 1,
+            "durationSec": 0,
+            "events": [
+              {
+                "pid": "ihjjs7ny",
+                "at": 0
+              },
+              {
+                "pid": "lc7kjr1l",
+                "at": 0
+              }
+            ]
+          },
+          {
+            "a": "utngrxiqbok",
+            "b": "gc1winfpbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": true,
+            "scoreA": 0,
+            "scoreB": 1,
+            "durationSec": 300,
+            "events": [
+              {
+                "pid": "ihjjs7ny",
+                "at": 274
+              }
+            ]
+          },
+          {
+            "a": "utngrxiqbok",
+            "b": "wnvwc9pvbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": false,
+            "scoreA": 2,
+            "scoreB": 1,
+            "durationSec": 88,
+            "events": [
+              {
+                "pid": "v440nyj5",
+                "at": 15
+              },
+              {
+                "pid": "eqklwjq4",
+                "at": 41
+              },
+              {
+                "pid": "v440nyj5",
+                "at": 87
+              }
+            ]
+          },
+          {
+            "a": "utngrxiqbok",
+            "b": "gc1winfpbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": false,
+            "scoreA": 2,
+            "scoreB": 1,
+            "durationSec": 0,
+            "events": [
+              {
+                "pid": "na3m57u1",
+                "at": 0
+              },
+              {
+                "pid": "3a6qrb5o",
+                "at": 0
+              },
+              {
+                "pid": "4i5e5dnx",
+                "at": 0
+              }
+            ]
+          },
+          {
+            "a": "utngrxiqbok",
+            "b": "wnvwc9pvbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": false,
+            "scoreA": 2,
+            "scoreB": 0,
+            "durationSec": 198,
+            "events": [
+              {
+                "pid": "4i5e5dnx",
+                "at": 178
+              },
+              {
+                "pid": "4i5e5dnx",
+                "at": 195
+              }
+            ]
+          },
+          {
+            "a": "utngrxiqbok",
+            "b": "gc1winfpbok",
+            "winnerId": "gc1winfpbok",
+            "byTime": true,
+            "scoreA": 0,
+            "scoreB": 2,
+            "durationSec": 275,
+            "events": [
+              {
+                "pid": "c04e4jsc",
+                "at": 134
+              },
+              {
+                "pid": "ihjjs7ny",
+                "at": 270
+              }
+            ]
+          },
+          {
+            "a": "wnvwc9pvbok",
+            "b": "gc1winfpbok",
+            "winnerId": "wnvwc9pvbok",
+            "byTime": true,
+            "scoreA": 1,
+            "scoreB": 0,
+            "durationSec": 0,
+            "events": [
+              {
+                "pid": "yedxcojvsyl",
+                "at": 0
+              }
+            ]
+          },
+          {
+            "a": "wnvwc9pvbok",
+            "b": "utngrxiqbok",
+            "winnerId": "utngrxiqbok",
+            "byTime": false,
+            "scoreA": 0,
+            "scoreB": 2,
+            "durationSec": 200,
+            "events": [
+              {
+                "pid": "och72djy",
+                "at": 82
+              },
+              {
+                "pid": "v440nyj5",
+                "at": 198
+              }
+            ]
+          }
+        ],
+        "events": []
+      },
+      "conceded": {
+        "da3pkntb": 5,
+        "yedxcojvsyl": 8,
+        "na3m57u1": 7
+      }
+    },
+    {
+      "id": "vft958974bw",
+      "date": "2026-09-20",
+      "attendees": [
+        "3bk2x1ya",
+        "c04e4jsc",
+        "pem3iz20",
+        "4i5e5dnx",
+        "ihjjs7ny",
+        "goexclc7",
+        "3a6qrb5o",
+        "eqklwjq4",
+        "v440nyj5",
+        "lc7kjr1l",
+        "81mqk6xvbsq",
+        "na3m57u1",
+        "da3pkntb",
+        "yedxcojvsyl",
+        "och72djy"
+      ],
+      "teams": [
+        {
+          "id": "sygbv978atx",
+          "name": "Time A",
+          "color": "#A78BFA",
+          "players": [
+            "da3pkntb",
+            "3a6qrb5o",
+            "goexclc7",
+            "ihjjs7ny",
+            "c04e4jsc",
+            "v440nyj5",
+            "81mqk6xvbsq"
+          ]
+        },
+        {
+          "id": "7sqo15gnatx",
+          "name": "Time B",
+          "color": "#22D3EE",
+          "players": [
+            "na3m57u1",
+            "och72djy",
+            "3bk2x1ya",
+            "lc7kjr1l",
+            "4i5e5dnx",
+            "eqklwjq4",
+            "pem3iz20",
+            "yedxcojvsyl"
+          ]
+        }
+      ],
+      "numTeams": 2,
+      "goals": {},
+      "assists": {},
+      "wins": {},
+      "goalsOnly": false
     }
   ],
   "tournament": null,
   "awards": {
     "revelacao": {
+      "2020": "v440nyj5",
+      "2021": "54ngrczm",
+      "2022": "6le274n0",
+      "2023": "goexclc7",
+      "2024": "na3m57u1",
       "2025": "dltd4nxp",
       "2026": "4loro9d7"
     }
   },
   "ui": {
-    "activeSessionId": null,
+    "activeSessionId": "vft958974bw",
     "statsPeriod": "year",
-    "showRatings": true,
+    "showRatings": false,
     "futMode": "B",
     "estimate": {
       "gameMin": 12,
