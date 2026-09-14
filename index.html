@@ -66,13 +66,23 @@
   }
   .brand-text { min-width: 0; }
   .gear-btn {
-    margin-left: auto; flex-shrink: 0;
+    flex-shrink: 0;
     width: 40px; height: 40px; border-radius: 50%;
     background: var(--surface); border: 1px solid var(--border);
     color: var(--muted); font-size: 19px; cursor: pointer; line-height: 1;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.15s; font-family: inherit;
   }
+  .header-actions { margin-left: auto; position: relative; flex-shrink: 0; }
+  .info-btn {
+    position: absolute; top: -9px; right: -9px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit; padding: 0; transition: all 0.15s;
+  }
+  .info-btn:hover { color: var(--accent); border-color: var(--accent); }
   .gear-btn:hover { color: var(--text); border-color: var(--accent); }
   .gear-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(139,92,246,0.12); }
   .gear-btn.has-dot { position: relative; }
@@ -423,9 +433,10 @@
   .stepper.small .val { min-width: 26px; font-size: 13px; }
   .stepper.small .val i { font-style: normal; font-size: 11px; }
   /* Rodízio (modo B) */
-  .rod-setup .rod-pick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .rod-team-btn { border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: 10px; padding: 10px 14px; font-family: inherit; font-weight: 600; cursor: pointer; border-left: 4px solid var(--team-color); }
+  .rod-setup .rod-pick { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .rod-team-btn { border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: 10px; padding: 12px 16px; font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid var(--team-color); }
   .rod-team-btn.sel { border-color: var(--accent-solid); background: rgba(139,92,246,0.12); }
+  #btn-rod-start { margin-top: 18px !important; }
   .rod-scoreboard { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; }
   .rod-side { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
   .rod-side b { font-size: 26px; color: var(--accent); font-variant-numeric: tabular-nums; }
@@ -463,6 +474,10 @@
   .rod-summary-list { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
   .rod-sum-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 2px 0; }
   .rod-sum-nums { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .rod-sum-edit { display: flex; flex-direction: column; gap: 4px; }
+  .rod-sum-erow { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .rod-sum-erow:last-child { border-bottom: none; }
+  .rod-sum-name { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   @media (max-width: 420px) { .rod-teams, .rod-summary-list { grid-template-columns: 1fr; } }
   .scoring-cols-head { display: grid; grid-template-columns: 1fr 92px 92px; gap: 8px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 6px 0 2px; }
   .scoring-cols-head span:not(:first-child) { text-align: center; }
@@ -939,8 +954,10 @@
         <div class="brand-title">Fut da JUF</div>
         <div class="brand-subtitle">Elenco, futs semanais, estatísticas e campeonato</div>
       </div>
-      <button class="gear-btn" id="btn-info" title="Novidades e ajuda" aria-label="Novidades e ajuda" style="margin-right:8px;">?</button>
-      <button class="gear-btn" id="btn-config" title="Configurações" aria-label="Configurações">⚙</button>
+      <div class="header-actions">
+        <button class="gear-btn" id="btn-config" title="Configurações" aria-label="Configurações">⚙</button>
+        <button class="info-btn" id="btn-info" title="Novidades e ajuda" aria-label="Novidades e ajuda">?</button>
+      </div>
     </div>
   </header>
 
@@ -1646,6 +1663,7 @@
     if (sess.rodizio) out.rodizio = sess.rodizio;
     if (sess.conceded) out.conceded = sess.conceded;
     if (sess.hist) out.hist = true;
+    if (sess.eventLog) out.eventLog = sess.eventLog;
     if (sess.matches && sess.matches.length) {
       sess.matches.forEach(m => {
         const g = m.goals || {};
@@ -2620,7 +2638,9 @@
     document.getElementById('session-editor').style.display = sess ? '' : 'none';
     document.getElementById('session-close-bar').style.display = sess ? '' : 'none';
     document.getElementById('goalsonly-bar').style.display = sess ? '' : 'none';
-    if (!sess) return;
+    document.getElementById('session-teams-card').style.display = sess ? '' : 'none';
+    document.getElementById('session-scoring-card').style.display = sess ? '' : 'none';
+    if (!sess) { _rodEndAt = null; return; }
 
     const go = effGoalsOnly(sess), legacy = isLegacySession(sess.date);
     document.getElementById('session-teams-card').style.display = go ? 'none' : '';
@@ -2645,6 +2665,7 @@
     save(); renderSessionEditor();
   });
   document.getElementById('btn-save-close').addEventListener('click', () => {
+    const sess = activeSession(); if (sess) logEvent(sess, 'fut-fim');
     save(); // já salvo continuamente, mas garante
     state.ui.activeSessionId = null;
     renderSessionSelect();
@@ -2846,6 +2867,7 @@
       sess.wins = sess.wins || {};
       sess.wins[tid] = Math.max(0, (sess.wins[tid] || 0) + (inc ? 1 : -1));
       if (sess.wins[tid] === 0) delete sess.wins[tid];
+      logEvent(sess, 'vitoria' + (inc ? '' : '-remove'), { team: tid });
       save(); renderScoring();
     }));
   }
@@ -2854,6 +2876,12 @@
   // Cronômetro da partida (5 min) — vive fora do re-render pra não zerar
   let _rodTimer = { remaining: 300, running: false };
   let _rodTimerInterval = null;
+  let _rodEndAt = null, _rodNudged = false; // controle do aviso de fim de partida (30s)
+  function logEvent(sess, type, extra) {
+    if (!sess) return;
+    sess.eventLog = sess.eventLog || [];
+    sess.eventLog.push(Object.assign({ t: new Date().toISOString(), type }, extra || {}));
+  }
   function rodClock(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}`; }
   function updateRodTimerUI() {
     const d = document.getElementById('rod-timer-display');
@@ -2864,6 +2892,17 @@
   function ensureRodTimerInterval() {
     if (_rodTimerInterval) return;
     _rodTimerInterval = setInterval(() => {
+      // aviso de fim de partida: se detectou fim (gols/tempo) e ninguém confirmou em 30s
+      if (_rodEndAt && !_rodNudged && Date.now() - _rodEndAt >= 30000) {
+        _rodNudged = true;
+        const semanaOn = document.getElementById('panel-semana') && document.getElementById('panel-semana').classList.contains('active');
+        const sess = activeSession(); const r = sess && sess.rodizio;
+        if (semanaOn && r && r.active) {
+          const wid = r.pendingWinnerId;
+          if (wid && confirm('⏱ A partida parece ter terminado! Encerrar e trocar os times agora?')) rodizioConfirm(sess, wid, !!r.byTimePending);
+          else alert('A partida parece ter terminado — confirme o resultado quando decidirem.');
+        }
+      }
       if (!_rodTimer.running) return;
       _rodTimer.remaining = Math.max(0, _rodTimer.remaining - 1);
       updateRodTimerUI();
@@ -2908,7 +2947,8 @@
         if (_rodPicks.length !== 2) return;
         const others = teams.filter(t => !_rodPicks.includes(t.id)).map(t => t.id);
         sess.rodizio = { active: true, sideA: _rodPicks[0], sideB: _rodPicks[1], kingId: null, queue: others, gkA: bucketGoalies[0] || null, gkB: bucketGoalies[1] || null, mg: {}, ma: {}, byTimePending: false, timeWinnerId: null, log: [] };
-        _rodPicks = []; rodTimerReset();
+        _rodPicks = []; rodTimerReset(); _rodEndAt = null; _rodNudged = false;
+        logEvent(sess, 'fut-inicio', { sideA: sess.rodizio.sideA, sideB: sess.rodizio.sideB });
         save(); renderScoring();
       });
       return;
@@ -2922,6 +2962,9 @@
     const winnerByGoals = gA >= 2 ? r.sideA : gB >= 2 ? r.sideB : null;
     const pendingWinner = r.byTimePending ? r.timeWinnerId : winnerByGoals;
     const showConfirm = !!winnerByGoals || r.byTimePending;
+    // aviso de 30s: marca quando a partida "acaba" (2 gols ou tempo)
+    if (showConfirm) { r.pendingWinnerId = pendingWinner; if (_rodEndAt === null) { _rodEndAt = Date.now(); _rodNudged = false; } }
+    else { _rodEndAt = null; _rodNudged = false; r.pendingWinnerId = null; }
     const resting = (r.queue || []).map(tById).filter(Boolean);
 
     const playerRow = (pid, name, isGk) => {
@@ -2967,16 +3010,18 @@
       }
     }
 
-    const summaryRows = sess.attendees.map(playerById).filter(Boolean)
-      .map(p => ({ p, g: (sess.goals && sess.goals[p.id]) || 0, a: (sess.assists && sess.assists[p.id]) || 0 }))
-      .filter(x => x.g || x.a)
-      .sort((x, y) => y.g - x.g || y.a - x.a || x.p.name.localeCompare(y.p.name));
+    const attList = sess.attendees.map(playerById).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name));
     const winRows = sess.teams.filter(t => !t.noWins).map(t => ({ name: t.name, w: (sess.wins && sess.wins[t.id]) || 0 })).sort((a, b) => b.w - a.w);
     const winsLine = winRows.some(w => w.w > 0) ? `<div class="rod-sum-wins">🏆 ${winRows.map(w => `${escapeHtml(w.name)}: <b>${w.w}</b>`).join(' · ')}</div>` : '';
     const summaryHtml = `<div class="rod-summary">
-      <div class="rod-summary-head">Resumo do dia até agora <span class="card-count">salvo automaticamente</span></div>
+      <div class="rod-summary-head">Resumo do dia · toque nos +/− pra ajustar <span class="card-count">salvo automaticamente</span></div>
       ${winsLine}
-      ${summaryRows.length ? `<div class="rod-summary-list">${summaryRows.map(x => `<div class="rod-sum-row"><span>${escapeHtml(x.p.name)}</span><span class="rod-sum-nums">${x.g ? `${x.g}⚽` : ''}${x.g && x.a ? ' · ' : ''}${x.a ? `${x.a}🅰` : ''}</span></div>`).join('')}</div>` : '<p class="hint" style="margin:6px 0 0;">Ainda sem gols ou assistências.</p>'}
+      ${attList.length ? `<div class="rod-sum-edit">${attList.map(p => { const g = (sess.goals && sess.goals[p.id]) || 0, a = (sess.assists && sess.assists[p.id]) || 0; return `
+        <div class="rod-sum-erow">
+          <span class="rod-sum-name">${escapeHtml(p.name)}</span>
+          <div class="stepper small"><button data-sdec="gols" data-p="${p.id}">−</button><span class="val">${g}<i>⚽</i></span><button data-sinc="gols" data-p="${p.id}">+</button></div>
+          <div class="stepper small"><button data-sdec="assist" data-p="${p.id}">−</button><span class="val">${a}<i>🅰</i></span><button data-sinc="assist" data-p="${p.id}">+</button></div>
+        </div>`; }).join('')}</div>` : '<p class="hint" style="margin:6px 0 0;">Ninguém presente ainda.</p>'}
     </div>`;
 
     cont.innerHTML = `
@@ -3008,13 +3053,24 @@
       const pid = b.dataset.p;
       if (field === 'gols') {
         r.mg = r.mg || {}; r.events = r.events || [];
-        if (inc) { r.mg[pid] = (r.mg[pid] || 0) + 1; sess.goals = sess.goals || {}; sess.goals[pid] = (sess.goals[pid] || 0) + 1; r.events.push({ pid, at: 300 - _rodTimer.remaining }); }
-        else if ((r.mg[pid] || 0) > 0) { r.mg[pid]--; sess.goals[pid] = Math.max(0, (sess.goals[pid] || 0) - 1); if (!sess.goals[pid]) delete sess.goals[pid]; if (!r.mg[pid]) delete r.mg[pid]; for (let i = r.events.length - 1; i >= 0; i--) { if (r.events[i].pid === pid) { r.events.splice(i, 1); break; } } }
+        if (inc) { r.mg[pid] = (r.mg[pid] || 0) + 1; sess.goals = sess.goals || {}; sess.goals[pid] = (sess.goals[pid] || 0) + 1; r.events.push({ pid, at: 300 - _rodTimer.remaining }); logEvent(sess, 'gol', { pid, atSec: 300 - _rodTimer.remaining }); }
+        else if ((r.mg[pid] || 0) > 0) { r.mg[pid]--; sess.goals[pid] = Math.max(0, (sess.goals[pid] || 0) - 1); if (!sess.goals[pid]) delete sess.goals[pid]; if (!r.mg[pid]) delete r.mg[pid]; for (let i = r.events.length - 1; i >= 0; i--) { if (r.events[i].pid === pid) { r.events.splice(i, 1); break; } } logEvent(sess, 'gol-remove', { pid }); }
       } else {
         r.ma = r.ma || {};
-        if (inc) { r.ma[pid] = (r.ma[pid] || 0) + 1; sess.assists = sess.assists || {}; sess.assists[pid] = (sess.assists[pid] || 0) + 1; }
-        else if ((r.ma[pid] || 0) > 0) { r.ma[pid]--; sess.assists[pid] = Math.max(0, (sess.assists[pid] || 0) - 1); if (!sess.assists[pid]) delete sess.assists[pid]; if (!r.ma[pid]) delete r.ma[pid]; }
+        if (inc) { r.ma[pid] = (r.ma[pid] || 0) + 1; sess.assists = sess.assists || {}; sess.assists[pid] = (sess.assists[pid] || 0) + 1; logEvent(sess, 'assist', { pid }); }
+        else if ((r.ma[pid] || 0) > 0) { r.ma[pid]--; sess.assists[pid] = Math.max(0, (sess.assists[pid] || 0) - 1); if (!sess.assists[pid]) delete sess.assists[pid]; if (!r.ma[pid]) delete r.ma[pid]; logEvent(sess, 'assist-remove', { pid }); }
       }
+      save(); renderScoring();
+    }));
+    // resumo editável (corrige o total da sessão, a qualquer momento / depois de fechar)
+    cont.querySelectorAll('[data-sinc], [data-sdec]').forEach(b => b.addEventListener('click', () => {
+      const inc = b.hasAttribute('data-sinc');
+      const field = inc ? b.dataset.sinc : b.dataset.sdec;
+      const pid = b.dataset.p;
+      const key = field === 'gols' ? 'goals' : 'assists';
+      sess[key] = sess[key] || {};
+      if (inc) { sess[key][pid] = (sess[key][pid] || 0) + 1; logEvent(sess, (field === 'gols' ? 'gol' : 'assist') + '-ajuste', { pid, delta: 1 }); }
+      else if ((sess[key][pid] || 0) > 0) { sess[key][pid]--; if (!sess[key][pid]) delete sess[key][pid]; logEvent(sess, (field === 'gols' ? 'gol' : 'assist') + '-ajuste', { pid, delta: -1 }); }
       save(); renderScoring();
     }));
     const tgl = document.getElementById('rod-timer-toggle');
@@ -3065,6 +3121,8 @@
     sess.wins[winnerId] = (sess.wins[winnerId] || 0) + 1;
     r.log = r.log || [];
     r.log.push({ a: r.sideA, b: r.sideB, winnerId, byTime: !!byTime, scoreA: gA, scoreB: gB, durationSec, events: (r.events || []).slice() });
+    logEvent(sess, 'partida-fim', { winner: winnerId, loser: loserId, byTime: !!byTime, scoreA: gA, scoreB: gB, durationSec });
+    logEvent(sess, 'vitoria', { team: winnerId, byTime: !!byTime });
     r.queue = r.queue || [];
     r.queue.push(loserId);
     const nextId = r.queue.shift();
@@ -3072,6 +3130,7 @@
     r.kingId = winnerId;
     r.mg = {}; r.ma = {}; r.events = [];
     r.byTimePending = false; r.timeWinnerId = null;
+    _rodEndAt = null; _rodNudged = false;
     rodTimerReset();
     save(); renderScoring();
   }
@@ -3083,6 +3142,7 @@
       const bag = field === 'gols' ? (sess.goals = sess.goals || {}) : (sess.assists = sess.assists || {});
       bag[pid] = Math.max(0, (bag[pid] || 0) + (inc ? 1 : -1));
       if (bag[pid] === 0) delete bag[pid];
+      logEvent(sess, (field === 'gols' ? 'gol' : 'assist') + (inc ? '' : '-remove'), { pid });
       save(); renderScoring();
     }));
   }
