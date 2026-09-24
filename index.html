@@ -461,6 +461,8 @@
   .rod-confirm { margin-top: 12px; padding: 14px; border: 1.5px solid var(--accent-solid); border-radius: 12px; background: rgba(139,92,246,0.08); }
   .rod-confirm.by-goals { border-color: #34D399; background: rgba(52,211,153,0.10); }
   .rod-confirm.by-goals .primary { background: #34D399; }
+  .rod-confirm.draw { border-color: #FBBF24; background: rgba(251,191,36,0.10); }
+  .rod-confirm.draw .primary { background: #FBBF24; color: #1A1622; }
   .rod-confirm-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
   .rod-winner-pick { display: flex; gap: 8px; margin-top: 8px; }
   .rod-winner-pick button { flex: 1; }
@@ -2898,9 +2900,14 @@
         const semanaOn = document.getElementById('panel-semana') && document.getElementById('panel-semana').classList.contains('active');
         const sess = activeSession(); const r = sess && sess.rodizio;
         if (semanaOn && r && r.active) {
-          const wid = r.pendingWinnerId;
-          if (wid && confirm('⏱ A partida parece ter terminado! Encerrar e trocar os times agora?')) rodizioConfirm(sess, wid, !!r.byTimePending);
-          else alert('A partida parece ter terminado — confirme o resultado quando decidirem.');
+          if (r.pendingBothLeave) {
+            if (confirm('⏱ Empate! Com 4+ times, os dois saem e entram os próximos. Confirmar?')) rodizioBothLeave(sess);
+            else alert('A partida terminou empatada — confirme quando decidirem.');
+          } else {
+            const wid = r.pendingWinnerId;
+            if (wid && confirm('⏱ A partida parece ter terminado! Encerrar e trocar os times agora?')) rodizioConfirm(sess, wid, !!r.byTimePending);
+            else alert('A partida parece ter terminado — confirme o resultado quando decidirem.');
+          }
         }
       }
       if (!_rodTimer.running) return;
@@ -2961,10 +2968,15 @@
     const gA = sideGoals(teamA, r.gkA), gB = sideGoals(teamB, r.gkB);
     const winnerByGoals = gA >= 2 ? r.sideA : gB >= 2 ? r.sideB : null;
     const pendingWinner = r.byTimePending ? r.timeWinnerId : winnerByGoals;
+    const isDraw = r.byTimePending && gA === gB;                    // empate só acontece por tempo
+    const canBothLeave = isDraw && (r.queue || []).length >= 2;     // 4+ times (2+ esperando) → os dois saem
     const showConfirm = !!winnerByGoals || r.byTimePending;
     // aviso de 30s: marca quando a partida "acaba" (2 gols ou tempo)
-    if (showConfirm) { r.pendingWinnerId = pendingWinner; if (_rodEndAt === null) { _rodEndAt = Date.now(); _rodNudged = false; } }
-    else { _rodEndAt = null; _rodNudged = false; r.pendingWinnerId = null; }
+    if (showConfirm) {
+      if (canBothLeave) { r.pendingBothLeave = true; r.pendingWinnerId = null; }
+      else { r.pendingBothLeave = false; r.pendingWinnerId = pendingWinner; }
+      if (_rodEndAt === null) { _rodEndAt = Date.now(); _rodNudged = false; }
+    } else { _rodEndAt = null; _rodNudged = false; r.pendingWinnerId = null; r.pendingBothLeave = false; }
     const resting = (r.queue || []).map(tById).filter(Boolean);
 
     const playerRow = (pid, name, isGk) => {
@@ -2989,7 +3001,14 @@
 
     let confirmHtml = '';
     if (showConfirm) {
-      if (r.byTimePending && !pendingWinner) {
+      if (canBothLeave) {
+        confirmHtml = `<div class="rod-confirm draw">
+          <div class="rod-confirm-title">⚖️ Empate! (${gA} × ${gB})</div>
+          <p class="hint">Com 4+ times, os <b>dois saem</b> — entram <b>${escapeHtml(tById(r.queue[0]).name)}</b> e <b>${escapeHtml(tById(r.queue[1]).name)}</b>.</p>
+          <button class="primary" id="btn-rod-bothleave" style="width:100%;padding:13px;font-size:15px;">Confirmar empate — trocar os dois</button>
+          <button class="ghost neutral" id="btn-rod-cancel" style="width:100%;margin-top:8px;">Voltar</button>
+        </div>`;
+      } else if (r.byTimePending && !pendingWinner) {
         confirmHtml = `<div class="rod-confirm">
           <div class="rod-confirm-title">⏱ Encerrado por tempo — quem venceu?</div>
           <p class="hint">É o 1º jogo (ninguém era o rei): decidam no par ou ímpar e marquem aqui.</p>
@@ -3090,6 +3109,8 @@
     if (cancelBtn) cancelBtn.addEventListener('click', () => { r.byTimePending = false; r.timeWinnerId = null; save(); renderScoring(); });
     const confirmBtn = document.getElementById('btn-rod-confirm');
     if (confirmBtn) confirmBtn.addEventListener('click', () => rodizioConfirm(sess, confirmBtn.dataset.winner, confirmBtn.dataset.bytime === '1'));
+    const bothLeaveBtn = document.getElementById('btn-rod-bothleave');
+    if (bothLeaveBtn) bothLeaveBtn.addEventListener('click', () => rodizioBothLeave(sess));
     const resetBtn = document.getElementById('btn-rod-reset');
     if (resetBtn) resetBtn.addEventListener('click', () => {
       if (!confirm('Recomeçar o rodízio? Isso apaga as partidas já jogadas hoje (os gols e assistências continuam). Você poderá escolher os times de novo.')) return;
@@ -3130,6 +3151,33 @@
     r.kingId = winnerId;
     r.mg = {}; r.ma = {}; r.events = [];
     r.byTimePending = false; r.timeWinnerId = null;
+    _rodEndAt = null; _rodNudged = false;
+    rodTimerReset();
+    save(); renderScoring();
+  }
+  // Empate com 4+ times: os dois times saem e entram os próximos dois (ninguém vira rei).
+  function rodizioBothLeave(sess) {
+    const r = sess.rodizio; if (!r) return;
+    if (r.homeId && !r.sideA) { r.sideA = r.homeId; r.sideB = r.awayId; }
+    if ((r.queue || []).length < 2) { rodizioConfirm(sess, r.sideA, true); return; } // sem 2 esperando, cai no fluxo normal
+    const teamA = sess.teams.find(t => t.id === r.sideA), teamB = sess.teams.find(t => t.id === r.sideB);
+    const sideGoals = (team, gk) => (team ? team.players.reduce((s, pid) => s + ((r.mg && r.mg[pid]) || 0), 0) : 0) + (gk ? ((r.mg && r.mg[gk]) || 0) : 0);
+    const gA = sideGoals(teamA, r.gkA), gB = sideGoals(teamB, r.gkB);
+    sess.conceded = sess.conceded || {};
+    const gkA = rodSideGoalie(sess, r, 'A'), gkB = rodSideGoalie(sess, r, 'B');
+    if (gkA) sess.conceded[gkA] = (sess.conceded[gkA] || 0) + gB;
+    if (gkB) sess.conceded[gkB] = (sess.conceded[gkB] || 0) + gA;
+    const durationSec = 300 - _rodTimer.remaining;
+    r.log = r.log || [];
+    r.log.push({ a: r.sideA, b: r.sideB, winnerId: null, draw: true, byTime: true, scoreA: gA, scoreB: gB, durationSec, events: (r.events || []).slice() });
+    logEvent(sess, 'partida-fim', { draw: true, teams: [r.sideA, r.sideB], byTime: true, scoreA: gA, scoreB: gB, durationSec });
+    logEvent(sess, 'empate-duplo', { teams: [r.sideA, r.sideB] });
+    r.queue = r.queue || [];
+    r.queue.push(r.sideA); r.queue.push(r.sideB);        // os dois vão pro fim da fila
+    r.sideA = r.queue.shift(); r.sideB = r.queue.shift(); // entram os próximos dois
+    r.kingId = null;                                      // ninguém é rei; começam do zero
+    r.mg = {}; r.ma = {}; r.events = [];
+    r.byTimePending = false; r.timeWinnerId = null; r.pendingBothLeave = false;
     _rodEndAt = null; _rodNudged = false;
     rodTimerReset();
     save(); renderScoring();
