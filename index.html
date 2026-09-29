@@ -730,6 +730,8 @@
   .match-with-live { display: flex; align-items: center; gap: 6px; }
   .match-with-live .match { flex: 1; margin-bottom: 0; }
   #live-card { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .champ-backup-row, .champ-share-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .champ-backup-row button, .champ-share-row button { flex: 1; min-width: 150px; }
   .live-scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin: 8px 0 16px; }
   .live-side { text-align: center; }
   .live-sname { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
@@ -1332,6 +1334,10 @@
           <span id="tournament-format-label"></span>
           <button class="ghost" id="btn-reset-tournament">Reiniciar campeonato</button>
         </div>
+        <div class="champ-backup-row">
+          <button class="secondary" id="btn-champ-export">⬇︎ Backup do campeonato</button>
+          <button class="secondary" id="btn-champ-import">⬆︎ Restaurar backup</button>
+        </div>
         <div id="league-section"></div>
         <div id="knockout-section"></div>
       </div>
@@ -1343,6 +1349,10 @@
       <div class="card" id="standings-card">
         <div class="card-title" id="standings-title">Classificação</div>
         <div class="standings-wrap"><table class="standings" id="standings-table"></table></div>
+        <div class="champ-share-row">
+          <button class="secondary" id="btn-standings-text">📋 Enviar tabela (texto)</button>
+          <button class="secondary" id="btn-standings-img">📸 Tabela como imagem</button>
+        </div>
         <p class="hint" id="standings-tiebreak" style="margin-top:10px;"></p>
         <details class="tiebreak-details"><summary>Ajustar critério de desempate</summary>
           <div class="tiebreak-list" style="margin-top:10px;"></div>
@@ -4332,6 +4342,10 @@
     state.tournament = null; state.__champTeams = null; state.__champBench = []; champSelected = new Set();
     save(); renderChampTeamPicker();
   });
+  { const be = document.getElementById('btn-champ-export'); if (be) be.addEventListener('click', exportCampeonato); }
+  { const bi = document.getElementById('btn-champ-import'); if (bi) bi.addEventListener('click', importCampeonato); }
+  { const bt = document.getElementById('btn-standings-text'); if (bt) bt.addEventListener('click', () => shareText('Classificação — Fut da JUF', standingsText())); }
+  { const bg = document.getElementById('btn-standings-img'); if (bg) bg.addEventListener('click', drawStandingsImage); }
 
   const FORMAT_LABELS = { hybrid: 'Híbrido (liga + mata-mata)', 'round-robin': 'Pontos corridos', knockout: 'Mata-mata' };
 
@@ -4690,16 +4704,15 @@
     const e = state.ui.estimate;
     const g = countGames(leagueGames, koTeams);
     const regularGames = g.league + g.earlyKo;
-    const koFull = e.koHalfMin * 2; // dois tempos
-    const total = regularGames * e.gameMin + g.semisPlus * koFull + Math.max(0, g.total - 1) * e.betweenMin + g.ko * e.penaltyMin;
+    const perGame = (e.gameMin || 0) * 2; // todo jogo = 2 tempos
+    const total = g.total * perGame + Math.max(0, g.total - 1) * e.betweenMin + g.ko * e.penaltyMin;
     el.innerHTML = `
       <div class="estimate-inputs">
-        <div><label>Min por jogo</label><input type="number" min="1" data-est="gameMin" value="${e.gameMin}"></div>
+        <div><label>Min por tempo (×2)</label><input type="number" min="1" data-est="gameMin" value="${e.gameMin}"></div>
         <div><label>Min entre jogos</label><input type="number" min="0" data-est="betweenMin" value="${e.betweenMin}"></div>
         <div><label>Pênaltis (min/jogo elim.)</label><input type="number" min="0" data-est="penaltyMin" value="${e.penaltyMin}"></div>
-        <div><label>Semis+: cada tempo (×2)</label><input type="number" min="1" data-est="koHalfMin" value="${e.koHalfMin}"></div>
       </div>
-      <div class="estimate-result">≈ <strong>${fmtDuration(total)}</strong> &nbsp;·&nbsp; ${g.total} jogos${g.ko ? ` (${g.league} na liga + ${g.ko} no mata-mata${g.semisPlus ? `, ${g.semisPlus} em 2 tempos de ${e.koHalfMin}′` : ''})` : ''}</div>`;
+      <div class="estimate-result">≈ <strong>${fmtDuration(total)}</strong> &nbsp;·&nbsp; ${g.total} jogos de 2 tempos de ${e.gameMin}′${g.ko ? ` (${g.league} na liga + ${g.ko} no mata-mata)` : ''}</div>`;
     el.querySelectorAll('[data-est]').forEach(inp => inp.addEventListener('input', () => {
       const v = parseInt(inp.value, 10);
       state.ui.estimate[inp.dataset.est] = (isNaN(v) || v < 0) ? 0 : v;
@@ -4881,7 +4894,7 @@
     for (let r = 0; r < R; r++) { if (t.knockout[r].some(x => x.id === id)) return r >= R - 2; }
     return false;
   }
-  function liveTargetMin() { return (live.matchId && matchIsSemiPlus(live.matchId)) ? (state.ui.estimate.koHalfMin || 0) : (state.ui.estimate.gameMin || 0); }
+  function liveTargetMin() { return state.ui.estimate.gameMin || 0; } // todo jogo do campeonato = 2 tempos; meta por tempo = gameMin
   function liveElapsed() { return live.elapsed + (live.running ? (Date.now() - live.startedAt) : 0); }
   function fmtClock(ms) { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
   function stopTimer() { live.running = false; if (liveInterval) { clearInterval(liveInterval); liveInterval = null; } }
@@ -4937,16 +4950,13 @@
           </span>
         </div>`; }).join('')}
     </div>`;
-    const semiPlus = matchIsSemiPlus(m.id);
-    const km = state.ui.estimate.koHalfMin;
-    const centerInfo = semiPlus
-      ? `<div class="live-target">${live.half}º tempo · ${km} min &nbsp;(2 tempos)</div>`
-      : `<div class="live-target">meta: ${state.ui.estimate.gameMin} min</div>`;
-    const halfBtn = (semiPlus && live.half === 1)
+    const halfMin = state.ui.estimate.gameMin;
+    const centerInfo = `<div class="live-target">${live.half}º tempo · ${halfMin} min &nbsp;(2 tempos)</div>`;
+    const halfBtn = (live.half === 1)
       ? `<button class="secondary" id="btn-half-next">Fim do 1º tempo</button>`
       : '';
     card.innerHTML = `
-      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">Jogo ao vivo${semiPlus ? ' <span class="hint" style="font-weight:400;">(semis/final — 2 tempos)</span>' : ''} <button class="ghost neutral" id="btn-live-close">Fechar</button></div>
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">Jogo ao vivo <span class="hint" style="font-weight:400;">(2 tempos de ${halfMin} min)</span> <button class="ghost neutral" id="btn-live-close">Fechar</button></div>
       <div class="live-scoreboard">
         <div class="live-side"><div class="live-sname">${escapeHtml(t1.name)}</div><div class="live-score">${m.score1 || 0}</div></div>
         <div class="live-center">
@@ -4957,14 +4967,84 @@
         <div class="live-side"><div class="live-sname">${escapeHtml(t2.name)}</div><div class="live-score">${m.score2 || 0}</div></div>
       </div>
       <div class="live-cols">${col(t1, 1)}${col(t2, 2)}</div>
-      <p class="hint">O placar acompanha os gols marcados aqui. Ao terminar, é só fechar — o resultado já fica salvo.</p>`;
+      <button class="primary" id="btn-live-end" style="width:100%;margin-top:12px;">✅ Encerrar partida</button>
+      <p class="hint">O placar acompanha os gols marcados aqui. "Encerrar partida" para o cronômetro e fecha — o resultado já fica salvo.</p>`;
     document.getElementById('btn-live-close').addEventListener('click', () => { stopTimer(); live.matchId = null; renderTournament(); });
+    const endBtn = document.getElementById('btn-live-end');
+    if (endBtn) endBtn.addEventListener('click', () => { if (confirm('Encerrar esta partida? O placar atual fica salvo.')) { stopTimer(); live.matchId = null; save(); renderTournament(); } });
     document.getElementById('btn-timer-toggle').addEventListener('click', () => { live.running ? pauseTimer() : startTimer(); syncTimerButton(); });
     document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
     const hb = document.getElementById('btn-half-next');
     if (hb) hb.addEventListener('click', () => { stopTimer(); live.elapsed = 0; live.startedAt = 0; live.half = 2; renderTournament(); });
     card.querySelectorAll('[data-lg]').forEach(b => b.addEventListener('click', () => liveScore(m, parseInt(b.dataset.side, 10), b.dataset.p, b.dataset.lg, parseInt(b.dataset.d, 10))));
     if (live.running && !liveInterval) liveInterval = setInterval(tickTimer, 250);
+  }
+
+  // ---- Backup manual do campeonato (exportar / restaurar) ----
+  function exportCampeonato() {
+    if (!state.tournament) { alert('Não há campeonato em andamento para exportar.'); return; }
+    const data = { kind: 'fut-campeonato', exportedAt: new Date().toISOString(), tournament: state.tournament };
+    downloadBlob(JSON.stringify(data, null, 2), 'campeonato-backup.json', 'application/json');
+  }
+  function importCampeonato() {
+    pickFile('.json,application/json', text => {
+      let parsed; try { parsed = JSON.parse(text); } catch (e) { alert('JSON inválido.'); return; }
+      const t = parsed && (parsed.kind === 'fut-campeonato' ? parsed.tournament : (parsed.tournament || (parsed.teams && parsed)));
+      if (!t || !t.teams) { alert('Este arquivo não é um backup de campeonato.'); return; }
+      if (!confirm('Restaurar o campeonato deste backup? O campeonato atual será substituído (o elenco e os futs não mudam).')) return;
+      state.tournament = t; live = { matchId: null, running: false, elapsed: 0, startedAt: 0, half: 1 };
+      save(); renderChampTeamPicker();
+      alert('Campeonato restaurado do backup.');
+    });
+  }
+  // ---- Classificação: compartilhar como texto ou imagem ----
+  function standingsText() {
+    const t = state.tournament; if (!t || !t.league) return '';
+    const rows = leagueStandings(t.league, t.teams);
+    const L = ['🏆 *Classificação — Fut da JUF*', ''];
+    rows.forEach((r, i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
+      L.push(`${medal} ${r.team.name} — *${r.Pts}* pts · ${r.V}V ${r.E}E ${r.D}D · SG ${r.SG > 0 ? '+' : ''}${r.SG}`);
+    });
+    L.push('', 'Desempate: ' + tiebreakText(t.tiebreak));
+    return L.join('\n');
+  }
+  function drawStandingsImage() {
+    const t = state.tournament; if (!t || !t.league) { alert('A classificação aparece só quando há fase de pontos corridos.'); return; }
+    const rows = leagueStandings(t.league, t.teams);
+    const C = { bg: '#0F0D15', card: '#1A1622', card2: '#221C2E', border: '#2E2740', text: '#EDE9F5', muted: '#9A8FB5', accent: '#A78BFA', amber: '#FBBF24', green: '#34D399' };
+    const W = 1000, headH = 132, rowH = 56, padB = 46;
+    const H = headH + rows.length * rowH + padB;
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d'); if (!ctx) { alert('Seu navegador não conseguiu gerar a imagem.'); return; }
+    const txt = (str, x, y, size, color, weight, align) => { ctx.fillStyle = color; ctx.font = `${weight || 600} ${size}px Inter, Arial, sans-serif`; ctx.textAlign = align || 'left'; ctx.textBaseline = 'middle'; ctx.fillText(str, x, y); };
+    const clip = (str, max, size, weight) => { ctx.font = `${weight || 600} ${size}px Inter, Arial, sans-serif`; let v = String(str); while (ctx.measureText(v).width > max && v.length > 1) v = v.slice(0, -1); return v === String(str) ? v : v.slice(0, -1) + '…'; };
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+    txt('FUT DA JUF', 40, 52, 34, C.text, 800);
+    txt('Classificação', 40, 92, 22, C.accent, 700);
+    txt(FORMAT_LABELS[t.format] || 'Campeonato', W - 40, 62, 18, C.muted, 600, 'right');
+    // colunas numéricas
+    const numLabels = ['P', 'V', 'E', 'D', 'GP', 'GC', 'SG', 'Pts'];
+    const zoneL = 470, zoneR = W - 34, colN = numLabels.length, colW = (zoneR - zoneL) / colN;
+    const cx = i => zoneL + colW * i + colW / 2;
+    numLabels.forEach((l, i) => txt(l, cx(i), headH - 16, 15, C.muted, 700, 'center'));
+    txt('TIME', 92, headH - 16, 15, C.muted, 700);
+    const adv = t.format === 'hybrid' ? t.numAdvance : 0;
+    rows.forEach((r, i) => {
+      const y = headH + i * rowH + rowH / 2;
+      if (adv && i < adv) { ctx.fillStyle = 'rgba(52,211,153,0.10)'; ctx.fillRect(24, y - rowH / 2 + 3, W - 48, rowH - 6); }
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : String(i + 1);
+      txt(medal, 52, y, 20, i < 3 ? C.text : C.muted, 800, 'center');
+      ctx.fillStyle = r.team.color; ctx.beginPath(); ctx.arc(86, y, 7, 0, 7); ctx.fill();
+      txt(clip(r.team.name, zoneL - 108, 20, 700), 104, y, 20, C.text, 700);
+      const vals = [r.P, r.V, r.E, r.D, r.GP, r.GC, (r.SG > 0 ? '+' + r.SG : r.SG), r.Pts];
+      vals.forEach((v, k) => txt(String(v), cx(k), y, k === numLabels.length - 1 ? 20 : 17, k === numLabels.length - 1 ? C.accent : C.text, k === numLabels.length - 1 ? 800 : 600, 'center'));
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(24, y + rowH / 2); ctx.lineTo(W - 24, y + rowH / 2); ctx.stroke();
+    });
+    txt('Desempate: ' + tiebreakText(t.tiebreak), 40, H - 24, 15, C.muted, 600);
+    const finish = url => { const a = document.createElement('a'); a.href = url; a.download = 'classificacao.png'; a.click(); };
+    if (canvas.toBlob) canvas.toBlob(b => { b ? finish(URL.createObjectURL(b)) : finish(canvas.toDataURL('image/png')); }, 'image/png');
+    else finish(canvas.toDataURL('image/png'));
   }
 
   // ============ CONFIGURAÇÕES / Backup ============
