@@ -713,12 +713,6 @@
   .bracket-team.pending { color: var(--muted); font-style: italic; }
   .bracket-team .score-input { width: 38px; padding: 4px 2px; font-size: 13px; }
 
-  /* ===== Capitães ===== */
-  .captain-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-  .captain-row:last-child { border-bottom: none; }
-  .captain-row select { width: auto; min-width: 180px; }
-  .cap { color: var(--adaptado); font-weight: 700; }
-
   /* ===== Estimativa de tempo ===== */
   .estimate-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
   .estimate-inputs input { text-align: center; }
@@ -747,10 +741,13 @@
   .live-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
   .live-row:last-child { border-bottom: none; }
   .live-name { font-size: 13px; }
-  .live-steps { display: flex; gap: 10px; }
+  .live-steps { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .stepper.mini { gap: 4px; font-size: 12px; }
   .stepper.mini button { width: 22px; height: 22px; font-size: 13px; }
   .stepper.mini b { min-width: 20px; text-align: center; font-variant-numeric: tabular-nums; }
+  .card-btns { display: flex; gap: 4px; }
+  .card-btn { width: 26px; height: 22px; padding: 0; border: 1px solid var(--border); background: transparent; border-radius: 6px; font-size: 12px; line-height: 1; cursor: pointer; opacity: .38; filter: grayscale(.6); transition: opacity .12s, filter .12s, box-shadow .12s; }
+  .card-btn.on { opacity: 1; filter: none; box-shadow: 0 0 0 1.5px var(--accent-solid); }
 
   @media (max-width: 640px) {
     .live-cols { grid-template-columns: 1fr; }
@@ -1342,10 +1339,6 @@
         <div id="knockout-section"></div>
       </div>
       <div class="card" id="champion-card" style="display:none;"></div>
-      <div class="card" id="captains-card">
-        <div class="card-title">Capitães</div>
-        <div id="captains-container"></div>
-      </div>
       <div class="card" id="standings-card">
         <div class="card-title" id="standings-title">Classificação</div>
         <div class="standings-wrap"><table class="standings" id="standings-table"></table></div>
@@ -4441,7 +4434,7 @@
     const empty = teams.filter(t => !t.players.length).length;
     if (empty) { if (!confirm(`Há ${empty} time(s) sem jogadores${(state.__champBench || []).length ? ' e ainda tem gente no banco' : ''}. Gerar mesmo assim?`)) return; }
     const teamIds = teams.map(t => t.id);
-    const t = { format: selectedFormat, teams: JSON.parse(JSON.stringify(teams)), league: null, knockout: null, numAdvance: null, phase: null, captains: {}, tiebreak: tiebreakOrder.slice() };
+    const t = { format: selectedFormat, teams: JSON.parse(JSON.stringify(teams)), league: null, knockout: null, numAdvance: null, phase: null, tiebreak: tiebreakOrder.slice() };
     t.hasThird = !!(document.getElementById('opt-third') || {}).checked;
     const semisChecked = (document.getElementById('opt-semis') || {}).checked;
     t.hasSemis = (selectedFormat === 'hybrid') ? (semisChecked !== false) : true;
@@ -4470,7 +4463,7 @@
   function tColor(id) { const t = state.tournament.teams.find(x => x.id === id); return t ? t.color : 'var(--muted)'; }
 
   const TB_LABELS = { V: 'vitórias', SG: 'saldo de gols', GP: 'gols pró', H2H: 'confronto direto' };
-  let tiebreakOrder = ['V', 'SG', 'GP', 'H2H'];
+  let tiebreakOrder = ['SG', 'GP', 'H2H'];
   function leagueStandings(matches, teams, order) {
     order = order || (state.tournament && state.tournament.tiebreak) || tiebreakOrder;
     const table = {};
@@ -4573,6 +4566,8 @@
     const setupFormat = document.getElementById('champ-format-card');
     const active = document.getElementById('tournament-active');
     if (!state.tournament) { active.style.display = 'none'; return; }
+    if (state.tournament.tiebreak) state.tournament.tiebreak = state.tournament.tiebreak.filter(k => k !== 'V');
+    if (!state.tournament.tiebreak || !state.tournament.tiebreak.length) state.tournament.tiebreak = tiebreakOrder.slice();
     setupTeams.style.display = 'none';
     setupFormat.style.display = 'none';
     active.style.display = '';
@@ -4618,7 +4613,6 @@
     wireTournamentInputs();
     const startBtn = document.getElementById('btn-start-ko');
     if (startBtn) startBtn.addEventListener('click', startKnockout);
-    renderCaptains();
     renderChampScorers();
     renderEstimateActive();
     renderLiveCard();
@@ -4735,25 +4729,6 @@
     const koTeams = t.format === 'hybrid' ? t.numAdvance : (t.format === 'knockout' ? t.teams.length : 0);
     renderEstimate(document.getElementById('estimate-active'), leagueGames, koTeams);
   }
-
-  // ---- Capitães ----
-  function renderCaptains() {
-    const t = state.tournament; if (!t) return;
-    t.captains = t.captains || {};
-    document.getElementById('captains-container').innerHTML = t.teams.map(tm => `
-      <div class="captain-row">
-        <div class="team-name"><span class="team-swatch" style="background:${tm.color};"></span>${escapeHtml(tm.name)}</div>
-        <select data-captain="${tm.id}">
-          <option value="">— sem capitão —</option>
-          ${tm.players.map(pid => { const p = playerById(pid); return p ? `<option value="${pid}" ${t.captains[tm.id] === pid ? 'selected' : ''}>${escapeHtml(p.name)}</option>` : ''; }).join('')}
-        </select>
-      </div>`).join('');
-    document.querySelectorAll('#captains-container [data-captain]').forEach(sel => sel.addEventListener('change', () => {
-      if (sel.value) t.captains[sel.dataset.captain] = sel.value; else delete t.captains[sel.dataset.captain];
-      save(); renderLiveCard();
-    }));
-  }
-  function captainOf(teamId) { const t = state.tournament; return t && t.captains ? t.captains[teamId] : null; }
 
   // ---- Artilharia do campeonato ----
   function allMatches(t) {
@@ -4932,6 +4907,12 @@
     }
     save(); renderTournament();
   }
+  function liveCard(m, pid, type) {
+    const key = type === 'red' ? 'red' : 'yellow';
+    m[key] = m[key] || {};
+    if (m[key][pid]) delete m[key][pid]; else m[key][pid] = true;
+    save(); renderTournament();
+  }
   function renderLiveCard() {
     const card = document.getElementById('live-card'); if (!card) return;
     const t = state.tournament;
@@ -4941,12 +4922,13 @@
     const t1 = t.teams.find(x => x.id === m.team1), t2 = t.teams.find(x => x.id === m.team2);
     const col = (tm, side) => `<div class="live-col">
       <div class="live-team"><span class="team-swatch" style="background:${tm.color};"></span>${escapeHtml(tm.name)}</div>
-      ${tm.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (m.goals || {})[pid] || 0, a = (m.assists || {})[pid] || 0; const cap = captainOf(tm.id) === pid; return `
+      ${tm.players.map(pid => { const p = playerById(pid); if (!p) return ''; const g = (m.goals || {})[pid] || 0, a = (m.assists || {})[pid] || 0; const yc = (m.yellow || {})[pid], rc = (m.red || {})[pid]; return `
         <div class="live-row">
-          <span class="live-name">${escapeHtml(p.name)}${cap ? ' <span class="cap">©</span>' : ''}</span>
+          <span class="live-name">${escapeHtml(p.name)}${yc ? ' 🟨' : ''}${rc ? ' 🟥' : ''}</span>
           <span class="live-steps">
             <span class="stepper mini"><button data-lg="gols" data-d="-1" data-side="${side}" data-p="${pid}">−</button>⚽<b>${g}</b><button data-lg="gols" data-d="1" data-side="${side}" data-p="${pid}">+</button></span>
             <span class="stepper mini"><button data-lg="assist" data-d="-1" data-side="${side}" data-p="${pid}">−</button>🅰<b>${a}</b><button data-lg="assist" data-d="1" data-side="${side}" data-p="${pid}">+</button></span>
+            <span class="card-btns"><button class="card-btn ${yc ? 'on' : ''}" data-card="yellow" data-p="${pid}" title="Cartão amarelo">🟨</button><button class="card-btn ${rc ? 'on' : ''}" data-card="red" data-p="${pid}" title="Cartão vermelho">🟥</button></span>
           </span>
         </div>`; }).join('')}
     </div>`;
@@ -4971,12 +4953,19 @@
       <p class="hint">O placar acompanha os gols marcados aqui. "Encerrar partida" para o cronômetro e fecha — o resultado já fica salvo.</p>`;
     document.getElementById('btn-live-close').addEventListener('click', () => { stopTimer(); live.matchId = null; renderTournament(); });
     const endBtn = document.getElementById('btn-live-end');
-    if (endBtn) endBtn.addEventListener('click', () => { if (confirm('Encerrar esta partida? O placar atual fica salvo.')) { stopTimer(); live.matchId = null; save(); renderTournament(); } });
+    if (endBtn) endBtn.addEventListener('click', () => {
+      if (confirm('Encerrar esta partida? O placar atual fica salvo.')) {
+        m.score1 = teamGoalSum(m, 1); m.score2 = teamGoalSum(m, 2);
+        if (state.tournament.knockout) { propagateKnockout(state.tournament.knockout); propagateThird(state.tournament); }
+        stopTimer(); live.matchId = null; save(); renderTournament();
+      }
+    });
     document.getElementById('btn-timer-toggle').addEventListener('click', () => { live.running ? pauseTimer() : startTimer(); syncTimerButton(); });
     document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
     const hb = document.getElementById('btn-half-next');
     if (hb) hb.addEventListener('click', () => { stopTimer(); live.elapsed = 0; live.startedAt = 0; live.half = 2; renderTournament(); });
     card.querySelectorAll('[data-lg]').forEach(b => b.addEventListener('click', () => liveScore(m, parseInt(b.dataset.side, 10), b.dataset.p, b.dataset.lg, parseInt(b.dataset.d, 10))));
+    card.querySelectorAll('[data-card]').forEach(b => b.addEventListener('click', () => liveCard(m, b.dataset.p, b.dataset.card)));
     if (live.running && !liveInterval) liveInterval = setInterval(tickTimer, 250);
   }
 
